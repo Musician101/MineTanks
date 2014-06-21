@@ -47,6 +47,11 @@ public class FieldListener implements Listener
 	
 	private boolean isSword(Material material)
 	{
+		//It's technically a sword without a blade.
+		//Stick is the default item if a player hasn't chosen a tank.
+		if (material == Material.STICK)
+			return true;
+		
 		if (material == Material.WOOD_SWORD)
 			return true;
 		
