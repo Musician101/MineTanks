@@ -8,6 +8,7 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.BattleField;
 import musician101.minetanks.battlefield.PlayerTank;
 import musician101.minetanks.menu.Menus;
+import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,7 +89,8 @@ public class FieldListener implements Listener
 	@EventHandler
 	public void onBlockInteract(PlayerInteractEvent event)
 	{
-		if (!isInField(event.getPlayer().getUniqueId()))
+		Player player = event.getPlayer();
+		if (!isInField(player.getUniqueId()))
 			return;
 			
 		if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK)
@@ -99,6 +101,19 @@ public class FieldListener implements Listener
 		
 		if (isSword(event.getItem().getType()))
 		{
+			for (BattleField field : plugin.fieldStorage.getFields())
+			{
+				PlayerTank pt = field.getPlayer(player.getUniqueId());
+				if (pt != null)
+				{
+					if (pt.isReady())
+					{
+						player.sendMessage(ChatColor.RED + plugin.prefix + " You must unready to change your tank.");
+						return;
+					}
+				}
+			}
+			
 			Menus.countrySelection.open(event.getPlayer());
 			return;
 		}
@@ -107,10 +122,18 @@ public class FieldListener implements Listener
 		{
 			for (BattleField field : plugin.fieldStorage.getFields())
 			{
-				PlayerTank pt = field.getPlayer(event.getPlayer().getUniqueId());
+				PlayerTank pt = field.getPlayer(player.getUniqueId());
 				if (pt != null)
 				{
+					if (pt.isReady())
+					{
+						pt.setReady(false);
+						player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
+						return;
+					}
+					
 					pt.setReady(true);
+					player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Unready", "You are currently ready."));
 					field.startMatch();
 				}
 			}

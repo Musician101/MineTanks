@@ -204,7 +204,7 @@ public class BattleField
 		player.getInventory().setLeggings(null);
 		player.getInventory().setBoots(null);
 		player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
-		player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready"));
+		player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
 		unassigned++;
 		return players.add(new PlayerTank(player.getUniqueId(), team));
 	}

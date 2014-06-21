@@ -40,7 +40,6 @@ public class MineTanks extends JavaPlugin
 		fieldStorage.saveToFiles();
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
-	//TODO prevent player from picking new tank if they're ready
 	//TODO need method setting up scoreboards
 	//TODO need basic plugin info for MineTanks command
 	//TODO splash damage mechanic for artillery
