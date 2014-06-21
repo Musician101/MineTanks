@@ -140,6 +140,12 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("p1"))
 			{
 				BattleField field = plugin.fieldStorage.getEdit();
+				if (!player.getWorld().getName().equals(field.getWorldName()))
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
+					return false;
+				}
+				
 				field.setPoint1(player.getLocation());
 				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Point 1 set.");
 				return true;
@@ -148,6 +154,12 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("p2"))
 			{
 				BattleField field = plugin.fieldStorage.getEdit();
+				if (!player.getWorld().getName().equals(field.getWorldName()))
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
+					return false;
+				}
+				
 				field.setPoint2(player.getLocation());
 				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Point 2 set.");
 				return true;
@@ -156,6 +168,12 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("greenSpawn"))
 			{
 				BattleField field = plugin.fieldStorage.getEdit();
+				if (!player.getWorld().getName().equals(field.getWorldName()))
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
+					return false;
+				}
+				
 				field.setGreenSpawn(player.getLocation());
 				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Green Spawn point set.");
 				return true;
@@ -164,6 +182,12 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("redSpawn"))
 			{
 				BattleField field = plugin.fieldStorage.getEdit();
+				if (!player.getWorld().getName().equals(field.getWorldName()))
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
+					return false;
+				}
+				
 				field.setRedSpawn(player.getLocation());
 				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Red Spawn point set.");
 				return true;
@@ -172,6 +196,12 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("spectators"))
 			{
 				BattleField field = plugin.fieldStorage.getEdit();
+				if (!player.getWorld().getName().equals(field.getWorldName()))
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
+					return false;
+				}
+				
 				field.setSpectators(player.getLocation());
 				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Spectators point set.");
 				return true;
