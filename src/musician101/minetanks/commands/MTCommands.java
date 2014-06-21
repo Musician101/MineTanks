@@ -45,7 +45,7 @@ public class MTCommands implements CommandExecutor
 					if (plugin.fieldStorage.getField(args[1]) != null)
 						field = plugin.fieldStorage.getField(args[1]);
 				
-				if (field.isReady())
+				if (!field.isReady())
 				{
 					player.sendMessage(ChatColor.RED + plugin.prefix + " Sorry, this field is not ready.");
 					return false;
@@ -86,7 +86,28 @@ public class MTCommands implements CommandExecutor
 				return false;
 			}
 			
-			//TODO spectate command
+			if (args[0].equalsIgnoreCase("spectate"))
+			{
+				if (!player.hasPermission("minetanks.participate"))
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Sorry, but you do not have permission for that.");
+					return false;
+				}
+				
+				BattleField field = plugin.fieldStorage.getFields().get(0);
+				if (args.length == 2)
+					if (plugin.fieldStorage.getField(args[1]) != null)
+						field = plugin.fieldStorage.getField(args[1]);
+				
+				if (!field.isReady())
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Sorry, this field is not ready.");
+					return false;
+				}
+				
+				field.addPlayer(player, Team.SPECTATOR);
+				return true;
+			}
 			
 			if (!player.hasPermission("minetanks.edit"))
 			{
