@@ -51,6 +51,12 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
+				if (field.inProgress())
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Sorry, but the match has already started.");
+					return false;
+				}
+				
 				field.addPlayer(player, Team.UNASSIGNED);
 				Menus.countrySelection.open(player);
 				return true;
