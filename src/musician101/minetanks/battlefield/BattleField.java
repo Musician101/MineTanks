@@ -35,6 +35,7 @@ public class BattleField
 	private int greenTeam = 0;
 	private int unassigned = 0;
 	private boolean inProgress = false;
+	String worldName;
 	
 	public BattleField(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location p3, Location greenSpawn, Location redSpawn, Location spectators)
 	{
@@ -67,6 +68,11 @@ public class BattleField
 		return name;
 	}
 	
+	public String getWorldName()
+	{
+		return worldName;
+	}
+	
 	public Location getPoint1()
 	{
 		return p1;
@@ -75,6 +81,8 @@ public class BattleField
 	public void setPoint1(Location loc)
 	{
 		p1 = loc;
+		if (worldName != null || worldName == "")
+			worldName = loc.getWorld().getName();
 	}
 	
 	public Location getPoint2()
@@ -85,6 +93,8 @@ public class BattleField
 	public void setPoint2(Location loc)
 	{
 		p2 = loc;
+		if (worldName != null || worldName == "")
+			worldName = loc.getWorld().getName();
 	}
 	
 	public Location getGreenSpawn()
@@ -94,7 +104,9 @@ public class BattleField
 	
 	public void setGreenSpawn(Location loc)
 	{
-		this.greenSpawn = loc;
+		greenSpawn = loc;
+		if (worldName != null || worldName == "")
+			worldName = loc.getWorld().getName();
 	}
 	
 	public Location getRedSpawn()
@@ -104,7 +116,9 @@ public class BattleField
 	
 	public void setRedSpawn(Location loc)
 	{
-		this.redSpawn = loc;
+		redSpawn = loc;
+		if (worldName != null || worldName == "")
+			worldName = loc.getWorld().getName();
 	}
 	
 	public Location getSpectators()
@@ -114,7 +128,9 @@ public class BattleField
 	
 	public void setSpectators(Location loc)
 	{
-		this.spectators = loc;
+		spectators = loc;
+		if (worldName != null || worldName == "")
+			worldName = loc.getWorld().getName();
 	}
 	
 	public boolean addPlayer(Player player, Team team)
@@ -274,7 +290,9 @@ public class BattleField
 		YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
 		if (p1 != null)
 		{
-			field.set("p1.world", p1.getWorld().getName());
+			if (!field.isSet("world"))
+				field.set("world", p1.getWorld().getName());
+			
 			field.set("p1", p1.getX());
 			field.set("p1.y", p1.getY());
 			field.set("p1.z", p1.getZ());
@@ -282,7 +300,9 @@ public class BattleField
 		
 		if (p2 != null)
 		{
-			field.set("p2.world", p2.getWorld().getName());
+			if (!field.isSet("world"))
+				field.set("world", p2.getWorld().getName());
+			
 			field.set("p2", p2.getX());
 			field.set("p2.y", p2.getY());
 			field.set("p2.z", p2.getZ());
@@ -290,7 +310,9 @@ public class BattleField
 		
 		if (greenSpawn != null)
 		{
-			field.set("greenSpawn.world", greenSpawn.getWorld().getName());
+			if (!field.isSet("world"))
+				field.set("world", greenSpawn.getWorld().getName());
+			
 			field.set("greenSpawn", greenSpawn.getX());
 			field.set("greenSpawn.y", greenSpawn.getY());
 			field.set("greenSpawn.z", greenSpawn.getZ());
@@ -298,7 +320,9 @@ public class BattleField
 		
 		if (redSpawn != null)
 		{
-			field.set("redSpawn.world", redSpawn.getWorld().getName());
+			if (!field.isSet("world"))
+				field.set("world", redSpawn.getWorld().getName());
+			
 			field.set("redSpawn", redSpawn.getX());
 			field.set("redSpawn.y", redSpawn.getY());
 			field.set("redSpawn.z", redSpawn.getZ());
@@ -306,7 +330,9 @@ public class BattleField
 		
 		if (spectators != null)
 		{
-			field.set("spectators.world", spectators.getWorld().getName());
+			if (!field.isSet("world"))
+				field.set("world", spectators.getWorld().getName());
+			
 			field.set("spectators", spectators.getX());
 			field.set("spectators.y", spectators.getY());
 			field.set("spectators.z", spectators.getZ());

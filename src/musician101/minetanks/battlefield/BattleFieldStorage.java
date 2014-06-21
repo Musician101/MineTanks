@@ -87,23 +87,26 @@ public class BattleFieldStorage
 				Location redSpawn = null;
 				Location spectators = null;
 				
-				if (field.isSet("p1.world"))
-					p1 = new Location(Bukkit.getWorld(field.getString("p1.world")), field.getInt("p1.x"), field.getInt("p1.y"), field.getInt("p1.z"));
-				
-				if (field.isSet("p2.world"))
-					p2 = new Location(Bukkit.getWorld(field.getString("p2.world")), field.getInt("p2.x"), field.getInt("p2.y"), field.getInt("p2.z"));
-				
-				if (field.isSet("p3.world"))
-					p3 = new Location(Bukkit.getWorld(field.getString("p3.world")), field.getInt("p3.x"), field.getInt("p3.y"), field.getInt("p3.z"));
-				
-				if (field.isSet("greenSpawn.world"))
-					greenSpawn = new Location(Bukkit.getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
-				
-				if (field.isSet("redSpawn.world"))
-					redSpawn = new Location(Bukkit.getWorld(field.getString("redSpawn.world")), field.getInt("redSpawn.x"), field.getInt("redSpawn.y"), field.getInt("redSpawn.z"));
-				
-				if (field.isSet("spectators.world"))
-					spectators = new Location(Bukkit.getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
+				if (field.isSet("world"))
+				{
+					if (field.isSet("p1.x"))
+						p1 = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("p1.x"), field.getInt("p1.y"), field.getInt("p1.z"));
+					
+					if (field.isSet("p2.x"))
+						p2 = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("p2.x"), field.getInt("p2.y"), field.getInt("p2.z"));
+					
+					if (field.isSet("p3.x"))
+						p3 = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("p3.x"), field.getInt("p3.y"), field.getInt("p3.z"));
+					
+					if (field.isSet("greenSpawn.x"))
+						greenSpawn = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
+					
+					if (field.isSet("redSpawn.x"))
+						redSpawn = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("redSpawn.x"), field.getInt("redSpawn.y"), field.getInt("redSpawn.z"));
+					
+					if (field.isSet("spectators.x"))
+						spectators = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
+				}
 				
 				if (!createField(name, enabled, p1, p2, p3, greenSpawn, redSpawn, spectators))
 					plugin.getLogger().warning("Failed to load " + file.getName());
