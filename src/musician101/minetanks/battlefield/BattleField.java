@@ -398,6 +398,9 @@ public class BattleField
 			
 			if (pt.getTeam() == Team.RED)
 				player.teleport(redSpawn);
+			
+			player.getInventory().setContents(pt.getTank().getWeapons().getContents());
+			player.getInventory().setContents(pt.getTank().getArmor());
 		}
 	}
 	
