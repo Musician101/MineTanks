@@ -9,6 +9,7 @@ import musician101.minetanks.battlefield.BattleField;
 import musician101.minetanks.battlefield.PlayerTank;
 import musician101.minetanks.menu.Menus;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -140,6 +141,7 @@ public class FieldListener implements Listener
 			armor[slot] = yml.getItemStack("armor." + slot);
 		
 		player.getInventory().setArmorContents(armor);
+		player.teleport(new Location(Bukkit.getWorld(yml.getString("world")), yml.getDouble("x"), yml.getDouble("y"), yml.getDouble("z")));
 		file.delete();
 	}
 	
