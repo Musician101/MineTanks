@@ -68,9 +68,6 @@ public class MTCommands implements CommandExecutor
 				{
 					if (field.getPlayer(player.getUniqueId()) != null)
 					{
-						//TODO saving player location when they join a battle
-						//TODO fix armor not being returned to the player
-						//TODO check if a match is in progress
 						if (field.removePlayer(player))
 						{
 							player.sendMessage(ChatColor.GREEN + plugin.prefix + " You have left the battle field.");
@@ -212,7 +209,7 @@ public class MTCommands implements CommandExecutor
 			}
 		}
 		
-		//TODO need basic plugin info
+		
 		return false;
 	}
 

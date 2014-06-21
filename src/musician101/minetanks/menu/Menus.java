@@ -25,7 +25,6 @@ public class Menus
 	public static IconMenu chineseMediumSelection;
 	public static IconMenu chineseHeavySelection;
 	
-	//TODO move OptionClickEventHandlers to separate classes.
 	public static void init(final MineTanks plugin)
 	{
 		countrySelection = new IconMenu("Country Selection", 9, new OptionClickEventHandler()

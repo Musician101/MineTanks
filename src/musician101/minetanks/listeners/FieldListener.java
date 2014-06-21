@@ -88,7 +88,7 @@ public class FieldListener implements Listener
 		
 		if (!isSword(event.getItem().getType()) || event.getItem().getType() != Material.WATCH)
 			return;
-		//TODO need to prevent menu from opening if they're assigned
+		
 		if (isSword(event.getItem().getType()))
 		{
 			Menus.countrySelection.open(event.getPlayer());
@@ -103,7 +103,6 @@ public class FieldListener implements Listener
 				if (pt != null)
 				{
 					pt.setReady(true);
-					//TODO need method for assigning teams and setting up scoreboards
 					field.startMatch();
 				}
 			}
@@ -178,7 +177,6 @@ public class FieldListener implements Listener
 		{
 			if (field.getPlayer(player.getUniqueId()) != null)
 			{
-				//TODO add method to prevent players setting points in different worlds (probably just use a singular point for the world)
 				Location loc = player.getLocation();
 				double[] x = new double[2];
 				x[0] = field.getPoint1().getX();
@@ -197,6 +195,4 @@ public class FieldListener implements Listener
 			}
 		}
 	}
-	//TODO move all todo statments to main class
-	//TODO need a method to cancel player teleportation
 }

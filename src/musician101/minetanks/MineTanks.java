@@ -40,4 +40,13 @@ public class MineTanks extends JavaPlugin
 		fieldStorage.saveToFiles();
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
+	//TODO move OptionClickEventHandlers to separate classes.
+	//TODO need a method to cancel player teleportation
+	//TODO add method to prevent players setting points in different worlds (probably just use a singular point for the world)
+	//TODO need method setting up scoreboards
+	//TODO need to prevent menu from opening if player is assigned
+	//TODO need basic plugin info for MineTanks command
+	//TODO saving player location when they join a battle
+	//TODO fix armor not being returned to the player
+	//TODO check if a match is in progress
 }
