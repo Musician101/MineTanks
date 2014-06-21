@@ -21,6 +21,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class FieldListener implements Listener
@@ -132,7 +133,7 @@ public class FieldListener implements Listener
 		player.getInventory().setArmorContents(armor);
 		file.delete();
 	}
-	//TODO need method to remove a player in case they disconnect
+	
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
@@ -144,6 +145,21 @@ public class FieldListener implements Listener
 			{
 				field.playerKilled(pt);
 				field.endMatch();
+				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerDisconnect(PlayerQuitEvent event)
+	{
+		for (BattleField field : plugin.fieldStorage.getFields())
+		{
+			PlayerTank pt = field.getPlayer(event.getPlayer().getUniqueId());
+			if (pt != null)
+			{
+				field.removePlayer(event.getPlayer());
+				return;
 			}
 		}
 	}
