@@ -79,9 +79,6 @@ public class MTCommands implements CommandExecutor
 							player.sendMessage(ChatColor.GREEN + plugin.prefix + " You have left the battle field.");
 							return true;
 						}
-						
-						player.sendMessage(ChatColor.RED + plugin.prefix + " You are not in a battle field.");
-						return false;
 					}
 				}
 				
