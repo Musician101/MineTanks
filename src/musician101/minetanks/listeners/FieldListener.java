@@ -1,6 +1,7 @@
 package musician101.minetanks.listeners;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
@@ -9,6 +10,7 @@ import musician101.minetanks.battlefield.PlayerTank;
 import musician101.minetanks.menu.Menus;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -21,6 +23,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -163,4 +166,37 @@ public class FieldListener implements Listener
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event)
+	{
+		if (!isInField(event.getPlayer().getUniqueId()))
+			return;
+		
+		Player player = event.getPlayer();
+		for (BattleField field : plugin.fieldStorage.getFields())
+		{
+			if (field.getPlayer(player.getUniqueId()) != null)
+			{
+				//TODO add method to prevent players setting points in different worlds (probably just use a singular point for the world)
+				Location loc = player.getLocation();
+				double[] x = new double[2];
+				x[0] = field.getPoint1().getX();
+				x[1] = field.getPoint2().getX();
+				Arrays.sort(x);
+				double[] z = new double[2];
+				z[0] = field.getPoint1().getZ();
+				z[1] = field.getPoint2().getZ();
+				Arrays.sort(z);
+				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Out of bounds!");
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
+	}
+	//TODO move all todo statments to main class
+	//TODO need a method to cancel player teleportation
 }
