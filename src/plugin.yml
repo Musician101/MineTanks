@@ -1,0 +1,11 @@
+name: MineTanks
+main: musician101.minetanks.MineTanks
+version: 0.1
+description: PVP minigame heavily based on World of Tanks.
+author: Musician101
+prefix: MineTanks
+
+commands:
+    minetanks:
+        aliases: [mt]
+        description: Base command the plugin.
