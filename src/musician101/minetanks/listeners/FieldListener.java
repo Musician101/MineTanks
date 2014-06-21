@@ -25,6 +25,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 public class FieldListener implements Listener
@@ -199,5 +201,12 @@ public class FieldListener implements Listener
 				}
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerTeleport(PlayerTeleportEvent event)
+	{
+		if (event.getCause() == TeleportCause.COMMAND)
+			event.setCancelled(isInField(event.getPlayer().getUniqueId()));
 	}
 }

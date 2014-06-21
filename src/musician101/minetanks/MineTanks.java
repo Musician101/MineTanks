@@ -40,7 +40,6 @@ public class MineTanks extends JavaPlugin
 		fieldStorage.saveToFiles();
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
-	//TODO need a method to cancel player teleportation
 	//TODO add method to prevent players setting points in different worlds (probably just use a singular point for the world)
 	//TODO need method setting up scoreboards
 	//TODO need to prevent menu from opening if player is assigned
