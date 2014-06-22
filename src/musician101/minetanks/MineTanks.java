@@ -42,6 +42,7 @@ public class MineTanks extends JavaPlugin
 	}
 	//TODO need method setting up scoreboards (high)
 	//TODO splash damage mechanic for artillery (high)
+	//TODO add the rest of the tanks
 	//TODO experience, credits, "premium" currencies (medium)
 	//TODO possible vault integration for economy support? (low)
 	//TODO help information for commands (low)
