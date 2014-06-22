@@ -41,8 +41,8 @@ public class MineTanks extends JavaPlugin
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
 	//TODO need method setting up scoreboards
-	//TODO need basic plugin info for MineTanks command
 	//TODO splash damage mechanic for artillery
 	//TODO experience, credits, "premium" currencies
 	//TODO possible vault integration for economy support?
+	//TODO help information for commands (lowest priority)
 }

@@ -23,15 +23,15 @@ public class MTCommands implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
-		if (!(sender instanceof Player))
-		{
-			sender.sendMessage(plugin.prefix + " Sorry but this is a player only command.");
-			return false;
-		}
-		
-		Player player = (Player) sender;
 		if (args.length != 0)
 		{
+			if (!(sender instanceof Player))
+			{
+				sender.sendMessage(plugin.prefix + " Sorry but this is a player only command.");
+				return false;
+			}
+			
+			Player player = (Player) sender;
 			if (args[0].equalsIgnoreCase("join"))
 			{
 				if (!player.hasPermission("minetanks.participate"))
@@ -242,8 +242,11 @@ public class MTCommands implements CommandExecutor
 			}
 		}
 		
-		
-		return false;
+		sender.sendMessage(ChatColor.GREEN + "===== MineTanks =====");
+		sender.sendMessage(ChatColor.GREEN + "Version:" + plugin.getDescription().getVersion());
+		sender.sendMessage(ChatColor.GREEN + "Recommended BukkitAPI Version: 1.7.9-R0.2");
+		sender.sendMessage(ChatColor.GREEN + "World of Tanks version: 0.9.1");
+		return true;
 	}
 
 }
