@@ -177,6 +177,11 @@ public class FieldListener implements Listener
 			PlayerTank pt = field.getPlayer(player.getUniqueId());
 			if (pt != null)
 			{
+				player.getInventory().clear();
+				player.getInventory().setHelmet(null);
+				player.getInventory().setChestplate(null);
+				player.getInventory().setLeggings(null);
+				player.getInventory().setBoots(null);
 				field.playerKilled(pt);
 				field.endMatch();
 				return;
