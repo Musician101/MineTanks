@@ -7,4 +7,6 @@ public interface IInfo
 	public String getName();
 	
 	public int getMenuSize();
+	
+	
 }

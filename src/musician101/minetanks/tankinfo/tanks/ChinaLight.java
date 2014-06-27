@@ -54,7 +54,6 @@ public enum ChinaLight implements ITank
 	@Override
 	public TankTypes getType()
 	{
-		
 		return TankTypes.LIGHT;
 	}
 
