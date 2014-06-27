@@ -2,7 +2,7 @@ package musician101.minetanks.commands;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.BattleField;
-import musician101.minetanks.battlefield.PlayerTank.Team;
+import musician101.minetanks.battlefield.PlayerTank.MTTeam;
 import musician101.minetanks.menu.Menus;
 
 import org.bukkit.ChatColor;
@@ -57,7 +57,7 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				field.addPlayer(player, Team.UNASSIGNED);
+				field.addPlayer(player, MTTeam.UNASSIGNED);
 				Menus.countrySelection.open(player);
 				return true;
 			}
@@ -105,7 +105,7 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				field.addPlayer(player, Team.SPECTATOR);
+				field.addPlayer(player, MTTeam.SPECTATOR);
 				return true;
 			}
 			

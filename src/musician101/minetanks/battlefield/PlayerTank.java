@@ -4,14 +4,19 @@ import java.util.UUID;
 
 import musician101.minetanks.tankinfo.tanks.ITank;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 public class PlayerTank
 {
 	private UUID player;
 	private ITank tank;
 	private boolean isReady;
-	private Team team;
+	private MTTeam team;
 	
-	public PlayerTank(UUID player, Team team)
+	public PlayerTank(UUID player, MTTeam team)
 	{
 		this.team = team;
 		this.player = player;
@@ -28,7 +33,7 @@ public class PlayerTank
 		return tank;
 	}
 	
-	public Team getTeam()
+	public MTTeam getTeam()
 	{
 		return team;
 	}
@@ -38,7 +43,7 @@ public class PlayerTank
 		this.tank = tank;
 	}
 	
-	public void setTeam(Team team)
+	public void setTeam(MTTeam team)
 	{
 		this.team = team;
 	}
@@ -55,34 +60,34 @@ public class PlayerTank
 	
 	public void killed()
 	{
-		this.team = Team.SPECTATOR;
+		Player player = Bukkit.getPlayer(this.player);
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++)
+			player.getInventory().setItem(0, new ItemStack(Material.AIR));
+		
+		player.getInventory().setHelmet(null);
+		player.getInventory().setChestplate(null);
+		player.getInventory().setLeggings(null);
+		player.getInventory().setBoots(null);
+		this.team = MTTeam.SPECTATOR;
 		this.tank = null;
 	}
 	
-	public enum Team
+	public enum MTTeam
 	{
-		GREEN("Green Team", false),
-		RED("Red Team", false),
-		SPECTATOR("Spectators"),
-		UNASSIGNED("Unassigned");
+		ASSIGNED(false),
+		SPECTATOR(),
+		UNASSIGNED();
 		
-		private String name;
 		private boolean canExit;
 		
-		private Team(String name)
+		private MTTeam()
 		{
-			this(name, true);
+			this(true);
 		}
 		
-		private Team(String name, boolean canExit)
+		private MTTeam(boolean canExit)
 		{
-			this.name = name;
 			this.canExit = canExit;
-		}
-		
-		public String getName()
-		{
-			return name;
 		}
 		
 		public boolean canExit()

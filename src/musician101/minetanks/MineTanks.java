@@ -40,10 +40,12 @@ public class MineTanks extends JavaPlugin
 		fieldStorage.saveToFiles();
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
-	//TODO need method setting up scoreboards (high)
 	//TODO splash damage mechanic for artillery (high)
-	//TODO add the rest of the tanks
+	//TODO add the rest of the tanks (medium)
 	//TODO experience, credits, "premium" currencies (medium)
 	//TODO possible vault integration for economy support? (low)
 	//TODO help information for commands (low)
+	//TODO arrow drop? (low)
+	//TODO reload times using experience bar as a timer (high)
+	//TODO implement camo values? (low)
 }

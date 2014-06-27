@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.PlayerTank.Team;
+import musician101.minetanks.battlefield.PlayerTank.MTTeam;
+import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
@@ -31,9 +32,8 @@ public class BattleField
 	private Location p1, p2, greenSpawn, redSpawn, spectators;
 	private List<PlayerTank> players = new ArrayList<PlayerTank>();
 	private boolean enabled;
-	private int redTeam = 0;
-	private int greenTeam = 0;
 	private int unassigned = 0;
+	private MTScoreboard sb;
 	private boolean inProgress = false;
 	String worldName;
 	
@@ -47,6 +47,7 @@ public class BattleField
 		this.greenSpawn = greenSpawn;
 		this.redSpawn = redSpawn;
 		this.spectators = spectators;
+		this.sb = new MTScoreboard();
 	}
 	
 	public List<PlayerTank> getPlayers()
@@ -133,7 +134,7 @@ public class BattleField
 			worldName = loc.getWorld().getName();
 	}
 	
-	public boolean addPlayer(Player player, Team team)
+	public boolean addPlayer(Player player, MTTeam team)
 	{
 		File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
 		try
@@ -229,11 +230,8 @@ public class BattleField
 				player.getInventory().setArmorContents(armor);
 			}
 			
-			if (pt.getTeam() == Team.GREEN)
-				greenTeam--;
-			
-			if (pt.getTeam() == Team.RED)
-				redTeam--;
+			if (sb.isOnGreen(player) || sb.isOnRed(player))
+				sb.playerDeath(player);
 			
 			return players.remove(pt);
 		}
@@ -367,24 +365,24 @@ public class BattleField
 		
 		for (PlayerTank pt : players)
 		{
-			if (greenTeam == 0 && redTeam == 0 && unassigned < 2)
+			if (sb.getGreenTeamSize() == 0 && sb.getRedTeamSize() == 0 && unassigned < 2)
 				return;
 			
-			if (greenTeam == redTeam && unassigned == 1)
+			if (sb.getGreenTeamSize() == sb.getRedTeamSize() && unassigned == 1)
 			{
-				pt.setTeam(Team.SPECTATOR);
+				pt.setTeam(MTTeam.SPECTATOR);
 				unassigned--;
 			}
-			else if (greenTeam <= redTeam)
+			else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
 			{
-				pt.setTeam(Team.GREEN);
-				greenTeam++;
+				pt.setTeam(MTTeam.ASSIGNED);
+				sb.addGreenPlayer(Bukkit.getOfflinePlayer(pt.getPlayerId()));
 				unassigned--;
 			}
-			else if (greenTeam >= redTeam)
+			else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
 			{
-				pt.setTeam(Team.RED);
-				redTeam++;
+				pt.setTeam(MTTeam.ASSIGNED);
+				sb.addRedPlayer(Bukkit.getOfflinePlayer(pt.getPlayerId()));
 				unassigned--;
 			}
 		}
@@ -393,12 +391,13 @@ public class BattleField
 		for (PlayerTank pt : players)
 		{
 			Player player = Bukkit.getPlayer(pt.getPlayerId());
-			if (pt.getTeam() == Team.GREEN)
+			if (sb.isOnGreen(player))
 				player.teleport(greenSpawn);
 			
-			if (pt.getTeam() == Team.RED)
+			if (sb.isOnRed(player))
 				player.teleport(redSpawn);
 			
+			player.setScoreboard(sb.getScoreboard());
 			player.getInventory().setContents(pt.getTank().getWeapons().getContents());
 			player.getInventory().setContents(pt.getTank().getArmor());
 		}
@@ -406,12 +405,12 @@ public class BattleField
 	
 	public void endMatch()
 	{
-		if (greenTeam != 0 && redTeam != 0)
+		if (sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0)
 			return;
 		
 		inProgress = false;
 		
-		if (greenTeam == 0)
+		if (sb.getGreenTeamSize() == 0)
 		{
 			for (PlayerTank pt : players)
 			{
@@ -423,7 +422,7 @@ public class BattleField
 			return;
 		}
 		
-		if (redTeam == 0)
+		if (sb.getRedTeamSize() == 0)
 		{
 			for (PlayerTank pt : players)
 			{
@@ -434,6 +433,8 @@ public class BattleField
 			
 			return;
 		}
+		
+		inProgress = false;
 	}
 	
 	public boolean inProgress()
@@ -445,5 +446,10 @@ public class BattleField
 	{
 		player.killed();
 		Bukkit.getPlayer(player.getPlayerId()).teleport(spectators);
+	}
+	
+	public MTScoreboard getScoreboard()
+	{
+		return sb;
 	}
 }
