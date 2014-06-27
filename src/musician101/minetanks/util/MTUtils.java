@@ -27,6 +27,7 @@ public class MTUtils
 	{
 		Inventory inv = Bukkit.createInventory(null, InventoryType.PLAYER);
 		inv.setItem(0, cannon.getCannon());
+		inv.addItem(new ItemStack(Material.ARROW, cannon.getAmmoCount()));
 		return inv;
 	}
 	
