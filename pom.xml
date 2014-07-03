@@ -2,6 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>musician101</groupId>
   <artifactId>minetanks</artifactId>
+  <name>MineTanks</name>
   <version>0.1</version>
   <description>Plugin version of the minigame of the same name.</description>
   <packaging>jar</packaging>
@@ -32,7 +33,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.7.9-R0.2</version>
+  		<version>1.7.9-R0.3-SNAPSHOT</version>
   	</dependency>
   </dependencies>
   <repositories>
@@ -41,5 +42,4 @@
         <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
   </repositories>
-  <name>MineTanks</name>
 </project>
