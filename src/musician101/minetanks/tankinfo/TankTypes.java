@@ -76,7 +76,6 @@ public enum TankTypes implements IInfo
 		return new String[]{};
 	}
 	
-	//TODO need method to get IconMenus
 	public IconMenu getMenu(Countries country)
 	{
 		if (country == Countries.CHINA)

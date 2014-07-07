@@ -24,7 +24,6 @@ public class IconMenu implements Listener
     private int size;
     private OptionClickEventHandler handler;
     private Plugin plugin;
-   
     private String[] optionNames;
     private ItemStack[] optionIcons;
    
@@ -36,8 +35,6 @@ public class IconMenu implements Listener
         this.plugin = plugin;
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
-        if (plugin == null)
-        	Bukkit.getLogger().info("plugin null");
         plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
     }
    
