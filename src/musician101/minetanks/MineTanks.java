@@ -47,4 +47,5 @@ public class MineTanks extends JavaPlugin
 	//TODO help information for commands (low)
 	//TODO arrow drop? (low)
 	//TODO implement camo values? (low)
+	//TODO create custom event handler (medium)
 }
