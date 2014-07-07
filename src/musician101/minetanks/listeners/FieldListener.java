@@ -176,15 +176,14 @@ public class FieldListener implements Listener
 		Player player = event.getEntity();
 		for (BattleField field : plugin.fieldStorage.getFields())
 		{
-			PlayerTank pt = field.getPlayer(player.getUniqueId());
-			if (pt != null)
+			if (isInField(player.getUniqueId()))
 			{
 				player.getInventory().clear();
 				player.getInventory().setHelmet(null);
 				player.getInventory().setChestplate(null);
 				player.getInventory().setLeggings(null);
 				player.getInventory().setBoots(null);
-				field.playerKilled(pt);
+				field.playerKilled(field.getPlayer(player.getUniqueId()));
 				field.endMatch();
 				return;
 			}
@@ -196,8 +195,7 @@ public class FieldListener implements Listener
 	{
 		for (BattleField field : plugin.fieldStorage.getFields())
 		{
-			PlayerTank pt = field.getPlayer(event.getPlayer().getUniqueId());
-			if (pt != null)
+			if (isInField(event.getPlayer().getUniqueId()))
 			{
 				field.removePlayer(event.getPlayer());
 				return;
@@ -214,23 +212,20 @@ public class FieldListener implements Listener
 		Player player = event.getPlayer();
 		for (BattleField field : plugin.fieldStorage.getFields())
 		{
-			if (field.getPlayer(player.getUniqueId()) != null)
+			Location loc = player.getLocation();
+			double[] x = new double[2];
+			x[0] = field.getPoint1().getX();
+			x[1] = field.getPoint2().getX();
+			Arrays.sort(x);
+			double[] z = new double[2];
+			z[0] = field.getPoint1().getZ();
+			z[1] = field.getPoint2().getZ();
+			Arrays.sort(z);
+			if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
 			{
-				Location loc = player.getLocation();
-				double[] x = new double[2];
-				x[0] = field.getPoint1().getX();
-				x[1] = field.getPoint2().getX();
-				Arrays.sort(x);
-				double[] z = new double[2];
-				z[0] = field.getPoint1().getZ();
-				z[1] = field.getPoint2().getZ();
-				Arrays.sort(z);
-				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
-				{
-					player.sendMessage(ChatColor.RED + plugin.prefix + " Out of bounds!");
-					event.setCancelled(true);
-					return;
-				}
+				player.sendMessage(ChatColor.RED + plugin.prefix + " Out of bounds!");
+				event.setCancelled(true);
+				return;
 			}
 		}
 	}
