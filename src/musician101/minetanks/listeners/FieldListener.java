@@ -254,9 +254,5 @@ public class FieldListener implements Listener
 				event.setCancelled(reload.reload());
 			}
 		}
-		
-		/*int reloadTime = 30;
-		ReloadHandler reload = new ReloadHandler(plugin, player, reloadTime);
-		event.setCancelled(reload.reload());*/
 	}
 }
