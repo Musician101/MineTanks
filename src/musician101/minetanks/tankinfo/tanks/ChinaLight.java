@@ -29,6 +29,7 @@ public enum ChinaLight implements ITank
 	String name;
 	ItemStack[] wornArmor;
 	Inventory weapons;
+	double reloadTime;
 	
 	private ChinaLight(int id, String name, double front, double side, double rear, int speed, Engines engine, Cannons cannon, Turrets turret, Tracks tracks, Radios radio)
 	{
@@ -37,6 +38,7 @@ public enum ChinaLight implements ITank
 		this.speed = speed / 10;
 		this.wornArmor = MTUtils.parseArmor(engine, turret, tracks, radio, MTUtils.calculateArmorValue(front, side, rear), this.speed);
 		this.weapons = MTUtils.parseWeapons(cannon);
+		this.reloadTime = cannon.reloadTime();
 	}
 	
 	@Override
@@ -89,5 +91,11 @@ public enum ChinaLight implements ITank
 	public PotionEffect getSpeed()
 	{
 		return new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, this.speed);
+	}
+	
+	@Override
+	public double reloadTime()
+	{
+		return reloadTime;
 	}
 }

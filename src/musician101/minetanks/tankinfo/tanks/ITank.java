@@ -19,4 +19,6 @@ public interface ITank extends IInfo
 	public Inventory getWeapons();
 	
 	public PotionEffect getSpeed();
+	
+	public double reloadTime();
 }

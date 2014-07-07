@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.PlayerTank.MTTeam;
+import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
@@ -178,6 +179,7 @@ public class BattleField
 		pl.put("yaw", loc.getYaw());
 		pl.put("pitch", loc.getPitch());
 		yml.set("location", pl);
+		yml.set("xp", player.getExp());
 		
 		try
 		{
@@ -199,6 +201,7 @@ public class BattleField
 			return false;
 		}
 		
+		player.setExp(0);
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
 		player.getInventory().setChestplate(null);
@@ -400,6 +403,7 @@ public class BattleField
 			player.setScoreboard(sb.getScoreboard());
 			player.getInventory().setContents(pt.getTank().getWeapons().getContents());
 			player.getInventory().setContents(pt.getTank().getArmor());
+			new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue()).reload();
 		}
 	}
 	

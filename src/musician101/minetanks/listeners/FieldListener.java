@@ -7,6 +7,7 @@ import java.util.UUID;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.BattleField;
 import musician101.minetanks.battlefield.PlayerTank;
+import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.menu.Menus;
 import musician101.minetanks.util.MTUtils;
 
@@ -21,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -238,5 +240,28 @@ public class FieldListener implements Listener
 	{
 		if (event.getCause() == TeleportCause.COMMAND)
 			event.setCancelled(isInField(event.getPlayer().getUniqueId()));
+	}
+	
+	@EventHandler
+	public void onBowShoot(EntityShootBowEvent event)
+	{
+		if (!(event.getEntity() instanceof Player))
+			return;
+		
+		final Player player = (Player) event.getEntity();
+		for (BattleField field : plugin.fieldStorage.getFields())
+		{
+			final PlayerTank pt = field.getPlayer(player.getUniqueId());
+			if (pt != null)
+			{	
+				int reloadTime = ((Double) pt.getTank().reloadTime()).intValue();
+				ReloadHandler reload = new ReloadHandler(plugin, player, reloadTime);
+				event.setCancelled(reload.reload());
+			}
+		}
+		
+		/*int reloadTime = 30;
+		ReloadHandler reload = new ReloadHandler(plugin, player, reloadTime);
+		event.setCancelled(reload.reload());*/
 	}
 }

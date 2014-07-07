@@ -46,6 +46,5 @@ public class MineTanks extends JavaPlugin
 	//TODO possible vault integration for economy support? (low)
 	//TODO help information for commands (low)
 	//TODO arrow drop? (low)
-	//TODO reload times using experience bar as a timer (high)
 	//TODO implement camo values? (low)
 }
