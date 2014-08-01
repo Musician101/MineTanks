@@ -45,6 +45,7 @@ public class MineTanks extends JavaPlugin
 	//TODO possible vault integration for economy support? (low)
 	//TODO help information for commands (low)
 	//TODO arrow drop? (low)
+	//TODO arrow travel speed? (low)
 	//TODO implement camo values? (low)
 	//TODO create custom event handler (medium)
 }
