@@ -29,6 +29,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -37,6 +38,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class FieldListener implements Listener
 {
@@ -283,13 +285,21 @@ public class FieldListener implements Listener
 		{
 			PlayerTank pt = field.getPlayer(dmgr.getUniqueId());
 			if (pt.getTank().getType() == TankTypes.ARTY)
-			{
-				if (pt.getTank().getLevel() >= 1 && pt.getTank().getLevel() <= 5)
-					dmgd.getWorld().createExplosion(dmgd.getLocation(), 1F);
-				else if (pt.getTank().getLevel() >= 6 && pt.getTank().getLevel() <= 10)
-					dmgd.getWorld().createExplosion(dmgd.getLocation(), 1F);
-			}
+				MTUtils.ammoExplosion(plugin, dmgd.getLocation(), pt.getTank().getLevel(), true);
 		}
+	}
+	
+	@EventHandler
+	public void onArrowHitBlock(final ProjectileHitEvent event)
+	{
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
+			}
+		}.runTaskLater(plugin, 1L);
 	}
 	
 	@EventHandler
