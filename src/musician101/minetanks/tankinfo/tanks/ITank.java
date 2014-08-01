@@ -21,4 +21,6 @@ public interface ITank extends IInfo
 	public PotionEffect getSpeed();
 	
 	public double reloadTime();
+	
+	public int getLevel();
 }

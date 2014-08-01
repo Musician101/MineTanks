@@ -40,7 +40,7 @@ public class MineTanks extends JavaPlugin
 		fieldStorage.saveToFiles();
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
-	//TODO splash damage mechanic for artillery (high)
+	//TODO need to edit the explosion force depending on the gun
 	//TODO add the rest of the tanks (medium)
 	//TODO experience, credits, "premium" currencies (medium)
 	//TODO possible vault integration for economy support? (low)

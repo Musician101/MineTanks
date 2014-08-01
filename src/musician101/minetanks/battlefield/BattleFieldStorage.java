@@ -24,16 +24,16 @@ public class BattleFieldStorage
 	
 	public boolean createField(String name)
 	{
-		return createField(name, false, null, null, null, null, null, null);
+		return createField(name, false, null, null, null, null, null);
 	}
 	
-	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location p3, Location greenSpawn, Location redSpawn, Location spectators)
+	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		for (BattleField field : fields)
 			if (field.getName().equals(name))
 				return false;
 		
-		BattleField field = new BattleField(this.plugin, name, enabled, p1, p2, p3, greenSpawn, redSpawn, spectators); 
+		BattleField field = new BattleField(this.plugin, name, enabled, p1, p2, greenSpawn, redSpawn, spectators); 
 		fields.add(field);
 		edit = field;
 		return true;
@@ -82,7 +82,6 @@ public class BattleFieldStorage
 				boolean enabled = field.getBoolean("enabled");
 				Location p1 = null;
 				Location p2 = null;
-				Location p3 = null;
 				Location greenSpawn = null;
 				Location redSpawn = null;
 				Location spectators = null;
@@ -95,9 +94,6 @@ public class BattleFieldStorage
 					if (field.isSet("p2.x"))
 						p2 = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("p2.x"), field.getInt("p2.y"), field.getInt("p2.z"));
 					
-					if (field.isSet("p3.x"))
-						p3 = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("p3.x"), field.getInt("p3.y"), field.getInt("p3.z"));
-					
 					if (field.isSet("greenSpawn.x"))
 						greenSpawn = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
 					
@@ -108,7 +104,7 @@ public class BattleFieldStorage
 						spectators = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 				}
 				
-				if (!createField(name, enabled, p1, p2, p3, greenSpawn, redSpawn, spectators))
+				if (!createField(name, enabled, p1, p2, greenSpawn, redSpawn, spectators))
 					plugin.getLogger().warning("Failed to load " + file.getName());
 			}
 		}

@@ -9,19 +9,24 @@ import musician101.minetanks.battlefield.BattleField;
 import musician101.minetanks.battlefield.PlayerTank;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.menu.Menus;
+import musician101.minetanks.tankinfo.TankTypes;
 import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -252,6 +257,62 @@ public class FieldListener implements Listener
 				int reloadTime = ((Double) pt.getTank().reloadTime()).intValue();
 				ReloadHandler reload = new ReloadHandler(plugin, player, reloadTime);
 				event.setCancelled(reload.reload());
+			}
+		}
+	}
+
+	@EventHandler
+	public void onEntityDamage(EntityDamageByEntityEvent event)
+	{
+		if (!(event.getEntity() instanceof Player))
+			return;
+		
+		Player dmgd = (Player) event.getEntity();
+		if (!(event.getDamager() instanceof Arrow))
+			return;
+		
+		Arrow arrow = (Arrow) event.getDamager();
+		if (!(arrow.getShooter() instanceof Player))
+			return;
+		
+		Player dmgr = (Player) arrow.getShooter();
+		if (!isInField(dmgr.getUniqueId()) || !isInField(dmgd.getUniqueId()))
+			return;
+		
+		for (BattleField field : plugin.fieldStorage.getFields())
+		{
+			PlayerTank pt = field.getPlayer(dmgr.getUniqueId());
+			if (pt.getTank().getType() == TankTypes.ARTY)
+			{
+				if (pt.getTank().getLevel() >= 1 && pt.getTank().getLevel() <= 5)
+					dmgd.getWorld().createExplosion(dmgd.getLocation(), 1F);
+				else if (pt.getTank().getLevel() >= 6 && pt.getTank().getLevel() <= 10)
+					dmgd.getWorld().createExplosion(dmgd.getLocation(), 1F);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onExplosion(EntityExplodeEvent event)
+	{
+		if (event.isCancelled())
+			return;
+
+		for (Block block : event.blockList())
+		{
+			for (BattleField field : plugin.fieldStorage.getFields())
+			{
+				Location loc = block.getLocation();
+				double[] x = new double[2];
+				x[0] = field.getPoint1().getX();
+				x[1] = field.getPoint2().getX();
+				Arrays.sort(x);
+				double[] z = new double[2];
+				z[0] = field.getPoint1().getZ();
+				z[1] = field.getPoint2().getZ();
+				Arrays.sort(z);
+				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
+					event.setCancelled(true);
 			}
 		}
 	}

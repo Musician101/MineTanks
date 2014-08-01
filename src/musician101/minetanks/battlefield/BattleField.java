@@ -38,7 +38,7 @@ public class BattleField
 	private boolean inProgress = false;
 	String worldName;
 	
-	public BattleField(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location p3, Location greenSpawn, Location redSpawn, Location spectators)
+	public BattleField(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		this.plugin = plugin;
 		this.name = name;
