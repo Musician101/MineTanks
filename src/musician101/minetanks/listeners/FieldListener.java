@@ -287,7 +287,7 @@ public class FieldListener implements Listener
 				{
 					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
 					PlayerTank ptdr = field.getPlayer(uuid);
-					MTUtils.playerHit(plugin, field.getScoreboard(), dmgd.getUniqueId(), ptdd, uuid, ptdr, (int) (event.getDamage() * 2));
+					MTUtils.playerHit(plugin, field, dmgd.getUniqueId(), ptdd, uuid, ptdr, (int) (event.getDamage() * 2));
 					event.setCancelled(true);
 					return;
 				}
@@ -307,7 +307,7 @@ public class FieldListener implements Listener
 				{
 					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
 					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
-					MTUtils.meleeHit(plugin, field.getScoreboard(), dmgr.getUniqueId(), ptdr, dmgd.getUniqueId(), ptdd);
+					MTUtils.meleeHit(plugin, field, dmgr.getUniqueId(), ptdr, dmgd.getUniqueId(), ptdd);
 					event.setCancelled(true);
 					return;
 				}
@@ -331,7 +331,7 @@ public class FieldListener implements Listener
 				{
 					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
 					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
-					MTUtils.playerHit(plugin, field.getScoreboard(), dmgd.getUniqueId(), ptdd, dmgr.getUniqueId(), ptdr, (int) (event.getDamage() * 2));
+					MTUtils.playerHit(plugin, field, dmgd.getUniqueId(), ptdd, dmgr.getUniqueId(), ptdr, (int) (event.getDamage() * 2));
 					if (ptdr.getTank().getType() == TankTypes.ARTY)
 						MTUtils.ammoExplosion(plugin, dmgd.getLocation(), ptdr.getTank().getLevel(), true);
 					
