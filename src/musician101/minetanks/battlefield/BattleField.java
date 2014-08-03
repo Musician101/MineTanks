@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.PlayerTank.MTTeam;
+import musician101.minetanks.battlefield.player.PlayerTank;
+import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
@@ -26,19 +27,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class BattleField
+public class Battlefield
 {
 	private MineTanks plugin;
 	private String name;
 	private Location p1, p2, greenSpawn, redSpawn, spectators;
-	private List<PlayerTank> players = new ArrayList<PlayerTank>();
+	private Map<UUID, PlayerTank> players = new HashMap<UUID, PlayerTank>();
 	private boolean enabled;
 	private int unassigned = 0;
 	private MTScoreboard sb;
 	private boolean inProgress = false;
 	String worldName;
 	
-	public BattleField(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
+	public Battlefield(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		this.plugin = plugin;
 		this.name = name;
@@ -51,18 +52,14 @@ public class BattleField
 		this.sb = new MTScoreboard();
 	}
 	
-	public List<PlayerTank> getPlayers()
+	public Map<UUID, PlayerTank> getPlayers()
 	{
 		return players;
 	}
 	
 	public PlayerTank getPlayer(UUID player)
 	{
-		for (PlayerTank pt : players)
-			if (pt.getPlayerId() == player)
-				return pt;
-		
-		return null;
+		return players.get(player);
 	}
 	
 	public String getName()
@@ -210,36 +207,36 @@ public class BattleField
 		player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
 		player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
 		unassigned++;
-		return players.add(new PlayerTank(player.getUniqueId(), team));
+		players.put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
+		return true;
 	}
 	
 	public boolean removePlayer(Player player)
 	{
 		PlayerTank pt = getPlayer(player.getUniqueId());
-		if (pt != null)
+		if (pt == null)
+			return false;
+		
+		File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
+		if (file.exists())
 		{
-			File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
-			if (file.exists())
-			{
-				YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-				player.getInventory().clear();
-				for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-					player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
-				
-				ItemStack[] armor = new ItemStack[4];
-				for (int slot = 0; slot < armor.length; slot++)
-					armor[slot] = yml.getItemStack("armor." + slot);
-				
-				player.getInventory().setArmorContents(armor);
-			}
+			YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+			player.getInventory().clear();
+			for (int slot = 0; slot < player.getInventory().getSize(); slot++)
+				player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
 			
-			if (sb.isOnGreen(player) || sb.isOnRed(player))
-				sb.playerDeath(player);
+			ItemStack[] armor = new ItemStack[4];
+			for (int slot = 0; slot < armor.length; slot++)
+				armor[slot] = yml.getItemStack("armor." + slot);
 			
-			return players.remove(pt);
+			player.getInventory().setArmorContents(armor);
 		}
 		
-		return false;
+		if (sb.isOnGreen(player) || sb.isOnRed(player))
+			sb.playerDeath(player);
+		
+		players.remove(player.getUniqueId());
+		return true;
 	}
 	
 	public boolean isEnabled()
@@ -360,14 +357,20 @@ public class BattleField
 
 	public void startMatch()
 	{
-		for (PlayerTank pt : players)
-			if (!pt.isReady())
+		List<UUID> players = new ArrayList<UUID>();
+		for (UUID player : this.players.keySet())
+		{
+			if (!getPlayer(player).isReady())
 				return;
+			
+			players.add(player);
+		}
 		
 		Collections.shuffle(players);
 		
-		for (PlayerTank pt : players)
+		for (UUID uuid : players)
 		{
+			PlayerTank pt = getPlayer(uuid);
 			if (sb.getGreenTeamSize() == 0 && sb.getRedTeamSize() == 0 && unassigned < 2)
 				return;
 			
@@ -379,21 +382,22 @@ public class BattleField
 			else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
-				sb.addGreenPlayer(Bukkit.getOfflinePlayer(pt.getPlayerId()));
+				sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
 				unassigned--;
 			}
 			else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
-				sb.addRedPlayer(Bukkit.getOfflinePlayer(pt.getPlayerId()));
+				sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
 				unassigned--;
 			}
 		}
 		
 		inProgress = true;
-		for (PlayerTank pt : players)
+		for (UUID uuid : players)
 		{
-			Player player = Bukkit.getPlayer(pt.getPlayerId());
+			PlayerTank pt = getPlayer(uuid);
+			Player player = Bukkit.getPlayer(uuid);
 			if (sb.isOnGreen(player))
 				player.teleport(greenSpawn);
 			
@@ -416,9 +420,9 @@ public class BattleField
 		
 		if (sb.getGreenTeamSize() == 0)
 		{
-			for (PlayerTank pt : players)
+			for (UUID uuid : players.keySet())
 			{
-				Player player = Bukkit.getPlayer(pt.getPlayerId());
+				Player player = Bukkit.getPlayer(uuid);
 				player.sendMessage(ChatColor.RED + plugin.prefix + " Red team wins!");
 				removePlayer(player);
 			}
@@ -428,9 +432,9 @@ public class BattleField
 		
 		if (sb.getRedTeamSize() == 0)
 		{
-			for (PlayerTank pt : players)
+			for (UUID uuid : players.keySet())
 			{
-				Player player = Bukkit.getPlayer(pt.getPlayerId());
+				Player player = Bukkit.getPlayer(uuid);
 				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Green team wins!");
 				removePlayer(player);
 			}
@@ -446,10 +450,10 @@ public class BattleField
 		return inProgress;
 	}
 
-	public void playerKilled(PlayerTank player)
+	public void playerKilled(UUID player)
 	{
-		player.killed();
-		Bukkit.getPlayer(player.getPlayerId()).teleport(spectators);
+		getPlayer(player).killed();
+		Bukkit.getPlayer(player).teleport(spectators);
 	}
 	
 	public MTScoreboard getScoreboard()

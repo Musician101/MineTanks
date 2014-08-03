@@ -1,5 +1,7 @@
 package musician101.minetanks.scoreboards;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -16,6 +18,7 @@ public class MTScoreboard
 	Scoreboard board;
 	Team green;
 	Team red;
+	Objective health;
 	Objective teamCount;
 	Score greenScore;
 	Score redScore;
@@ -33,6 +36,9 @@ public class MTScoreboard
 		teamCount.setDisplayName("Team Count");
 		greenScore = teamCount.getScore(ChatColor.GREEN + "Green Team");
 		redScore = teamCount.getScore(ChatColor.RED + "Red Team");
+		health = board.registerNewObjective("health", "dummy");
+		health.setDisplaySlot(DisplaySlot.SIDEBAR);
+		health.setDisplayName("Health");
 	}
 	
 	public Scoreboard getScoreboard()
@@ -90,5 +96,15 @@ public class MTScoreboard
 	public int getRedTeamSize()
 	{
 		return red.getSize();
+	}
+	
+	public void setPlayerHealth(UUID player, int hp)
+	{
+		health.getScore(Bukkit.getOfflinePlayer(player).getName()).setScore(hp);
+	}
+	
+	public int getPlayerHealth(UUID player)
+	{
+		return health.getScore(Bukkit.getOfflinePlayer(player).getName()).getScore();
 	}
 }

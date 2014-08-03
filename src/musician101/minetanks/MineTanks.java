@@ -6,12 +6,14 @@ import musician101.minetanks.battlefield.BattleFieldStorage;
 import musician101.minetanks.commands.MTCommands;
 import musician101.minetanks.listeners.FieldListener;
 import musician101.minetanks.menu.Menus;
+import musician101.minetanks.stats.PlayerStatStorage;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MineTanks extends JavaPlugin
 {
 	public BattleFieldStorage fieldStorage;
+	public PlayerStatStorage statStorage;
 	public String prefix;
 	
 	@Override
@@ -20,10 +22,13 @@ public class MineTanks extends JavaPlugin
 		prefix = "[" + getDescription().getPrefix() + "]";
 		new File(getDataFolder() + File.separator + "battlefields").mkdirs();
 		new File(getDataFolder() + File.separator + "inventorystorage").mkdirs();
-		
+		new File(getDataFolder() + File.separator + "playerstats").mkdirs();
 		
 		fieldStorage = new BattleFieldStorage(this);
 		fieldStorage.loadFromFiles();
+		
+		statStorage = new PlayerStatStorage(this);
+		statStorage.loadFromFiles();
 		
 		getServer().getPluginManager().registerEvents(new FieldListener(this), this);
 		
@@ -41,7 +46,7 @@ public class MineTanks extends JavaPlugin
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
 	//TODO add the rest of the tanks (medium)
-	//TODO experience, credits, "premium" currencies (medium)
+	//TODO kills, accuracy, total damage, "premium" currencies (medium)
 	//TODO possible vault integration for economy support? (low)
 	//TODO help information for commands (low)
 	//TODO arrow drop? (low)

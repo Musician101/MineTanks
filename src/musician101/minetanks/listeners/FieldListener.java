@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.BattleField;
-import musician101.minetanks.battlefield.PlayerTank;
+import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.menu.Menus;
 import musician101.minetanks.tankinfo.TankTypes;
@@ -26,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -43,6 +44,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class FieldListener implements Listener
 {
 	MineTanks plugin;
+	UUID uuid;
 	
 	public FieldListener(MineTanks plugin)
 	{
@@ -51,8 +53,8 @@ public class FieldListener implements Listener
 	
 	private boolean isInField(UUID playerId)
 	{
-		for (BattleField field : plugin.fieldStorage.getFields())
-			if (field.getPlayer(playerId) != null)
+		for (String name : plugin.fieldStorage.getFields().keySet())
+			if (plugin.fieldStorage.getField(name).getPlayer(playerId) != null)
 				return true;
 		
 		return false;
@@ -99,9 +101,6 @@ public class FieldListener implements Listener
 	public void onBlockInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
-		if (!isInField(player.getUniqueId()))
-			return;
-			
 		if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK)
 			return;
 		
@@ -110,9 +109,9 @@ public class FieldListener implements Listener
 		
 		if (isSword(event.getItem().getType()))
 		{
-			for (BattleField field : plugin.fieldStorage.getFields())
+			for (String name : plugin.fieldStorage.getFields().keySet())
 			{
-				PlayerTank pt = field.getPlayer(player.getUniqueId());
+				PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(player.getUniqueId());
 				if (pt != null)
 				{
 					if (pt.isReady())
@@ -120,17 +119,18 @@ public class FieldListener implements Listener
 						player.sendMessage(ChatColor.RED + plugin.prefix + " You must unready to change your tank.");
 						return;
 					}
+					
+					Menus.countrySelection.open(event.getPlayer());
+					return;
 				}
 			}
-			
-			Menus.countrySelection.open(event.getPlayer());
-			return;
 		}
 		
 		if (event.getItem().getType() == Material.WATCH)
 		{
-			for (BattleField field : plugin.fieldStorage.getFields())
+			for (String name : plugin.fieldStorage.getFields().keySet())
 			{
+				Battlefield field = plugin.fieldStorage.getField(name);
 				PlayerTank pt = field.getPlayer(player.getUniqueId());
 				if (pt != null)
 				{
@@ -159,6 +159,9 @@ public class FieldListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
+		if (!plugin.statStorage.addPlayer(player.getUniqueId()))
+			player.sendMessage(ChatColor.GREEN + plugin.prefix + " There was an error loading your statistics. Please contact an admin immediately.");
+		
 		File file = new File(plugin.getDataFolder() + File.separator + "InventoryStorage", player.getUniqueId().toString() + ".yml");
 		if (!file.exists())
 			return;
@@ -181,16 +184,17 @@ public class FieldListener implements Listener
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
 		Player player = event.getEntity();
-		for (BattleField field : plugin.fieldStorage.getFields())
+		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			if (isInField(player.getUniqueId()))
+			Battlefield field = plugin.fieldStorage.getField(name);
+			if (field.getPlayer(player.getUniqueId()) != null)
 			{
 				player.getInventory().clear();
 				player.getInventory().setHelmet(null);
 				player.getInventory().setChestplate(null);
 				player.getInventory().setLeggings(null);
 				player.getInventory().setBoots(null);
-				field.playerKilled(field.getPlayer(player.getUniqueId()));
+				field.playerKilled(player.getUniqueId());
 				field.endMatch();
 				return;
 			}
@@ -200,11 +204,11 @@ public class FieldListener implements Listener
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event)
 	{
-		for (BattleField field : plugin.fieldStorage.getFields())
+		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			if (isInField(event.getPlayer().getUniqueId()))
+			if (plugin.fieldStorage.getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
 			{
-				field.removePlayer(event.getPlayer());
+				plugin.fieldStorage.getField(name).removePlayer(event.getPlayer());
 				return;
 			}
 		}
@@ -213,26 +217,27 @@ public class FieldListener implements Listener
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
-		if (!isInField(event.getPlayer().getUniqueId()))
-			return;
-		
 		Player player = event.getPlayer();
-		for (BattleField field : plugin.fieldStorage.getFields())
+		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			Location loc = player.getLocation();
-			double[] x = new double[2];
-			x[0] = field.getPoint1().getX();
-			x[1] = field.getPoint2().getX();
-			Arrays.sort(x);
-			double[] z = new double[2];
-			z[0] = field.getPoint1().getZ();
-			z[1] = field.getPoint2().getZ();
-			Arrays.sort(z);
-			if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
+			Battlefield field = plugin.fieldStorage.getField(name);
+			if (field.getPlayer(player.getUniqueId()) != null)
 			{
-				player.sendMessage(ChatColor.RED + plugin.prefix + " Out of bounds!");
-				event.setCancelled(true);
-				return;
+				Location loc = player.getLocation();
+				double[] x = new double[2];
+				x[0] = field.getPoint1().getX();
+				x[1] = field.getPoint2().getX();
+				Arrays.sort(x);
+				double[] z = new double[2];
+				z[0] = field.getPoint1().getZ();
+				z[1] = field.getPoint2().getZ();
+				Arrays.sort(z);
+				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
+				{
+					player.sendMessage(ChatColor.RED + plugin.prefix + " Out of bounds!");
+					event.setCancelled(true);
+					return;
+				}
 			}
 		}
 	}
@@ -251,9 +256,9 @@ public class FieldListener implements Listener
 			return;
 		
 		final Player player = (Player) event.getEntity();
-		for (BattleField field : plugin.fieldStorage.getFields())
+		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			final PlayerTank pt = field.getPlayer(player.getUniqueId());
+			PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(player.getUniqueId());
 			if (pt != null)
 			{	
 				int reloadTime = ((Double) pt.getTank().reloadTime()).intValue();
@@ -266,26 +271,74 @@ public class FieldListener implements Listener
 	@EventHandler
 	public void onEntityDamage(EntityDamageByEntityEvent event)
 	{
+		if (event.getCause() != DamageCause.BLOCK_EXPLOSION || event.getCause() != DamageCause.PROJECTILE || event.getCause() != DamageCause.ENTITY_ATTACK)
+			return;
+		
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
 		Player dmgd = (Player) event.getEntity();
-		if (!(event.getDamager() instanceof Arrow))
-			return;
-		
-		Arrow arrow = (Arrow) event.getDamager();
-		if (!(arrow.getShooter() instanceof Player))
-			return;
-		
-		Player dmgr = (Player) arrow.getShooter();
-		if (!isInField(dmgr.getUniqueId()) || !isInField(dmgd.getUniqueId()))
-			return;
-		
-		for (BattleField field : plugin.fieldStorage.getFields())
+		if (event.getCause() == DamageCause.BLOCK_EXPLOSION)
 		{
-			PlayerTank pt = field.getPlayer(dmgr.getUniqueId());
-			if (pt.getTank().getType() == TankTypes.ARTY)
-				MTUtils.ammoExplosion(plugin, dmgd.getLocation(), pt.getTank().getLevel(), true);
+			for (String name : plugin.fieldStorage.getFields().keySet())
+			{
+				Battlefield field = plugin.fieldStorage.getField(name);
+				if (field.getPlayer(dmgd.getUniqueId()) != null && field.getPlayer(uuid) != null)
+				{
+					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
+					PlayerTank ptdr = field.getPlayer(uuid);
+					MTUtils.playerHit(plugin, field.getScoreboard(), dmgd.getUniqueId(), ptdd, uuid, ptdr, (int) (event.getDamage() * 2));
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
+		
+		if (event.getCause() == DamageCause.ENTITY_ATTACK)
+		{
+			if (!(event.getDamager() instanceof Player))
+				return;
+			
+			for (String name : plugin.fieldStorage.getFields().keySet())
+			{
+				Battlefield field = plugin.fieldStorage.getField(name);
+				Player dmgr = (Player) event.getDamager();
+				if (field.getPlayer(dmgd.getUniqueId()) != null && field.getPlayer(dmgr.getUniqueId()) != null)
+				{
+					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
+					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
+					MTUtils.meleeHit(plugin, field.getScoreboard(), dmgr.getUniqueId(), ptdr, dmgd.getUniqueId(), ptdd);
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
+		
+		if (event.getCause() == DamageCause.PROJECTILE)
+		{
+			if (!(event.getDamager() instanceof Arrow))
+				return;
+			
+			Arrow arrow = (Arrow) event.getDamager();
+			if (!(arrow.getShooter() instanceof Player))
+				return;
+			
+			Player dmgr = (Player) arrow.getShooter();
+			for (String name : plugin.fieldStorage.getFields().keySet())
+			{
+				Battlefield field = plugin.fieldStorage.getField(name);
+				if (field.getPlayer(dmgd.getUniqueId()) != null && field.getPlayer(dmgr.getUniqueId()) != null)
+				{
+					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
+					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
+					MTUtils.playerHit(plugin, field.getScoreboard(), dmgd.getUniqueId(), ptdd, dmgr.getUniqueId(), ptdr, (int) (event.getDamage() * 2));
+					if (ptdr.getTank().getType() == TankTypes.ARTY)
+						MTUtils.ammoExplosion(plugin, dmgd.getLocation(), ptdr.getTank().getLevel(), true);
+					
+					event.setCancelled(true);
+					return;
+				}
+			}
 		}
 	}
 	
@@ -298,6 +351,11 @@ public class FieldListener implements Listener
 			public void run()
 			{
 				event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
+				if (!(event.getEntity().getShooter() instanceof Player))
+					return;
+				
+				Player player = (Player) event.getEntity().getShooter();
+				uuid = player.getUniqueId();
 			}
 		}.runTaskLater(plugin, 1L);
 	}
@@ -307,11 +365,12 @@ public class FieldListener implements Listener
 	{
 		if (event.isCancelled())
 			return;
-
+		
 		for (Block block : event.blockList())
 		{
-			for (BattleField field : plugin.fieldStorage.getFields())
+			for (String name : plugin.fieldStorage.getFields().keySet())
 			{
+				Battlefield field = plugin.fieldStorage.getField(name);
 				Location loc = block.getLocation();
 				double[] x = new double[2];
 				x[0] = field.getPoint1().getX();

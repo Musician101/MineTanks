@@ -1,8 +1,8 @@
 package musician101.minetanks.commands;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.BattleField;
-import musician101.minetanks.battlefield.PlayerTank.MTTeam;
+import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.menu.Menus;
 
 import org.bukkit.ChatColor;
@@ -40,7 +40,7 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				BattleField field = plugin.fieldStorage.getFields().get(0);
+				Battlefield field = plugin.fieldStorage.getFields().get(0);
 				if (args.length == 2)
 					if (plugin.fieldStorage.getField(args[1]) != null)
 						field = plugin.fieldStorage.getField(args[1]);
@@ -70,8 +70,9 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				for (BattleField field : plugin.fieldStorage.getFields())
+				for (String name : plugin.fieldStorage.getFields().keySet())
 				{
+					Battlefield field = plugin.fieldStorage.getField(name); 
 					if (field.getPlayer(player.getUniqueId()) != null)
 					{
 						if (field.removePlayer(player))
@@ -94,7 +95,7 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				BattleField field = plugin.fieldStorage.getFields().get(0);
+				Battlefield field = plugin.fieldStorage.getFields().get(0);
 				if (args.length == 2)
 					if (plugin.fieldStorage.getField(args[1]) != null)
 						field = plugin.fieldStorage.getField(args[1]);
@@ -142,7 +143,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("p1"))
 			{
-				BattleField field = plugin.fieldStorage.getEdit();
+				Battlefield field = plugin.fieldStorage.getEdit();
 				if (!player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
@@ -156,7 +157,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("p2"))
 			{
-				BattleField field = plugin.fieldStorage.getEdit();
+				Battlefield field = plugin.fieldStorage.getEdit();
 				if (!player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
@@ -170,7 +171,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("greenSpawn"))
 			{
-				BattleField field = plugin.fieldStorage.getEdit();
+				Battlefield field = plugin.fieldStorage.getEdit();
 				if (!player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
@@ -184,7 +185,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("redSpawn"))
 			{
-				BattleField field = plugin.fieldStorage.getEdit();
+				Battlefield field = plugin.fieldStorage.getEdit();
 				if (!player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
@@ -198,7 +199,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("spectators"))
 			{
-				BattleField field = plugin.fieldStorage.getEdit();
+				Battlefield field = plugin.fieldStorage.getEdit();
 				if (!player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.prefix + " Error: The battlefield contains points in another world.");
@@ -212,7 +213,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("status"))
 			{
-				BattleField field = plugin.fieldStorage.getEdit();
+				Battlefield field = plugin.fieldStorage.getEdit();
 				if (field.isReady())
 				{
 					player.sendMessage(ChatColor.GREEN + plugin.prefix + " " + field.getName() + " is ready for battle.");

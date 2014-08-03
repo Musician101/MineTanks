@@ -1,8 +1,11 @@
 package musician101.minetanks.util;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
+import musician101.minetanks.battlefield.player.PlayerTank;
+import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.tankinfo.modules.Cannons;
 import musician101.minetanks.tankinfo.modules.Engines;
 import musician101.minetanks.tankinfo.modules.Radios;
@@ -108,5 +111,27 @@ public class MTUtils
 			power++;
 		
 		location.getWorld().createExplosion(location, power);
+	}
+	
+	public static void meleeHit(MineTanks plugin, MTScoreboard sb, UUID player1, PlayerTank pt1, UUID player2, PlayerTank pt2)
+	{
+		double totalWeight = pt1.getTank().getWeight() + pt2.getTank().getWeight();
+		int damage1 = (int) (0.5 * totalWeight * ((pt1.getTank().getSpeed().getAmplifier() + pt2.getTank().getSpeed().getAmplifier())^2));
+		int damage2 = (int) ((1 - (pt1.getTank().getWeight() / totalWeight)) * damage1);
+		
+		if (damage1 > 0)
+			playerHit(plugin, sb, player2, pt2, player1, pt1, damage1);
+		
+		if (damage2 > 0)
+			playerHit(plugin, sb, player1, pt1, player2, pt2, damage2);
+	}
+	
+	public static void playerHit(MineTanks plugin, MTScoreboard sb, UUID dmgd, PlayerTank ptdd, UUID dmgr, PlayerTank ptdr, int damage)
+	{
+		plugin.statStorage.getPlayer(dmgr).addMoneyFromHit(damage);
+		plugin.statStorage.getPlayer(dmgr).addXpFromHit(ptdd, ptdr, damage);
+		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - (int) (damage * 2));
+		if (sb.getPlayerHealth(dmgd) <= 0)
+			Bukkit.getPlayer(dmgd).setHealth(0);
 	}
 }

@@ -1,8 +1,7 @@
 package musician101.minetanks.menu;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.BattleField;
-import musician101.minetanks.battlefield.PlayerTank;
+import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.tankinfo.Countries;
 import musician101.minetanks.tankinfo.TankTypes;
 import musician101.minetanks.tankinfo.tanks.ChinaLight;
@@ -84,9 +83,9 @@ public class MenuHandlers
 			{
 				if (slot == tank.getId())
 				{
-					for (BattleField field : plugin.fieldStorage.getFields())
+					for (String name : plugin.fieldStorage.getFields().keySet())
 					{
-						PlayerTank pt = field.getPlayer(event.getPlayer().getUniqueId());
+						PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(event.getPlayer().getUniqueId());
 						if (pt != null)
 						{
 							pt.setTank(tank);
@@ -123,9 +122,9 @@ public class MenuHandlers
 			{
 				if (slot == tank.getId())
 				{
-					for (BattleField field : plugin.fieldStorage.getFields())
+					for (String name : plugin.fieldStorage.getFields().keySet())
 					{
-						PlayerTank pt = field.getPlayer(event.getPlayer().getUniqueId());
+						PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(event.getPlayer().getUniqueId());
 						if (pt != null)
 						{
 							pt.setTank(tank);

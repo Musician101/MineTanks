@@ -16,20 +16,21 @@ import org.bukkit.potion.PotionEffectType;
 
 public enum ChinaHeavy implements ITank
 {
-	IS_2(0, "IS-2", 7, 90, 90, 60, 37, new Engines("12150LS", TankTypes.HEAVY), new Cannons("122 mm D-25T", 28, 4.88), Turrets.IS_2_LATE, Tracks.IS_2_LATE, new Radios("A-220", TankTypes.HEAVY)),
-	_110(1, "110", 8, 120, 90, 60, 40, new Engines("12150LS", TankTypes.HEAVY), new Cannons("100 mm 62-100T", 40, 6), Turrets.T_10, Tracks._110_1, new Radios("A-220A", TankTypes.HEAVY)),
-	WZ_111(2, "WZ-111 model 1-4", 9, 120, 80, 60, 50, new Engines("12150LT", TankTypes.HEAVY), new Cannons("130 mm 59-130T", 40, 4.29), Turrets.WZ_111, Tracks.WZ_111_MODEL_4, new Radios("A-220A", TankTypes.HEAVY)),
-	_113(3, "113", 10, 120, 90, 70, 50, new Engines("V-2-54SC", TankTypes.HEAVY), new Cannons("122 mm 60-122T", 34, 5.5), Turrets._113, Tracks._113, new Radios("A-220B", TankTypes.HEAVY));
+	IS_2(0, "IS-2", 7, 46.04, 90, 90, 60, 37, new Engines("12150LS", TankTypes.HEAVY), new Cannons("122 mm D-25T", 28, 4.88), Turrets.IS_2_LATE, Tracks.IS_2_LATE, new Radios("A-220", TankTypes.HEAVY)),
+	_110(1, "110", 8, 50.47, 120, 90, 60, 40, new Engines("12150LS", TankTypes.HEAVY), new Cannons("100 mm 62-100T", 40, 6), Turrets.T_10, Tracks._110_1, new Radios("A-220A", TankTypes.HEAVY)),
+	WZ_111(2, "WZ-111 model 1-4", 9, 45, 120, 80, 60, 50, new Engines("12150LT", TankTypes.HEAVY), new Cannons("130 mm 59-130T", 40, 4.29), Turrets.WZ_111, Tracks.WZ_111_MODEL_4, new Radios("A-220A", TankTypes.HEAVY)),
+	_113(3, "113", 10, 45, 120, 90, 70, 50, new Engines("V-2-54SC", TankTypes.HEAVY), new Cannons("122 mm 60-122T", 34, 5.5), Turrets._113, Tracks._113, new Radios("A-220B", TankTypes.HEAVY));
 	
 	int id;
 	int speed;
 	int level;
+	double weight;
 	String name;
 	ItemStack[] wornArmor = new ItemStack[4];
 	Inventory weapons;
 	double reloadTime;
 	
-	private ChinaHeavy(int id, String name, int level, double front, double side, double rear, int speed, Engines engine, Cannons cannon, Turrets turret, Tracks tracks, Radios radio)
+	private ChinaHeavy(int id, String name, int level, double weight, double front, double side, double rear, int speed, Engines engine, Cannons cannon, Turrets turret, Tracks tracks, Radios radio)
 	{
 		this.id = id;
 		this.name = name;
@@ -38,6 +39,7 @@ public enum ChinaHeavy implements ITank
 		this.wornArmor = MTUtils.parseArmor(engine, turret, tracks, radio, MTUtils.calculateArmorValue(front, side, rear), this.speed);
 		this.weapons = MTUtils.parseWeapons(cannon);
 		this.reloadTime = cannon.reloadTime();
+		this.weight = weight;
 	}
 	
 	@Override
@@ -103,5 +105,11 @@ public enum ChinaHeavy implements ITank
 	public double reloadTime()
 	{
 		return reloadTime;
+	}
+	
+	@Override
+	public double getWeight()
+	{
+		return weight;
 	}
 }

@@ -1,8 +1,8 @@
 package musician101.minetanks.battlefield;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
@@ -14,8 +14,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class BattleFieldStorage
 {
 	MineTanks plugin;
-	List<BattleField> fields = new ArrayList<BattleField>();
-	BattleField edit;
+	Map<String, Battlefield> fields = new HashMap<String, Battlefield>();
+	Battlefield edit;
 	
 	public BattleFieldStorage(MineTanks plugin)
 	{
@@ -29,43 +29,35 @@ public class BattleFieldStorage
 	
 	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
-		for (BattleField field : fields)
-			if (field.getName().equals(name))
+		for (String field : fields.keySet())
+			if (getField(field).equals(name))
 				return false;
 		
-		BattleField field = new BattleField(this.plugin, name, enabled, p1, p2, greenSpawn, redSpawn, spectators); 
-		fields.add(field);
+		Battlefield field = new Battlefield(this.plugin, name, enabled, p1, p2, greenSpawn, redSpawn, spectators); 
+		fields.put(name, field);
 		edit = field;
 		return true;
 	}
 	
-	public boolean removeField(String name)
+	public boolean removeField(String field)
 	{
-		for (BattleField field : fields)
-		{
-			if (field.getName().equals(name))
-			{
-				fields.remove(field);
-				new File(plugin.getDataFolder() + File.separator + "battlefields", name + ".yml").delete();
-				return true;
-			}
-		}
+		if (!fields.containsKey(field))
+			return false;
 		
-		return false;
+		fields.remove(field);
+		new File(plugin.getDataFolder() + File.separator + "battlefields", field + ".yml").delete();
+		return true;
 	}
 	
-	public BattleField getField(String name)
+	public Battlefield getField(String name)
 	{
-		for (BattleField field : fields)
-		{
-			if (field.getName().equals(name))
-				return field;
-		}
+		if (!fields.containsKey(name))
+			return null;
 		
-		return null;
+		return fields.get(name);
 	}
 	
-	public List<BattleField> getFields()
+	public Map<String, Battlefield> getFields()
 	{
 		return fields;
 	}
@@ -112,35 +104,31 @@ public class BattleFieldStorage
 	
 	public void saveToFiles()
 	{
-		for (BattleField field : fields)
-			field.saveToFile();
+		for (String name : fields.keySet())
+			fields.get(name).saveToFile();
 	}
 	
-	public BattleField getEdit()
+	public Battlefield getEdit()
 	{
 		return edit;
 	}
 	
 	public boolean setEdit(String name)
 	{
-		for (BattleField field : fields)
-		{
-			if (field.getName().equals(name))
-			{
-				edit = field;
-				return true;
-			}
-		}
+		if (getField(name) == null)
+			return false;
 		
-		return false;
+		return true;
 	}
 	
 	public boolean canPlayerExit(UUID player)
 	{
-		for (BattleField field : fields)
-			if (field.getPlayer(player) != null)
-				if (field.getPlayer(player).getPlayerId() == player)
-					return field.getPlayer(player).getTeam().canExit();
+		for (String name : fields.keySet())
+		{
+			Battlefield field = getField(name);
+			if (field.getPlayers().containsKey(player))
+				return field.getPlayer(player).getTeam().canExit();
+		}
 		
 		return false;
 	}

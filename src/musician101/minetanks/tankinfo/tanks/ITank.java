@@ -23,4 +23,6 @@ public interface ITank extends IInfo
 	public double reloadTime();
 	
 	public int getLevel();
+	
+	public double getWeight();
 }
