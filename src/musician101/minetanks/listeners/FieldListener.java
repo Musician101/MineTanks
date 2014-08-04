@@ -270,10 +270,7 @@ public class FieldListener implements Listener
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageByEntityEvent event)
-	{
-		if (event.getCause() != DamageCause.BLOCK_EXPLOSION || event.getCause() != DamageCause.PROJECTILE || event.getCause() != DamageCause.ENTITY_ATTACK)
-			return;
-		
+	{	
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
@@ -308,6 +305,21 @@ public class FieldListener implements Listener
 					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
 					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
 					MTUtils.meleeHit(plugin, field, dmgr.getUniqueId(), ptdr, dmgd.getUniqueId(), ptdd);
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
+		
+		if (event.getCause() == DamageCause.FALL)
+		{
+			for (String name : plugin.fieldStorage.getFields().keySet())
+			{
+				Battlefield field = plugin.fieldStorage.getField(name);
+				if (field.getPlayer(dmgd.getUniqueId()) != null)
+				{
+					PlayerTank pt = field.getPlayer(dmgd.getUniqueId());
+					MTUtils.gravityHit(plugin, field, dmgd.getUniqueId(), pt, (int) (event.getDamage() * 2));
 					event.setCancelled(true);
 					return;
 				}

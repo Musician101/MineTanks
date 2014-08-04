@@ -119,14 +119,14 @@ public class MTUtils
 	public static void meleeHit(MineTanks plugin, Battlefield field, UUID player1, PlayerTank pt1, UUID player2, PlayerTank pt2)
 	{
 		double totalWeight = pt1.getTank().getWeight() + pt2.getTank().getWeight();
-		int damage1 = (int) (0.5 * totalWeight * ((pt1.getTank().getSpeed().getAmplifier() + pt2.getTank().getSpeed().getAmplifier())^2));
-		int damage2 = (int) ((1 - (pt1.getTank().getWeight() / totalWeight)) * damage1);
+		double damage1 = 0.5 * totalWeight * ((pt1.getTank().getSpeed().getAmplifier() + pt2.getTank().getSpeed().getAmplifier())^2);
+		double damage2 = (1 - (pt1.getTank().getWeight() / totalWeight)) * damage1;
 		
 		if (damage1 > 0)
-			playerHit(plugin, field, player2, pt2, player1, pt1, damage1);
+			playerHit(plugin, field, player2, pt2, player1, pt1, (int) damage1);
 		
 		if (damage2 > 0)
-			playerHit(plugin, field, player1, pt1, player2, pt2, damage2);
+			playerHit(plugin, field, player1, pt1, player2, pt2, (int) damage2);
 	}
 	
 	public static void playerHit(MineTanks plugin, Battlefield field, UUID dmgd, PlayerTank ptdd, UUID dmgr, PlayerTank ptdr, int damage)
@@ -148,5 +148,12 @@ public class MTUtils
 				}
 			}
 		}
+	}
+	
+	public static void gravityHit(MineTanks plugin, Battlefield field, UUID player, PlayerTank pt, int damage)
+	{
+		double dmg = 0.5 * pt.getTank().getWeight() * (pt.getTank().getSpeed().getAmplifier()^2);
+		MTScoreboard sb = field.getScoreboard();
+		sb.setPlayerHealth(player, sb.getPlayerHealth(player) - (int) dmg);
 	}
 }
