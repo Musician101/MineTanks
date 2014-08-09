@@ -6,11 +6,12 @@ import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
-import musician101.minetanks.battlefield.player.PlayerTank;
-import musician101.minetanks.handlers.ReloadHandler;
-import musician101.minetanks.menu.Menus;
-import musician101.minetanks.tankinfo.TankTypes;
-import musician101.minetanks.util.MTUtils;
+import musician101.minetanks.events.AttemptMenuOpenEvent;
+import musician101.minetanks.events.PlayerFireEvent;
+import musician101.minetanks.events.PlayerTankDamageEvent;
+import musician101.minetanks.events.PlayerTankDamageEvent.PlayerTankDamageCause;
+import musician101.minetanks.events.PlayerTankDeathEvent;
+import musician101.minetanks.handlers.ExplosionTracker;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,12 +42,11 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class FieldListener implements Listener
+public class MTListener implements Listener
 {
 	MineTanks plugin;
-	UUID uuid;
 	
-	public FieldListener(MineTanks plugin)
+	public MTListener(MineTanks plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -107,45 +107,11 @@ public class FieldListener implements Listener
 		if (!isSword(event.getItem().getType()) || event.getItem().getType() != Material.WATCH)
 			return;
 		
-		if (isSword(event.getItem().getType()))
+		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			for (String name : plugin.fieldStorage.getFields().keySet())
-			{
-				PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(player.getUniqueId());
-				if (pt != null)
-				{
-					if (pt.isReady())
-					{
-						player.sendMessage(ChatColor.RED + plugin.prefix + " You must unready to change your tank.");
-						return;
-					}
-					
-					Menus.countrySelection.open(event.getPlayer());
-					return;
-				}
-			}
-		}
-		
-		if (event.getItem().getType() == Material.WATCH)
-		{
-			for (String name : plugin.fieldStorage.getFields().keySet())
-			{
-				Battlefield field = plugin.fieldStorage.getField(name);
-				PlayerTank pt = field.getPlayer(player.getUniqueId());
-				if (pt != null)
-				{
-					if (pt.isReady())
-					{
-						pt.setReady(false);
-						player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
-						return;
-					}
-					
-					pt.setReady(true);
-					player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Unready", "You are currently ready."));
-					field.startMatch();
-				}
-			}
+			Battlefield field = plugin.fieldStorage.getField(name);
+			if (field.getPlayer(event.getPlayer().getUniqueId()) != null)
+				Bukkit.getPluginManager().callEvent(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
 		}
 	}
 	
@@ -188,16 +154,7 @@ public class FieldListener implements Listener
 		{
 			Battlefield field = plugin.fieldStorage.getField(name);
 			if (field.getPlayer(player.getUniqueId()) != null)
-			{
-				player.getInventory().clear();
-				player.getInventory().setHelmet(null);
-				player.getInventory().setChestplate(null);
-				player.getInventory().setLeggings(null);
-				player.getInventory().setBoots(null);
-				field.playerKilled(player.getUniqueId());
-				field.endMatch();
-				return;
-			}
+				Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), player));
 		}
 	}
 	
@@ -255,101 +212,61 @@ public class FieldListener implements Listener
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
-		final Player player = (Player) event.getEntity();
+		Player player = (Player) event.getEntity();
 		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(player.getUniqueId());
-			if (pt != null)
-			{	
-				int reloadTime = ((Double) pt.getTank().reloadTime()).intValue();
-				ReloadHandler reload = new ReloadHandler(plugin, player, reloadTime);
-				event.setCancelled(reload.reload());
+			Battlefield field = plugin.fieldStorage.getField(name);
+			if (field.getPlayer(player.getUniqueId()) != null)
+			{
+				PlayerFireEvent ev = new PlayerFireEvent(player, field.getPlayer(player.getUniqueId()));
+				Bukkit.getPluginManager().callEvent(ev);
+				event.setCancelled(ev.isCancelled());
+				return;
 			}
 		}
 	}
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageByEntityEvent event)
-	{	
-		if (!(event.getEntity() instanceof Player))
+	{
+		if (!(event.getEntity() instanceof Player) && (!(event.getDamager() instanceof Arrow) || !(event.getDamager() instanceof Player || event.getCause() != DamageCause.BLOCK_EXPLOSION) || event.getCause() != DamageCause.FALL))
 			return;
 		
-		Player dmgd = (Player) event.getEntity();
-		if (event.getCause() == DamageCause.BLOCK_EXPLOSION)
+		UUID dmgd = event.getEntity().getUniqueId();
+		for (String name : plugin.fieldStorage.getFields().keySet())
 		{
-			for (String name : plugin.fieldStorage.getFields().keySet())
+			Battlefield field = plugin.fieldStorage.getField(name);
+			if (field.getPlayer(dmgd) != null)
 			{
-				Battlefield field = plugin.fieldStorage.getField(name);
-				if (field.getPlayer(dmgd.getUniqueId()) != null && field.getPlayer(uuid) != null)
+				int damage = (int) event.getDamage() * 2;
+				if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player && field.getPlayer(((Player) ((Arrow) event.getDamager()).getShooter()).getUniqueId()) != null)
 				{
-					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
-					PlayerTank ptdr = field.getPlayer(uuid);
-					MTUtils.playerHit(plugin, field, dmgd.getUniqueId(), ptdd, uuid, ptdr, (int) (event.getDamage() * 2));
-					event.setCancelled(true);
-					return;
+					Arrow arrow = (Arrow) event.getDamager();
+					UUID dmgr = ((Player) arrow.getShooter()).getUniqueId();
+					Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, dmgd, dmgr, field, damage));
+					ExplosionTracker.addArrow(arrow);
 				}
-			}
-		}
-		
-		if (event.getCause() == DamageCause.ENTITY_ATTACK)
-		{
-			if (!(event.getDamager() instanceof Player))
-				return;
-			
-			for (String name : plugin.fieldStorage.getFields().keySet())
-			{
-				Battlefield field = plugin.fieldStorage.getField(name);
-				Player dmgr = (Player) event.getDamager();
-				if (field.getPlayer(dmgd.getUniqueId()) != null && field.getPlayer(dmgr.getUniqueId()) != null)
+				else if (event.getDamager() instanceof Player && field.getPlayer(event.getDamager().getUniqueId()) != null)
 				{
-					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
-					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
-					MTUtils.meleeHit(plugin, field, dmgr.getUniqueId(), ptdr, dmgd.getUniqueId(), ptdd);
-					event.setCancelled(true);
-					return;
+					UUID dmgr = event.getDamager().getUniqueId();
+					Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, dmgd, dmgr, field, damage));
 				}
-			}
-		}
-		
-		if (event.getCause() == DamageCause.FALL)
-		{
-			for (String name : plugin.fieldStorage.getFields().keySet())
-			{
-				Battlefield field = plugin.fieldStorage.getField(name);
-				if (field.getPlayer(dmgd.getUniqueId()) != null)
+				else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
 				{
-					PlayerTank pt = field.getPlayer(dmgd.getUniqueId());
-					MTUtils.gravityHit(plugin, field, dmgd.getUniqueId(), pt, (int) (event.getDamage() * 2));
-					event.setCancelled(true);
-					return;
-				}
-			}
-		}
-		
-		if (event.getCause() == DamageCause.PROJECTILE)
-		{
-			if (!(event.getDamager() instanceof Arrow))
-				return;
-			
-			Arrow arrow = (Arrow) event.getDamager();
-			if (!(arrow.getShooter() instanceof Player))
-				return;
-			
-			Player dmgr = (Player) arrow.getShooter();
-			for (String name : plugin.fieldStorage.getFields().keySet())
-			{
-				Battlefield field = plugin.fieldStorage.getField(name);
-				if (field.getPlayer(dmgd.getUniqueId()) != null && field.getPlayer(dmgr.getUniqueId()) != null)
-				{
-					PlayerTank ptdd = field.getPlayer(dmgd.getUniqueId());
-					PlayerTank ptdr = field.getPlayer(dmgr.getUniqueId());
-					MTUtils.playerHit(plugin, field, dmgd.getUniqueId(), ptdd, dmgr.getUniqueId(), ptdr, (int) (event.getDamage() * 2));
-					if (ptdr.getTank().getType() == TankTypes.ARTY)
-						MTUtils.ammoExplosion(plugin, dmgd.getLocation(), ptdr.getTank().getLevel(), true);
+					Arrow arrow = null;
+					for (Arrow a : ExplosionTracker.getTracker())
+						if (event.getDamager().getUniqueId() == a.getUniqueId())
+							arrow = a;
 					
-					event.setCancelled(true);
-					return;
+					UUID dmgr = ((Arrow) arrow.getShooter()).getUniqueId();
+					Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, dmgd, dmgr, field, damage));
+					ExplosionTracker.removeArrow(arrow);
 				}
+				else if (event.getCause() == DamageCause.FALL)
+					Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, dmgd, field, damage));
+				
+				event.setCancelled(true);
+				return;
 			}
 		}
 	}
@@ -362,12 +279,19 @@ public class FieldListener implements Listener
 			@Override
 			public void run()
 			{
-				event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
 				if (!(event.getEntity().getShooter() instanceof Player))
 					return;
 				
+				if (!(event.getEntity() instanceof Arrow))
+					return;
+				
 				Player player = (Player) event.getEntity().getShooter();
-				uuid = player.getUniqueId();
+				if (!isInField(player.getUniqueId()))
+					return;
+				
+				Arrow arrow = (Arrow) event.getEntity();
+				ExplosionTracker.addArrow(arrow);
+				event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
 			}
 		}.runTaskLater(plugin, 1L);
 	}
@@ -375,6 +299,9 @@ public class FieldListener implements Listener
 	@EventHandler
 	public void onExplosion(EntityExplodeEvent event)
 	{
+		if (!(event.getEntity() instanceof Arrow))
+			return;
+		
 		if (event.isCancelled())
 			return;
 		

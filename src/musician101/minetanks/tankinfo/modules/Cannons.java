@@ -49,6 +49,7 @@ public class Cannons
 		ItemMeta meta = cannon.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + this.name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);
+		meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
 		meta.setLore(Arrays.asList("Your Cannon", "Reload time: " + this.reloadTime));
 		cannon.setItemMeta(meta);
 	}

@@ -407,7 +407,7 @@ public class Battlefield
 			player.setScoreboard(sb.getScoreboard());
 			player.getInventory().setContents(pt.getTank().getWeapons().getContents());
 			player.getInventory().setContents(pt.getTank().getArmor());
-			new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue()).reload();
+			new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue()).isReloading();
 		}
 	}
 	

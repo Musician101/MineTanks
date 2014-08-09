@@ -4,7 +4,7 @@ import java.io.File;
 
 import musician101.minetanks.battlefield.BattleFieldStorage;
 import musician101.minetanks.commands.MTCommands;
-import musician101.minetanks.listeners.FieldListener;
+import musician101.minetanks.listeners.MTListener;
 import musician101.minetanks.menu.Menus;
 import musician101.minetanks.stats.PlayerStatStorage;
 
@@ -30,7 +30,7 @@ public class MineTanks extends JavaPlugin
 		statStorage = new PlayerStatStorage(this);
 		statStorage.loadFromFiles();
 		
-		getServer().getPluginManager().registerEvents(new FieldListener(this), this);
+		getServer().getPluginManager().registerEvents(new MTListener(this), this);
 		
 		getCommand("minetanks").setExecutor(new MTCommands(this));
 		
@@ -52,5 +52,6 @@ public class MineTanks extends JavaPlugin
 	//TODO arrow drop? (low)
 	//TODO arrow travel speed? (low)
 	//TODO implement camo values? (low)
-	//TODO create custom event handler (medium)
+	//TODO create methods for fetching storage classes & custom prefix (low)
+	//TODO need to implement penalty for friendly fire (high)
 }
