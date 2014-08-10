@@ -53,5 +53,4 @@ public class MineTanks extends JavaPlugin
 	//TODO arrow travel speed? (low)
 	//TODO implement camo values? (low)
 	//TODO create methods for fetching storage classes & custom prefix (low)
-	//TODO need to implement penalty for friendly fire (high)
 }
