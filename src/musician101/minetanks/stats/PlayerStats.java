@@ -19,6 +19,7 @@ public class PlayerStats
 	List<ITank> unlockedTanks;
 	int xp;
 	int money;
+	int balancer = 20;
 	
 	public PlayerStats(MineTanks plugin, UUID player, List<ITank> unlockedTanks, int xp, int money)
 	{
@@ -83,13 +84,11 @@ public class PlayerStats
 	
 	public void addMoneyFromHit(int damage)
 	{
-		int balancer = 20;
 		money = money + (damage * balancer);
 	}
 	
 	public void addXpFromHit(PlayerTank dmgd, PlayerTank dmgr, int damage)
 	{
-		int balancer = 20;
 		int dmgModifier = Math.abs(dmgr.getTank().getLevel() - dmgd.getTank().getLevel());
 		xp = xp + (damage * balancer * dmgModifier);
 	}
@@ -97,5 +96,16 @@ public class PlayerStats
 	public void addXpOnKill(PlayerTank dmgd, PlayerTank dmgr)
 	{
 		xp = xp + (5 * Math.abs(dmgr.getTank().getLevel() - dmgd.getTank().getLevel()));
+	}
+	
+	public void subtractMoneyFromHit(int damage)
+	{
+		money = money - 4 * (damage * balancer);
+	}
+	
+	public void subtractXpFromHit(PlayerTank dmgd, PlayerTank dmgr, int damage)
+	{
+		int dmgModifier = Math.abs(dmgr.getTank().getLevel() - dmgd.getTank().getLevel());
+		xp = xp - 2 * (damage * balancer * dmgModifier);
 	}
 }

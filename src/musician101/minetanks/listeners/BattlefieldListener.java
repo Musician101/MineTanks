@@ -13,6 +13,7 @@ import musician101.minetanks.events.PlayerTankDeathEvent;
 import musician101.minetanks.handlers.DamageHandler;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.menu.Menus;
+import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
@@ -104,16 +105,33 @@ public class BattlefieldListener implements Listener
 		DamageHandler dh = new DamageHandler(plugin);
 		Battlefield field = plugin.fieldStorage.getField(event.getField());
 		UUID dmgd = event.getDamagedPlayer();
-		if (event.getCause() == PlayerTankDamageCause.SPLASH)
-			dh.playerHit(field, dmgd, event.getDamager(), event.getDamage());
-		
-		if (event.getCause() == PlayerTankDamageCause.RAM)
-			dh.meleeHit(field, dmgd, event.getDamager());
-		
 		if (event.getCause() == PlayerTankDamageCause.FALL)
 			dh.gravityHit(field, dmgd, event.getDamage());
 		
+		UUID dmgr = event.getDamager();
+		int damage = event.getDamage();
+		MTScoreboard sb = field.getScoreboard();
+		if ((sb.isOnGreen(Bukkit.getPlayer(dmgr)) && sb.isOnGreen(Bukkit.getPlayer(dmgd))) || (sb.isOnRed(Bukkit.getPlayer(dmgr)) && sb.isOnRed(Bukkit.getPlayer(dmgd))))
+		{
+			if (event.getCause() == PlayerTankDamageCause.RAM)
+				dh.meleeHitFriendly(field, dmgr, dmgd);
+			
+			if (event.getCause() == PlayerTankDamageCause.SPLASH)
+				dh.playerHitFriendly(field, dmgd, dmgr, damage);
+			
+			if (event.getCause() == PlayerTankDamageCause.PENETRATION)
+				dh.playerHitFriendly(field, dmgd, dmgr, damage);
+			
+			return;
+		}
+		
+		if (event.getCause() == PlayerTankDamageCause.RAM)
+			dh.meleeHitEnemy(field, dmgd, dmgr);
+		
+		if (event.getCause() == PlayerTankDamageCause.SPLASH)
+			dh.playerHitEnemy(field, dmgd, dmgr, damage);
+		
 		if (event.getCause() == PlayerTankDamageCause.PENETRATION)
-			dh.playerHit(field, dmgd, event.getDamager(), event.getDamage());
+			dh.playerHitEnemy(field, dmgd, dmgr, damage);
 	}
 }
