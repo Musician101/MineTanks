@@ -39,8 +39,8 @@ public class DamageHandler
 	{
 		PlayerTank ptdd = field.getPlayer(dmgd);
 		PlayerTank ptdr = field.getPlayer(dmgr);
-		plugin.statStorage.getPlayer(dmgr).addMoneyFromHit(damage);
-		plugin.statStorage.getPlayer(dmgr).addXpFromHit(ptdd, ptdr, damage);
+		plugin.getStatStorage().getPlayer(dmgr).addMoneyFromHit(damage);
+		plugin.getStatStorage().getPlayer(dmgr).addXpFromHit(ptdd, ptdr, damage);
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
@@ -52,7 +52,7 @@ public class DamageHandler
 				{
 					String dmgdMsg = (sb.isOnGreen(Bukkit.getPlayer(dmgd)) ? ChatColor.GREEN + Bukkit.getPlayer(dmgd).getName() : ChatColor.RED + Bukkit.getPlayer(dmgd).getName());
 					String dmgrMsg = (sb.isOnGreen(Bukkit.getPlayer(dmgr)) ? ChatColor.GREEN + Bukkit.getPlayer(dmgr).getName() : ChatColor.RED + Bukkit.getPlayer(dmgr).getName());
-					player.sendMessage(ChatColor.GREEN + plugin.prefix + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
 				}
 			}
 		}
@@ -85,8 +85,8 @@ public class DamageHandler
 	{
 		PlayerTank ptdd = field.getPlayer(dmgd);
 		PlayerTank ptdr = field.getPlayer(dmgr);
-		plugin.statStorage.getPlayer(dmgr).subtractMoneyFromHit(damage);
-		plugin.statStorage.getPlayer(dmgr).subtractXpFromHit(ptdd, ptdr, damage);
+		plugin.getStatStorage().getPlayer(dmgr).subtractMoneyFromHit(damage);
+		plugin.getStatStorage().getPlayer(dmgr).subtractXpFromHit(ptdd, ptdr, damage);
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
@@ -98,7 +98,7 @@ public class DamageHandler
 				{
 					String dmgdMsg = (sb.isOnGreen(Bukkit.getPlayer(dmgd)) ? ChatColor.GREEN + Bukkit.getPlayer(dmgd).getName() : ChatColor.RED + Bukkit.getPlayer(dmgd).getName());
 					String dmgrMsg = (sb.isOnGreen(Bukkit.getPlayer(dmgr)) ? ChatColor.GREEN + Bukkit.getPlayer(dmgr).getName() : ChatColor.RED + Bukkit.getPlayer(dmgr).getName());
-					player.sendMessage(ChatColor.GREEN + plugin.prefix + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
 				}
 			}
 		}

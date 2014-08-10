@@ -83,16 +83,16 @@ public class MenuHandlers
 			{
 				if (slot == tank.getId())
 				{
-					for (String name : plugin.fieldStorage.getFields().keySet())
+					for (String name : plugin.getFieldStorage().getFields().keySet())
 					{
-						PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(event.getPlayer().getUniqueId());
+						PlayerTank pt = plugin.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId());
 						if (pt != null)
 						{
 							pt.setTank(tank);
 							player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), "Open Hangar.", "Tank: " + tank.getName()));
-							player.sendMessage(ChatColor.GREEN + plugin.prefix + " You have chosen the " + tank.getName() + ".");
-							player.sendMessage(ChatColor.GREEN + plugin.prefix + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
-							player.sendMessage(ChatColor.GREEN + plugin.prefix + " When you are ready, simply right click the 'Ready' item.");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have chosen the " + tank.getName() + ".");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " When you are ready, simply right click the 'Ready' item.");
 							return;
 						}
 					}
@@ -122,16 +122,16 @@ public class MenuHandlers
 			{
 				if (slot == tank.getId())
 				{
-					for (String name : plugin.fieldStorage.getFields().keySet())
+					for (String name : plugin.getFieldStorage().getFields().keySet())
 					{
-						PlayerTank pt = plugin.fieldStorage.getField(name).getPlayer(event.getPlayer().getUniqueId());
+						PlayerTank pt = plugin.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId());
 						if (pt != null)
 						{
 							pt.setTank(tank);
 							player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), "Open Hangar.", "Tank: " + tank.getName()));
-							player.sendMessage(ChatColor.GREEN + plugin.prefix + " You have chosen the " + tank.getName() + ".");
-							player.sendMessage(ChatColor.GREEN + plugin.prefix + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
-							player.sendMessage(ChatColor.GREEN + plugin.prefix + " When you are ready, simply right click the 'Ready' item.");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have chosen the " + tank.getName() + ".");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " When you are ready, simply right click the 'Ready' item.");
 							return;
 						}
 					}

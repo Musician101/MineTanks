@@ -53,8 +53,8 @@ public class MTListener implements Listener
 	
 	private boolean isInField(UUID playerId)
 	{
-		for (String name : plugin.fieldStorage.getFields().keySet())
-			if (plugin.fieldStorage.getField(name).getPlayer(playerId) != null)
+		for (String name : plugin.getFieldStorage().getFields().keySet())
+			if (plugin.getFieldStorage().getField(name).getPlayer(playerId) != null)
 				return true;
 		
 		return false;
@@ -107,9 +107,9 @@ public class MTListener implements Listener
 		if (!isSword(event.getItem().getType()) || event.getItem().getType() != Material.WATCH)
 			return;
 		
-		for (String name : plugin.fieldStorage.getFields().keySet())
+		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
-			Battlefield field = plugin.fieldStorage.getField(name);
+			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(event.getPlayer().getUniqueId()) != null)
 				Bukkit.getPluginManager().callEvent(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
 		}
@@ -125,14 +125,14 @@ public class MTListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		if (!plugin.statStorage.addPlayer(player.getUniqueId()))
-			player.sendMessage(ChatColor.GREEN + plugin.prefix + " There was an error loading your statistics. Please contact an admin immediately.");
+		if (!plugin.getStatStorage().addPlayer(player.getUniqueId()))
+			player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " There was an error loading your statistics. Please contact an admin immediately.");
 		
 		File file = new File(plugin.getDataFolder() + File.separator + "InventoryStorage", player.getUniqueId().toString() + ".yml");
 		if (!file.exists())
 			return;
 		
-		player.sendMessage(ChatColor.GREEN + plugin.prefix + " You logged off with items still stored away. They will now be returned to you.");
+		player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You logged off with items still stored away. They will now be returned to you.");
 		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++)
 			player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
@@ -150,9 +150,9 @@ public class MTListener implements Listener
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
 		Player player = event.getEntity();
-		for (String name : plugin.fieldStorage.getFields().keySet())
+		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
-			Battlefield field = plugin.fieldStorage.getField(name);
+			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(player.getUniqueId()) != null)
 				Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), player));
 		}
@@ -161,11 +161,11 @@ public class MTListener implements Listener
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event)
 	{
-		for (String name : plugin.fieldStorage.getFields().keySet())
+		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
-			if (plugin.fieldStorage.getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
+			if (plugin.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
 			{
-				plugin.fieldStorage.getField(name).removePlayer(event.getPlayer());
+				plugin.getFieldStorage().getField(name).removePlayer(event.getPlayer());
 				return;
 			}
 		}
@@ -175,9 +175,9 @@ public class MTListener implements Listener
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player player = event.getPlayer();
-		for (String name : plugin.fieldStorage.getFields().keySet())
+		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
-			Battlefield field = plugin.fieldStorage.getField(name);
+			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(player.getUniqueId()) != null)
 			{
 				Location loc = player.getLocation();
@@ -191,7 +191,7 @@ public class MTListener implements Listener
 				Arrays.sort(z);
 				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
 				{
-					player.sendMessage(ChatColor.RED + plugin.prefix + " Out of bounds!");
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Out of bounds!");
 					event.setCancelled(true);
 					return;
 				}
@@ -213,9 +213,9 @@ public class MTListener implements Listener
 			return;
 		
 		Player player = (Player) event.getEntity();
-		for (String name : plugin.fieldStorage.getFields().keySet())
+		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
-			Battlefield field = plugin.fieldStorage.getField(name);
+			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(player.getUniqueId()) != null)
 			{
 				PlayerFireEvent ev = new PlayerFireEvent(player, field.getPlayer(player.getUniqueId()));
@@ -233,9 +233,9 @@ public class MTListener implements Listener
 			return;
 		
 		UUID dmgd = event.getEntity().getUniqueId();
-		for (String name : plugin.fieldStorage.getFields().keySet())
+		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
-			Battlefield field = plugin.fieldStorage.getField(name);
+			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(dmgd) != null)
 			{
 				int damage = (int) event.getDamage() * 2;
@@ -307,9 +307,9 @@ public class MTListener implements Listener
 		
 		for (Block block : event.blockList())
 		{
-			for (String name : plugin.fieldStorage.getFields().keySet())
+			for (String name : plugin.getFieldStorage().getFields().keySet())
 			{
-				Battlefield field = plugin.fieldStorage.getField(name);
+				Battlefield field = plugin.getFieldStorage().getField(name);
 				Location loc = block.getLocation();
 				double[] x = new double[2];
 				x[0] = field.getPoint1().getX();

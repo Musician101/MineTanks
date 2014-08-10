@@ -37,7 +37,7 @@ public class BattlefieldListener implements Listener
 	@EventHandler
 	public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
 	{
-		Battlefield field = plugin.fieldStorage.getField(event.getField());
+		Battlefield field = plugin.getFieldStorage().getField(event.getField());
 		Player player = Bukkit.getPlayer(event.getPlayer());
 		PlayerTank pt = event.getPlayerTank();
 		if (event.getMaterial () == Material.WATCH)
@@ -57,7 +57,7 @@ public class BattlefieldListener implements Listener
 		
 		if (pt.isReady())
 		{
-			player.sendMessage(ChatColor.RED + plugin.prefix + " You must unready to change your tank.");
+			player.sendMessage(ChatColor.RED + plugin.getPrefix() + " You must unready to change your tank.");
 			return;
 		}
 		
@@ -68,7 +68,7 @@ public class BattlefieldListener implements Listener
 	@EventHandler
 	public void onPlayerDeath(PlayerTankDeathEvent event)
 	{
-		Battlefield field = plugin.fieldStorage.getField(event.getField());
+		Battlefield field = plugin.getFieldStorage().getField(event.getField());
 		Player player = event.getPlayer();
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
@@ -103,7 +103,7 @@ public class BattlefieldListener implements Listener
 	public void onPlayerDamageEvent(PlayerTankDamageEvent event)
 	{
 		DamageHandler dh = new DamageHandler(plugin);
-		Battlefield field = plugin.fieldStorage.getField(event.getField());
+		Battlefield field = plugin.getFieldStorage().getField(event.getField());
 		UUID dmgd = event.getDamagedPlayer();
 		if (event.getCause() == PlayerTankDamageCause.FALL)
 			dh.gravityHit(field, dmgd, event.getDamage());

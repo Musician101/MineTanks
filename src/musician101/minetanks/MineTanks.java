@@ -12,9 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MineTanks extends JavaPlugin
 {
-	public BattleFieldStorage fieldStorage;
-	public PlayerStatStorage statStorage;
-	public String prefix;
+	BattleFieldStorage fieldStorage;
+	PlayerStatStorage statStorage;
+	String prefix;
 	
 	@Override
 	public void onEnable()
@@ -45,6 +45,21 @@ public class MineTanks extends JavaPlugin
 		fieldStorage.saveToFiles();
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
+	
+	public BattleFieldStorage getFieldStorage()
+	{
+		return fieldStorage;
+	}
+	
+	public PlayerStatStorage getStatStorage()
+	{
+		return statStorage;
+	}
+	
+	public String getPrefix()
+	{
+		return prefix;
+	}
 	//TODO add the rest of the tanks (medium)
 	//TODO kills, accuracy, total damage, "premium" currencies (medium)
 	//TODO possible vault integration for economy support? (low)
@@ -52,5 +67,4 @@ public class MineTanks extends JavaPlugin
 	//TODO arrow drop? (low)
 	//TODO arrow travel speed? (low)
 	//TODO implement camo values? (low)
-	//TODO create methods for fetching storage classes & custom prefix (low)
 }

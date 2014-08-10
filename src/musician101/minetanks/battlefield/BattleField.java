@@ -141,7 +141,7 @@ public class Battlefield
 		}
 		catch (IOException e)
 		{
-			player.sendMessage(ChatColor.RED + plugin.prefix + " Error: An internal error has prevented you from joining the game.");
+			player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
 			return false;
 		}
 		
@@ -184,7 +184,7 @@ public class Battlefield
 		}
 		catch (IOException e)
 		{
-			player.sendMessage(ChatColor.RED + plugin.prefix + " Error: An internal error has prevented you from joining the game.");
+			player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
 			for (Map<String, Object> effect : effects)
 			{
 				PotionEffectType type = PotionEffectType.getByName(effect.get("type").toString());
@@ -423,7 +423,7 @@ public class Battlefield
 			for (UUID uuid : players.keySet())
 			{
 				Player player = Bukkit.getPlayer(uuid);
-				player.sendMessage(ChatColor.RED + plugin.prefix + " Red team wins!");
+				player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
 				removePlayer(player);
 			}
 			
@@ -435,7 +435,7 @@ public class Battlefield
 			for (UUID uuid : players.keySet())
 			{
 				Player player = Bukkit.getPlayer(uuid);
-				player.sendMessage(ChatColor.GREEN + plugin.prefix + " Green team wins!");
+				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
 				removePlayer(player);
 			}
 			
