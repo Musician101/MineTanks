@@ -25,4 +25,8 @@ public interface ITank extends IInfo
 	public int getLevel();
 	
 	public double getWeight();
+	
+	public int getXp();
+	
+	public int getMoney();
 }

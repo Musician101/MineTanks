@@ -151,7 +151,7 @@ public class IconMenu implements Listener
             this.destroy = destroy;
         }
     }
-   
+    
     private ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore)
     {
         ItemMeta im = item.getItemMeta();

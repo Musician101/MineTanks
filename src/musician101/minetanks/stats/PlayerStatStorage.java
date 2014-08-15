@@ -28,7 +28,9 @@ public class PlayerStatStorage
 	
 	public boolean addPlayer(UUID player)
 	{
-		return addPlayer(player, new ArrayList<ITank>(), 0, 0);
+		List<ITank> tanks = new ArrayList<ITank>();
+		tanks.add(ChinaLight.RENAULT);
+		return addPlayer(player, tanks, 0, 0);
 	}
 	
 	public boolean addPlayer(UUID player, List<ITank> unlockedTanks, int exp, int money)

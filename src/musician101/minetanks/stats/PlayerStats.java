@@ -72,6 +72,11 @@ public class PlayerStats
 		return unlockedTanks;
 	}
 	
+	public void addTank(ITank tank)
+	{
+		unlockedTanks.add(tank);
+	}
+	
 	public int getXp()
 	{
 		return xp;
@@ -107,5 +112,15 @@ public class PlayerStats
 	{
 		int dmgModifier = Math.abs(dmgr.getTank().getLevel() - dmgd.getTank().getLevel());
 		xp = xp - 2 * (damage * balancer * dmgModifier);
+	}
+	
+	public void setMoney(int money)
+	{
+		this.money = money;
+	}
+	
+	public void setXp(int xp)
+	{
+		this.xp = xp;
 	}
 }

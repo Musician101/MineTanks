@@ -16,24 +16,21 @@ import org.bukkit.potion.PotionEffectType;
 
 public enum ChinaLight implements ITank
 {
-	RENAULT(0, "Renault NC-31", 1, 6.59, 16, 16, 16, 25, new Engines("RENAULT NC-2", TankTypes.LIGHT), new Cannons("37 mm KwK 36 L/46.5", 150, 26.09), Turrets.FT_18, Tracks.M26_27, new Radios("ER 52", TankTypes.LIGHT)),
-	VICKERS(1, "Vickers Mk. E Type B", 2, 7.34, 12, 12, 12, 35, new Engines("Franklin", TankTypes.LIGHT), new Cannons("40 mm Pom Pom", 160, 24.3), Turrets.T_26_MODEL_1936, Tracks.T_26_2, new Radios("71-TK-3", TankTypes.LIGHT)),
-	CHI_HA(2, "Type 2597 Chi-Ha", 3, 15.97, 25, 25, 20, 40, new Engines("Type 100 V-12 A", TankTypes.LIGHT), new Cannons("47 mm Gun Type 1", 104, 20), Turrets.TYPE_97_KAI, Tracks.TYPE_97_KAI, new Radios("Type 3 Otsu", TankTypes.LIGHT)),
-	M5(3, "M5A1 Stuart", 4, 16.06, 28, 28, 25, 64, new Engines("Continental R-975-C1", TankTypes.LIGHT), new Cannons("47 mm Gun Type 1", 73, 24), Turrets.M5A1, Tracks.VVSS_T55E1, new Radios("SCR 506", TankTypes.LIGHT)),
-	_59_16(4, "59-16", 6, 16.65, 30, 20, 20, 60, new Engines("12150L-3", TankTypes.LIGHT), new Cannons("76 mm 54-76TG (autoloader)", 45, 19.57), Turrets._131_1, Tracks._131_MODEL_2, new Radios("A-220A", TankTypes.LIGHT)),
-	WZ_131(5, "WZ-131", 7, 21.66, 35, 20, 20, 60, new Engines("12150L", TankTypes.LIGHT), new Cannons("100 mm 59-100T", 43, 6.45), Turrets._132B, Tracks.WZ_131_MODEL_2, new Radios("A-220A", TankTypes.LIGHT)),
-	WZ_132(6, "WZ-132", 8, 24.31, 50, 25, 20, 64, new Engines("8V135", TankTypes.LIGHT), new Cannons("100 mm 60-100T", 43, 7.06), Turrets.WZ_132, Tracks.WZ_132, new Radios("A-220A", TankTypes.LIGHT));
+	RENAULT(0, "Renault NC-31", 1, 0, 0, 6.59, 16, 16, 16, 25, new Engines("RENAULT NC-2", TankTypes.LIGHT), new Cannons("37 mm KwK 36 L/46.5", 150, 26.09), Turrets.FT_18, Tracks.M26_27, new Radios("ER 52", TankTypes.LIGHT)),
+	VICKERS(1, "Vickers Mk. E Type B", 2, 3900 , 150, 7.34, 12, 12, 12, 35, new Engines("Franklin", TankTypes.LIGHT), new Cannons("40 mm Pom Pom", 160, 24.3), Turrets.T_26_MODEL_1936, Tracks.T_26_2, new Radios("71-TK-3", TankTypes.LIGHT)),
+	CHI_HA(2, "Type 2597 Chi-Ha", 3, 42000, 1300, 15.97, 25, 25, 20, 40, new Engines("Type 100 V-12 A", TankTypes.LIGHT), new Cannons("47 mm Gun Type 1", 104, 20), Turrets.TYPE_97_KAI, Tracks.TYPE_97_KAI, new Radios("Type 3 Otsu", TankTypes.LIGHT)),
+	M5(3, "M5A1 Stuart", 4, 143000, 3200, 16.06, 28, 28, 25, 64, new Engines("Continental R-975-C1", TankTypes.LIGHT), new Cannons("47 mm Gun Type 1", 73, 24), Turrets.M5A1, Tracks.VVSS_T55E1, new Radios("SCR 506", TankTypes.LIGHT)),
+	_59_16(4, "59-16", 6, 900000, 31000, 16.65, 30, 20, 20, 60, new Engines("12150L-3", TankTypes.LIGHT), new Cannons("76 mm 54-76TG (autoloader)", 45, 19.57), Turrets._131_1, Tracks._131_MODEL_2, new Radios("A-220A", TankTypes.LIGHT)),
+	WZ_131(5, "WZ-131", 7, 1350000, 43000, 21.66, 35, 20, 20, 60, new Engines("12150L", TankTypes.LIGHT), new Cannons("100 mm 59-100T", 43, 6.45), Turrets._132B, Tracks.WZ_131_MODEL_2, new Radios("A-220A", TankTypes.LIGHT)),
+	WZ_132(6, "WZ-132", 8, 2400000, 75000, 24.31, 50, 25, 20, 64, new Engines("8V135", TankTypes.LIGHT), new Cannons("100 mm 60-100T", 43, 7.06), Turrets.WZ_132, Tracks.WZ_132, new Radios("A-220A", TankTypes.LIGHT));
 	
-	int id;
-	int speed;
-	int level;
+	int id, level, money, speed, xp;
 	String name;
 	ItemStack[] wornArmor;
 	Inventory weapons;
-	double reloadTime;
-	double weight;
+	double reloadTime, weight;
 	
-	private ChinaLight(int id, String name, int level, double weight, double front, double side, double rear, int speed, Engines engine, Cannons cannon, Turrets turret, Tracks tracks, Radios radio)
+	private ChinaLight(int id, String name, int level, int money, int xp, double weight, double front, double side, double rear, int speed, Engines engine, Cannons cannon, Turrets turret, Tracks tracks, Radios radio)
 	{
 		this.id = id;
 		this.name = name;
@@ -42,6 +39,8 @@ public enum ChinaLight implements ITank
 		this.wornArmor = MTUtils.parseArmor(engine, turret, tracks, radio, MTUtils.calculateArmorValue(front, side, rear), this.speed);
 		this.weapons = MTUtils.parseWeapons(cannon);
 		this.reloadTime = cannon.reloadTime();
+		this.money = money / 20;
+		this.xp = xp / 20;
 	}
 	
 	@Override
@@ -112,5 +111,17 @@ public enum ChinaLight implements ITank
 	public double getWeight()
 	{
 		return weight;
+	}
+
+	@Override
+	public int getXp()
+	{
+		return xp;
+	}
+
+	@Override
+	public int getMoney()
+	{
+		return money;
 	}
 }

@@ -1,9 +1,13 @@
 package musician101.minetanks.tankinfo;
 
-import musician101.minetanks.menu.Menus;
+import java.util.List;
+
+import musician101.minetanks.tankinfo.tanks.ITank;
 import musician101.minetanks.util.IconMenu;
+import musician101.minetanks.util.Menus;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public enum TankTypes implements IInfo
@@ -76,18 +80,8 @@ public enum TankTypes implements IInfo
 		return new String[]{};
 	}
 	
-	public IconMenu getMenu(Countries country)
+	public IconMenu getMenu(Player player, Countries country, List<ITank> tanks)
 	{
-		if (country == Countries.CHINA)
-		{
-			if (this == LIGHT)
-				return Menus.chineseLightSelection;
-			else if (this == MEDIUM)
-				return Menus.chineseMediumSelection;
-			else if (this == HEAVY)
-				return Menus.chineseHeavySelection;
-		}
-		
-		return null;
+		return Menus.openTankMenu(player, country, this, tanks);
 	}
 }

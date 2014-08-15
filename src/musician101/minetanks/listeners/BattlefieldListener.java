@@ -12,7 +12,6 @@ import musician101.minetanks.events.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.events.PlayerTankDeathEvent;
 import musician101.minetanks.handlers.DamageHandler;
 import musician101.minetanks.handlers.ReloadHandler;
-import musician101.minetanks.menu.Menus;
 import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
@@ -61,7 +60,7 @@ public class BattlefieldListener implements Listener
 			return;
 		}
 		
-		Menus.countrySelection.open(player);
+		plugin.getMenuHandler().openCountryMenu(player);
 		return;
 	}
 	
