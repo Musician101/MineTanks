@@ -5,8 +5,4 @@ public interface IInfo
 	public int getId();
 	
 	public String getName();
-	
-	public int getMenuSize();
-	
-	
 }

@@ -34,16 +34,6 @@ public enum TankTypes implements IInfo
 		return name;
 	}
 	
-	@Override
-	public int getMenuSize()
-	{
-		int rows = 0;
-		while (rows * 9 < values().length)
-			rows++;
-		
-		return rows * 9;
-	}
-	
 	public ItemStack getIcon()
 	{
 		return icon;

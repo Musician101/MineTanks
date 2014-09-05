@@ -14,7 +14,7 @@ public class Menus
 	public Menus(MineTanks plugin)
 	{
 		Menus.plugin = plugin;
-		this.tankSelection = new IconMenu("Country Selection", 9, new TankSelectionHandler(plugin), plugin);
+		this.tankSelection = new IconMenu("Country Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
 		for (Tanks tank : Tanks.values())
 			tankSelection.setOption(tank.getId(), tank.getType().getIcon(), "§a" + tank.getName(), tank.getDescription());
 	}

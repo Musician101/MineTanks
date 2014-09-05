@@ -2,6 +2,7 @@ package musician101.minetanks.util;
 
 import java.util.Arrays;
 
+import musician101.minetanks.tankinfo.Tanks;
 import musician101.minetanks.tankinfo.modules.Cannons;
 import musician101.minetanks.tankinfo.modules.Engines;
 import musician101.minetanks.tankinfo.modules.Radios;
@@ -92,5 +93,14 @@ public class MTUtils
 		
 		item.setItemMeta(meta);
 		return item;
+	}
+	
+	public static int getMenuSize()
+	{
+		int rows = 0;
+		while (rows * 9 < Tanks.values().length)
+			rows++;
+		
+		return rows * 9;
 	}
 }
