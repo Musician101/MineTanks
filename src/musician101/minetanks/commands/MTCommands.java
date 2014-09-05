@@ -4,6 +4,7 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -244,8 +245,31 @@ public class MTCommands implements CommandExecutor
 		
 		sender.sendMessage(ChatColor.GREEN + "===== MineTanks =====");
 		sender.sendMessage(ChatColor.GREEN + "Version:" + plugin.getDescription().getVersion());
-		sender.sendMessage(ChatColor.GREEN + "Recommended BukkitAPI Version: 1.7.9-R0.2");
-		sender.sendMessage(ChatColor.GREEN + "World of Tanks version: 0.9.1");
+		sender.sendMessage(ChatColor.GREEN + "Recommended BukkitAPI Version: " + Bukkit.getVersion());
+		sender.sendMessage(ChatColor.GREEN + "World of Tanks version: 0.9.2");
+		if (sender.hasPermission("minetanks.participate") || sender.hasPermission("minetanks.edit"))
+			sender.sendMessage(ChatColor.GREEN + "[] = optional, <> = mandatory");
+		
+		if (sender.hasPermission("minetanks.participate"))
+		{
+			sender.sendMessage(ChatColor.GREEN + "/mt join [field]:" + ChatColor.AQUA + " Enter the selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt leave:" + ChatColor.AQUA + " Leave the battle field you are currently in.");
+			sender.sendMessage(ChatColor.GREEN + "/mt spectate [field]:" + ChatColor.AQUA + " Spectate the selected battle field.");
+		}
+		
+		if (sender.hasPermission("minetanks.edit"))
+		{
+			sender.sendMessage(ChatColor.GREEN + "/mt create <name>:" + ChatColor.AQUA + " Create a new battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt edit <name>:" + ChatColor.AQUA + " Set the battle field that you wish to edit.");
+			sender.sendMessage(ChatColor.GREEN + "/mt greenspawn:" + ChatColor.AQUA + " Set the green spawn point of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt p1:" + ChatColor.AQUA + " Set point 1 of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt p2:" + ChatColor.AQUA + " Set point 2 of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt redspawn:" + ChatColor.AQUA + " Set the red spawn point of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt spectators:" + ChatColor.AQUA + " Set the spectators spawn point of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt status:" + ChatColor.AQUA + " Check the status of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt remove <name>:" + ChatColor.AQUA + " Remove the selected battle field.");
+		}
+		
 		return true;
 	}
 

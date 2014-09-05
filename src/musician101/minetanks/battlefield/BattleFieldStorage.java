@@ -1,7 +1,10 @@
 package musician101.minetanks.battlefield;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -9,7 +12,9 @@ import musician101.minetanks.MineTanks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 public class BattleFieldStorage
 {
@@ -24,16 +29,16 @@ public class BattleFieldStorage
 	
 	public boolean createField(String name)
 	{
-		return createField(name, false, null, null, null, null, null);
+		return createField(name, false, null, null, null, null, null, Arrays.asList(new ItemStack(Material.DIAMOND, 0, (short) 5)));
 	}
 	
-	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
+	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators, List<ItemStack> items)
 	{
 		for (String field : fields.keySet())
 			if (getField(field).equals(name))
 				return false;
 		
-		Battlefield field = new Battlefield(this.plugin, name, enabled, p1, p2, greenSpawn, redSpawn, spectators); 
+		Battlefield field = new Battlefield(plugin, name, enabled, p1, p2, greenSpawn, redSpawn, spectators); 
 		fields.put(name, field);
 		edit = field;
 		return true;
@@ -77,6 +82,7 @@ public class BattleFieldStorage
 				Location greenSpawn = null;
 				Location redSpawn = null;
 				Location spectators = null;
+				List<ItemStack> items = new ArrayList<ItemStack>();
 				
 				if (field.isSet("world"))
 				{
@@ -96,7 +102,18 @@ public class BattleFieldStorage
 						spectators = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 				}
 				
-				if (!createField(name, enabled, p1, p2, greenSpawn, redSpawn, spectators))
+				if (field.isSet("awards"))
+				{
+					for (Object o : field.getList("awards"))
+					{
+						ItemStack item = (ItemStack) o;
+						items.add(item);
+					}
+				}
+				else
+					items.add(new ItemStack(Material.DIAMOND, 0, (short) 5));
+				
+				if (!createField(name, enabled, p1, p2, greenSpawn, redSpawn, spectators, items))
 					plugin.getLogger().warning("Failed to load " + file.getName());
 			}
 		}

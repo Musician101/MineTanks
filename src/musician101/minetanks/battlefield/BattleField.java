@@ -38,6 +38,7 @@ public class Battlefield
 	private MTScoreboard sb;
 	private boolean inProgress = false;
 	String worldName;
+	List<ItemStack> awards = new ArrayList<ItemStack>();
 	
 	public Battlefield(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
@@ -211,6 +212,15 @@ public class Battlefield
 		return true;
 	}
 	
+	public void removePlayer(Player player, boolean getPrize)
+	{
+		if (!removePlayer(player) || !getPrize)
+			return;
+		
+		for (ItemStack item : awards)
+			player.getInventory().addItem(item);
+	}
+	
 	public boolean removePlayer(Player player)
 	{
 		PlayerTank pt = getPlayer(player.getUniqueId());
@@ -291,7 +301,7 @@ public class Battlefield
 			if (!field.isSet("world"))
 				field.set("world", p1.getWorld().getName());
 			
-			field.set("p1", p1.getX());
+			field.set("p1.x", p1.getX());
 			field.set("p1.y", p1.getY());
 			field.set("p1.z", p1.getZ());
 		}
@@ -301,7 +311,7 @@ public class Battlefield
 			if (!field.isSet("world"))
 				field.set("world", p2.getWorld().getName());
 			
-			field.set("p2", p2.getX());
+			field.set("p2.x", p2.getX());
 			field.set("p2.y", p2.getY());
 			field.set("p2.z", p2.getZ());
 		}
@@ -311,7 +321,7 @@ public class Battlefield
 			if (!field.isSet("world"))
 				field.set("world", greenSpawn.getWorld().getName());
 			
-			field.set("greenSpawn", greenSpawn.getX());
+			field.set("greenSpawn.x", greenSpawn.getX());
 			field.set("greenSpawn.y", greenSpawn.getY());
 			field.set("greenSpawn.z", greenSpawn.getZ());
 		}
@@ -321,7 +331,7 @@ public class Battlefield
 			if (!field.isSet("world"))
 				field.set("world", redSpawn.getWorld().getName());
 			
-			field.set("redSpawn", redSpawn.getX());
+			field.set("redSpawn.x", redSpawn.getX());
 			field.set("redSpawn.y", redSpawn.getY());
 			field.set("redSpawn.z", redSpawn.getZ());
 		}
@@ -331,11 +341,12 @@ public class Battlefield
 			if (!field.isSet("world"))
 				field.set("world", spectators.getWorld().getName());
 			
-			field.set("spectators", spectators.getX());
+			field.set("spectators.x", spectators.getX());
 			field.set("spectators.y", spectators.getY());
 			field.set("spectators.z", spectators.getZ());
 		}
 		
+		field.set("awards", awards);
 		try
 		{
 			field.save(file);
@@ -417,17 +428,16 @@ public class Battlefield
 		if (sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0)
 			return;
 		
-		inProgress = false;
-		
 		if (sb.getGreenTeamSize() == 0)
 		{
 			for (UUID uuid : players.keySet())
 			{
 				Player player = Bukkit.getPlayer(uuid);
 				player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
-				removePlayer(player);
+				removePlayer(player, sb.isOnRed(player));
 			}
 			
+			inProgress = false;
 			return;
 		}
 		
@@ -437,13 +447,12 @@ public class Battlefield
 			{
 				Player player = Bukkit.getPlayer(uuid);
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
-				removePlayer(player);
+				removePlayer(player, sb.isOnGreen(player));
 			}
 			
+			inProgress = false;
 			return;
 		}
-		
-		inProgress = false;
 	}
 	
 	public boolean inProgress()

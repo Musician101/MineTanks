@@ -29,7 +29,7 @@ public enum Tracks
 	/** French SPG Tracks */
 	BAT_CHAT_155_58("Batignolles-Chatillon 155 mle. 58", TankTypes.ARTY),
 	/** German Light Tracks */
-	AUFKL_PANTHER_V("Aufkl. Panther verstärkteketten", TankTypes.LIGHT),
+	AUFKL_PANTHER_V("Aufkl. Panther verstarkteketten", TankTypes.LIGHT),
 	/** German Medium Tracks */
 	E_50_M("E 50 Ausf. M", TankTypes.MEDIUM),
 	LEOPARD_1("Leopard 1", TankTypes.MEDIUM),
@@ -39,7 +39,7 @@ public enum Tracks
 	VK_7201("VK 72.01 (k)", TankTypes.HEAVY),
 	/** German TD Tracks */
 	JAGDPZ_E_100("Jagdpanzer E 100", TankTypes.TD),
-	WAFF_E_100("Waffenträger auf E 100", TankTypes.TD),
+	WAFF_E_100("Waffentrager auf E 100", TankTypes.TD),
 	/** German Arty Tracks */
 	GW_E_100("G.W. E 100", TankTypes.ARTY),
 	/** Japanese Medium Tracks */

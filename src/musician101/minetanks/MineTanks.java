@@ -56,6 +56,4 @@ public class MineTanks extends JavaPlugin
 	{
 		return prefix;
 	}
-	//TODO implement reward system (medium)
-	//TODO help information for commands (low)
 }
