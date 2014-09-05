@@ -3,10 +3,6 @@ package musician101.minetanks.commands;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
-import musician101.minetanks.handlers.NavigationHandler;
-import musician101.minetanks.tankinfo.Countries;
-import musician101.minetanks.tankinfo.TankTypes;
-import musician101.minetanks.util.Menus;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -110,36 +106,6 @@ public class MTCommands implements CommandExecutor
 				}
 				
 				field.addPlayer(player, MTTeam.SPECTATOR);
-				return true;
-			}
-			
-			if (args[0].equalsIgnoreCase("techtree") && args.length == 3)
-			{
-				if (!player.hasPermission("minetanks.participate"))
-				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, but you do not have permission for that.");
-					return false;
-				}
-				
-				Countries country = Countries.valueOf(args[1].toUpperCase());
-				if (country == null)
-				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Country not recognized.");
-					return false;
-				}
-				
-				TankTypes type = TankTypes.valueOf(args[2].toUpperCase());
-				if (type == null)
-				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Tank type not recognized.");
-					return false;
-				}
-				
-				Menus.openTechTree(player, country, type).open(player);
-				if (plugin.getNavigation().containsKey(player.getUniqueId()))
-					plugin.getNavigation().remove(player.getUniqueId());
-				
-				plugin.getNavigation().put(player.getUniqueId(), new NavigationHandler(country, type));
 				return true;
 			}
 			

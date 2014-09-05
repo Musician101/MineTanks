@@ -1,13 +1,6 @@
 package musician101.minetanks.tankinfo;
 
-import java.util.List;
-
-import musician101.minetanks.tankinfo.tanks.ITank;
-import musician101.minetanks.util.IconMenu;
-import musician101.minetanks.util.Menus;
-
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public enum TankTypes implements IInfo
@@ -54,34 +47,5 @@ public enum TankTypes implements IInfo
 	public ItemStack getIcon()
 	{
 		return icon;
-	}
-	
-	public String getMenuName(Countries country)
-	{
-		String c = "";
-		if (country == Countries.CHINA)
-			c = "Chinese ";
-		
-		return c + getName() + " Tanks";
-	}
-	
-	public String[] getDescription(Countries country)
-	{
-		if (country == Countries.CHINA)
-		{
-			if (this == LIGHT)
-				return new String[]{"Fast and agile.", "Lightly armored."};
-			else if (this == MEDIUM)
-				return new String[]{"Low tiers are mobile and have high damage per shot.", "Low tiers have a poor rate of fire.", "High tiers gain more firepower."};
-			else if (this == HEAVY)
-				return new String[]{"High armor and rate of fire in early tiers.", "Later tiers focus more on maneuverability."};
-		}
-		
-		return new String[]{};
-	}
-	
-	public IconMenu getMenu(Player player, Countries country, List<ITank> tanks)
-	{
-		return Menus.openTankMenu(player, country, this, tanks);
 	}
 }

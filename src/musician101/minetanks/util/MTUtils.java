@@ -2,7 +2,6 @@ package musician101.minetanks.util;
 
 import java.util.Arrays;
 
-import musician101.minetanks.MineTanks;
 import musician101.minetanks.tankinfo.modules.Cannons;
 import musician101.minetanks.tankinfo.modules.Engines;
 import musician101.minetanks.tankinfo.modules.Radios;
@@ -10,7 +9,6 @@ import musician101.minetanks.tankinfo.modules.Tracks;
 import musician101.minetanks.tankinfo.modules.Turrets;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.InventoryType;
@@ -33,12 +31,12 @@ public class MTUtils
 		return inv;
 	}
 	
-	public static ItemStack[] parseArmor(Engines engine, Turrets turret, Tracks tracks, Radios radio, double armor, int speed)
+	public static ItemStack[] parseArmor(Engines engine, Radios radio, Tracks tracks, Turrets turret, double armor, int speed)
 	{
 		return new ItemStack[]{parseArmorValue(parseSpeedValue(engine.getEngine(), speed), armor),
 				parseArmorValue(tracks.getTracks(), armor),
 				parseArmorValue(radio.getRadio(), armor),
-				parseArmorValue(turret.getHelmet(), armor)};
+				parseArmorValue(turret.getHelmet(), (turret.getArmor() == 0 ? turret.getArmor() : armor))};
 	}
 	
 	private static ItemStack parseArmorValue(ItemStack item, double armor)
@@ -64,8 +62,6 @@ public class MTUtils
 			a = 9;
 		else if (armor >= 10)
 			a = 10;
-		else
-			return item;
 		
 		ItemMeta meta = item.getItemMeta();
 		meta.addEnchant(Enchantment.DURABILITY, a, true);
@@ -96,17 +92,5 @@ public class MTUtils
 		
 		item.setItemMeta(meta);
 		return item;
-	}
-	
-	public static void ammoExplosion(MineTanks plugin, Location location, int level, boolean hitPlayer)
-	{
-		float power = 0F;
-		if (hitPlayer)
-			power++;
-		
-		if (level >= 6)
-			power++;
-		
-		location.getWorld().createExplosion(location, power);
 	}
 }

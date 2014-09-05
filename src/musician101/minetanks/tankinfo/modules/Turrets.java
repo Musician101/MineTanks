@@ -12,11 +12,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public enum Turrets
 {
+	/** Tanks w/o Turrets */
+	NO_TURRET_TD("None", TankTypes.TD, 0, 0, 0),
+	NO_TURRET_ARTY("None", TankTypes.ARTY, 0, 0, 0),
 	/** Chinese Light Turrets */
 	FT_18("FT-18", TankTypes.LIGHT, 22, 22, 16),
 	T_26_MODEL_1936("T-26 model 1936", TankTypes.LIGHT, 30, 15, 15),
 	TYPE_97_KAI("Type 97-Kai", TankTypes.LIGHT, 25, 25, 25),
-	M5A1("M5A1", TankTypes.LIGHT, 44, 31, 31),
+	M5A1_C("M5A1", TankTypes.LIGHT, 44, 31, 31),
 	_131_1("131-1", TankTypes.LIGHT, 45, 30, 20),
 	_132B("132B", TankTypes.LIGHT, 45, 35, 20),
 	WZ_132("WZ-132", TankTypes.LIGHT, 55,35, 20),
@@ -31,14 +34,70 @@ public enum Turrets
 	IS_2_LATE("IS-2 late", TankTypes.HEAVY, 100, 90, 90),
 	T_10("T-10", TankTypes.HEAVY, 201, 148, 50),
 	WZ_111("WZ-111", TankTypes.HEAVY, 230, 120, 60),
-	_113("113", TankTypes.HEAVY, 240, 160, 80);
+	_113("113", TankTypes.HEAVY, 240, 160, 80),
+	/** French Light Turrets */
+	FL_10("FL 10 Type D", TankTypes.LIGHT, 40, 20, 20),
+	/** French Medium Turrets */
+	BAT_CHAT_25_T("Batignolles-Châtillon 25 t", TankTypes.MEDIUM, 50, 30, 15),
+	/** French Heavy Turrets */
+	AMX_50_B("AMX 50 B", TankTypes.HEAVY, 100, 50, 30),
+	/** German Light Turrets */
+	VK_2801("VK 28.01 Ausf. C", TankTypes.LIGHT, 50, 30, 30),
+	/** German Medium Turrets */
+	E_50_M("E 50 Ausf. M", TankTypes.MEDIUM, 185, 80, 80),
+	LEOPARD_1("Leopard 1", TankTypes.MEDIUM, 52, 60, 60),
+	/** German Heavy Turrets */
+	E_100("E 100", TankTypes.HEAVY, 250, 150, 150),
+	MAUS("MAUS", TankTypes.HEAVY, 240, 210, 210),
+	VK_7201("VK 72.01 (K)", TankTypes.HEAVY, 200, 160, 120),
+	/** German TD Turrets */
+	WAFFEN_E_100("Waffenträger auf E 100", TankTypes.TD, 20, 10, 8),
+	/** Japanese Medium Turrets */
+	STB_1("STB-1", TankTypes.MEDIUM, 132, 132, 37),
+	/** British Medium Turrets */
+	FV4202(TankTypes.MEDIUM, 196, 196, 35),
+	/** British Heavy Turrets */
+	FV215(TankTypes.HEAVY, 254, 152.4, 101.6),
+	/** American Light Turrets */
+	T71(TankTypes.LIGHT, 22.2, 22.2, 22.2),
+	/** American Medium Turrets */
+	M87(TankTypes.MEDIUM, 177.8, 76.2, 50.8),
+	M60(TankTypes.MEDIUM, 177.8, 76.2, 50.8),
+	/** American Heavy Turrets */
+	T169(TankTypes.HEAVY, 127, 137, 50.8),
+	T53(TankTypes.HEAVY, 203, 127, 70),
+	/** American TD Turrets */
+	T87(TankTypes.TD, 38, 25, 25),
+	M10T72M1(TankTypes.TD, 57, 25, 25),
+	T49(TankTypes.TD, 25, 19, 13),
+	M36T78(TankTypes.TD, 76, 25, 25),
+	M18_M1("M18 M1", TankTypes.TD, 76.2, 31.8, 127),
+	T25_2T7("T25/2T7", TankTypes.TD, 76, 25, 25),
+	T28P_D1("T28P D1", TankTypes.TD, 203.2, 127, 101.6),
+	T30D1(TankTypes.TD, 279, 127, 102),
+	T110E4(TankTypes.TD, 203, 152, 152),
+	/** Russian Medium Turrets */
+	OBJECT_140("Object 140", TankTypes.MEDIUM, 240, 187, 65),
+	OBJECT_430("Object 430", TankTypes.MEDIUM, 240, 185, 63),
+	T_62A("T-62A", TankTypes.MEDIUM, 240, 161, 65),
+	/** Russian Heavy Turrets */
+	IS_4M("IS-4M", TankTypes.HEAVY, 250, 200, 170),
+	IS_7("IS-7", TankTypes.HEAVY, 240, 185, 94);
 	
 	double armor;
 	String name;
 	ItemStack helmet;
 	
+	private Turrets(TankTypes type, double front, double side, double rear)
+	{
+		this("", type, front, side, rear);
+	}
+	
 	private Turrets(String name, TankTypes type, double front, double side, double rear)
 	{
+		if (name.equals(""))
+			name = toString();
+		
 		this.name = name;
 		this.armor = (front + side + rear) / 3;
 		parseHelmet(type);
@@ -52,6 +111,11 @@ public enum Turrets
 	public ItemStack getHelmet()
 	{
 		return helmet;
+	}
+	
+	public double getArmor()
+	{
+		return armor;
 	}
 	
 	private void parseHelmet(TankTypes type)

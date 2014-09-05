@@ -405,6 +405,7 @@ public class Battlefield
 				player.teleport(redSpawn);
 			
 			player.setScoreboard(sb.getScoreboard());
+			sb.setPlayerHealth(uuid, pt.getTank().getHealth());
 			player.getInventory().setContents(pt.getTank().getWeapons().getContents());
 			player.getInventory().setContents(pt.getTank().getArmor());
 			new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue()).isReloading();

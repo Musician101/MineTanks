@@ -125,9 +125,6 @@ public class MTListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		if (!plugin.getStatStorage().addPlayer(player.getUniqueId()))
-			player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " There was an error loading your statistics. Please contact an admin immediately.");
-		
 		File file = new File(plugin.getDataFolder() + File.separator + "InventoryStorage", player.getUniqueId().toString() + ".yml");
 		if (!file.exists())
 			return;

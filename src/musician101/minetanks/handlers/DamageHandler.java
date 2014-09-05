@@ -37,10 +37,6 @@ public class DamageHandler
 	
 	public void playerHitEnemy(Battlefield field, UUID dmgd, UUID dmgr, int damage)
 	{
-		PlayerTank ptdd = field.getPlayer(dmgd);
-		PlayerTank ptdr = field.getPlayer(dmgr);
-		plugin.getStatStorage().getPlayer(dmgr).addMoneyFromHit(damage);
-		plugin.getStatStorage().getPlayer(dmgr).addXpFromHit(ptdd, ptdr, damage);
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
@@ -83,10 +79,6 @@ public class DamageHandler
 	
 	public void playerHitFriendly(Battlefield field, UUID dmgd, UUID dmgr, int damage)
 	{
-		PlayerTank ptdd = field.getPlayer(dmgd);
-		PlayerTank ptdr = field.getPlayer(dmgr);
-		plugin.getStatStorage().getPlayer(dmgr).subtractMoneyFromHit(damage);
-		plugin.getStatStorage().getPlayer(dmgr).subtractXpFromHit(ptdd, ptdr, damage);
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)

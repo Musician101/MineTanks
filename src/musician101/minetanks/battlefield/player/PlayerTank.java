@@ -2,11 +2,11 @@ package musician101.minetanks.battlefield.player;
 
 import java.util.UUID;
 
-import musician101.minetanks.tankinfo.tanks.ITank;
+import musician101.minetanks.tankinfo.Tanks;
 
 public class PlayerTank
 {
-	private ITank tank;
+	private Tanks tank;
 	private boolean isReady;
 	private MTTeam team;
 	
@@ -16,7 +16,7 @@ public class PlayerTank
 		this.isReady = true;
 	}
 	
-	public ITank getTank()
+	public Tanks getTank()
 	{
 		return tank;
 	}
@@ -26,7 +26,7 @@ public class PlayerTank
 		return team;
 	}
 	
-	public void setTank(ITank tank)
+	public void setTank(Tanks tank)
 	{
 		this.tank = tank;
 	}

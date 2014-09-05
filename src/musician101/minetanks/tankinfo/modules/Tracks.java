@@ -13,32 +13,84 @@ import org.bukkit.inventory.meta.ItemMeta;
 public enum Tracks
 {
 	/** Chinese Light Tracks */
-	M26_27("M26/27", TankTypes.LIGHT),
-	T_26_2("T-26-2", TankTypes.LIGHT),
-	TYPE_97_KAI("Type 97-Kai", TankTypes.LIGHT),
-	VVSS_T55E1("VVSS T55E1", TankTypes.LIGHT),
-	_131_MODEL_2("131 model 2", TankTypes.LIGHT),
-	WZ_131_MODEL_2("WZ-131 model 2", TankTypes.LIGHT),
 	WZ_132("WZ-132", TankTypes.LIGHT),
 	/** Chinese Medium Tracks */
-	TYPE_T_34M("Type T-34M", TankTypes.MEDIUM),
-	TYPE_58("Type 58", TankTypes.MEDIUM),
-	T_34_1_MODEL_2("T-34-1 model 2", TankTypes.MEDIUM),
-	T_34_MODEL_2("T-34-2 model 2", TankTypes.MEDIUM),
-	WZ_120_MODEL_3("WZ-120 model 3", TankTypes.MEDIUM),
 	_121("121", TankTypes.MEDIUM),
 	/** Chinese Heavy Tracks */
-	IS_2_LATE("IS-2 late", TankTypes.HEAVY),
-	_110_1("100-1", TankTypes.HEAVY),
-	WZ_111_MODEL_4("WZ-111 model 4", TankTypes.HEAVY),
 	_113("113", TankTypes.HEAVY),
-	;
+	/** French Light Tracks */
+	AMX_13_TYPE_2D("AMX 13 Type 2D", TankTypes.LIGHT),
+	/** French Medium Tracks */
+	BAT_CHAT_25_T("Batignolles-Châtillon 25 t", TankTypes.MEDIUM),
+	/** French Heavy Tracks */
+	AMX_50_B("AMX 50 B", TankTypes.HEAVY),
+	/** French TD Tracks */
+	AMX_50_FOCH_155("AMX 50 Foch (155)", TankTypes.TD),
+	/** French SPG Tracks */
+	BAT_CHAT_155_58("Batignolles-Châtillon 155 mle. 58", TankTypes.ARTY),
+	/** German Light Tracks */
+	AUFKL_PANTHER_V("Aufkl. Panther verstärkteketten", TankTypes.LIGHT),
+	/** German Medium Tracks */
+	E_50_M("E 50 Ausf. M", TankTypes.MEDIUM),
+	LEOPARD_1("Leopard 1", TankTypes.MEDIUM),
+	/** German Heavy Tanks */
+	E_100("E 100", TankTypes.HEAVY),
+	MAUS("Maus", TankTypes.HEAVY),
+	VK_7201("VK 72.01 (k)", TankTypes.HEAVY),
+	/** German TD Tracks */
+	JAGDPZ_E_100("Jagdpanzer E 100", TankTypes.TD),
+	WAFF_E_100("Waffenträger auf E 100", TankTypes.TD),
+	/** German Arty Tracks */
+	GW_E_100("G.W. E 100", TankTypes.ARTY),
+	/** Japanese Medium Tracks */
+	STB_1("STB-1", TankTypes.MEDIUM),
+	/** British Medium Tracks */
+	FV4202(TankTypes.MEDIUM),
+	/** British Heavy Tracks */
+	FV215(TankTypes.HEAVY),
+	/** British TD Tracks */
+	FV215B("FV215b", TankTypes.TD),
+	/** British SPG Tracks */
+	CONQUEROR_GC("Conqueror Gun Carriage", TankTypes.ARTY),
+	/** American Light Tracks */
+	T71A1(TankTypes.LIGHT),
+	/** American Medium Tracks */
+	T97E2_M("T97E2", TankTypes.MEDIUM),
+	M60(TankTypes.MEDIUM),
+	/** American Heavy Tracks */
+	T110E27(TankTypes.HEAVY),
+	T97(TankTypes.HEAVY),
+	/** American TD Tracks */
+	T110E4(TankTypes.TD),
+	T110E3(TankTypes.TD),
+	/** American SPG Tracks */
+	T92_T80E1("T92 T80E1", TankTypes.ARTY),
+	/** Russian Medium Tracks */
+	OBJECT_140("Object 140", TankTypes.MEDIUM),
+	OBJECT_430("Object 430", TankTypes.MEDIUM),
+	T_62A("T-62A", TankTypes.MEDIUM),
+	/** Russian Heavy Tracks */
+	IS_4M("IS-4M", TankTypes.HEAVY),
+	IS_7("IS-7", TankTypes.HEAVY),
+	/** Russian TD Tracks */
+	OBJECT_263("Object 263", TankTypes.HEAVY),
+	OBJECT_268("Object 268", TankTypes.HEAVY),
+	/** Russian SPG Tracks */
+	OBJECT_261("Object 261", TankTypes.HEAVY),;
 	
 	String name;
 	ItemStack tracks;
 	
+	private Tracks(TankTypes type)
+	{
+		this("", type);
+	}
+	
 	private Tracks(String name, TankTypes type)
 	{
+		if (name.equals(""))
+			name = this.toString();
+		
 		this.name = name;
 		parseTracks(type);
 	}

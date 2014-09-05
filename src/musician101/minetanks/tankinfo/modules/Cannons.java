@@ -15,11 +15,11 @@ public class Cannons
 	double reloadTime;
 	ItemStack cannon;
 	
-	public Cannons(String name, int ammoCount, double reloadTime)
+	public Cannons(String name, int ammoCount, double rateOfFire)
 	{
 		this.name = name;
 		this.ammoCount = ammoCount;
-		this.reloadTime = reloadTime;
+		this.reloadTime = rateOfFire / 60;
 		parseCannon();
 	}
 	
