@@ -38,7 +38,7 @@ public enum Turrets
 	/** French Light Turrets */
 	FL_10("FL 10 Type D", TankTypes.LIGHT, 40, 20, 20),
 	/** French Medium Turrets */
-	BAT_CHAT_25_T("Batignolles-Châtillon 25 t", TankTypes.MEDIUM, 50, 30, 15),
+	BAT_CHAT_25_T("Batignolles-Chatillon 25 t", TankTypes.MEDIUM, 50, 30, 15),
 	/** French Heavy Turrets */
 	AMX_50_B("AMX 50 B", TankTypes.HEAVY, 100, 50, 30),
 	/** German Light Turrets */
@@ -51,7 +51,7 @@ public enum Turrets
 	MAUS("MAUS", TankTypes.HEAVY, 240, 210, 210),
 	VK_7201("VK 72.01 (K)", TankTypes.HEAVY, 200, 160, 120),
 	/** German TD Turrets */
-	WAFFEN_E_100("Waffenträger auf E 100", TankTypes.TD, 20, 10, 8),
+	WAFFEN_E_100("Waffentrager auf E 100", TankTypes.TD, 20, 10, 8),
 	/** Japanese Medium Turrets */
 	STB_1("STB-1", TankTypes.MEDIUM, 132, 132, 37),
 	/** British Medium Turrets */

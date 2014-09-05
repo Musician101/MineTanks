@@ -21,13 +21,13 @@ public enum Tracks
 	/** French Light Tracks */
 	AMX_13_TYPE_2D("AMX 13 Type 2D", TankTypes.LIGHT),
 	/** French Medium Tracks */
-	BAT_CHAT_25_T("Batignolles-Châtillon 25 t", TankTypes.MEDIUM),
+	BAT_CHAT_25_T("Batignolles-Chatillon 25 t", TankTypes.MEDIUM),
 	/** French Heavy Tracks */
 	AMX_50_B("AMX 50 B", TankTypes.HEAVY),
 	/** French TD Tracks */
 	AMX_50_FOCH_155("AMX 50 Foch (155)", TankTypes.TD),
 	/** French SPG Tracks */
-	BAT_CHAT_155_58("Batignolles-Châtillon 155 mle. 58", TankTypes.ARTY),
+	BAT_CHAT_155_58("Batignolles-Chatillon 155 mle. 58", TankTypes.ARTY),
 	/** German Light Tracks */
 	AUFKL_PANTHER_V("Aufkl. Panther verstärkteketten", TankTypes.LIGHT),
 	/** German Medium Tracks */
