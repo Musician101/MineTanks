@@ -4,6 +4,7 @@ import java.io.File;
 
 import musician101.minetanks.battlefield.BattleFieldStorage;
 import musician101.minetanks.commands.MTCommands;
+import musician101.minetanks.listeners.BattlefieldListener;
 import musician101.minetanks.listeners.MTListener;
 import musician101.minetanks.util.Menus;
 
@@ -29,6 +30,7 @@ public class MineTanks extends JavaPlugin
 		menus = new Menus(this);
 		
 		getServer().getPluginManager().registerEvents(new MTListener(this), this);
+		getServer().getPluginManager().registerEvents(new BattlefieldListener(this), this);
 		
 		getCommand("minetanks").setExecutor(new MTCommands(this));
 		

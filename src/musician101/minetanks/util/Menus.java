@@ -4,22 +4,24 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.handlers.MenuHandlers.TankSelectionHandler;
 import musician101.minetanks.tankinfo.Tanks;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class Menus
 {
-	static MineTanks plugin;
+	MineTanks plugin;
 	IconMenu tankSelection;
 	
 	public Menus(MineTanks plugin)
 	{
-		Menus.plugin = plugin;
-		this.tankSelection = new IconMenu("Country Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
-		for (Tanks tank : Tanks.values())
-			tankSelection.setOption(tank.getId(), tank.getType().getIcon(), "§a" + tank.getName(), tank.getDescription());
+		this.plugin = plugin;
+		this.tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
+		for (final Tanks tank : Tanks.values())
+			tankSelection.setOption(tank.getId(), new ItemStack(Material.MINECART, 1), "Â§a" + tank.getName(), tank.getDescription());
 	}
 	
-	public void openCountryMenu(Player player)
+	public void openTankMenu(Player player)
 	{
 		tankSelection.open(player);
 	}

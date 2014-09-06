@@ -34,10 +34,10 @@ public class MTUtils
 	
 	public static ItemStack[] parseArmor(Engines engine, Radios radio, Tracks tracks, Turrets turret, double armor, int speed)
 	{
-		return new ItemStack[]{parseArmorValue(parseSpeedValue(engine.getEngine(), speed), armor),
-				parseArmorValue(tracks.getTracks(), armor),
+		return new ItemStack[]{parseArmorValue(tracks.getTracks(), armor),
+				parseArmorValue(parseSpeedValue(engine.getEngine(), speed), armor),
 				parseArmorValue(radio.getRadio(), armor),
-				parseArmorValue(turret.getHelmet(), (turret.getArmor() == 0 ? turret.getArmor() : armor))};
+				parseArmorValue(turret.getHelmet(), (turret.getArmor() != 0 ? turret.getArmor() : armor))};
 	}
 	
 	private static ItemStack parseArmorValue(ItemStack item, double armor)
@@ -87,7 +87,7 @@ public class MTUtils
 	{
 		ItemStack item = new ItemStack(material, 1);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§a" + displayName);
+		meta.setDisplayName("Â§a" + displayName);
 		if (!description.equals(""))
 			meta.setLore(Arrays.asList(description));
 		

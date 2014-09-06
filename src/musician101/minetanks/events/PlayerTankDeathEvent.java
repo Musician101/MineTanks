@@ -8,12 +8,14 @@ public class PlayerTankDeathEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
 	String field;
-	Player player;
+	Player killed;
+	Player killer;
 	
-	public PlayerTankDeathEvent(String field, Player player)
+	public PlayerTankDeathEvent(String field, Player killed, Player killer)
 	{
 		this.field = field;
-		this.player = player;
+		this.killed = killed;
+		this.killer = killer;
 	}
 	
 	public String getField()
@@ -21,9 +23,14 @@ public class PlayerTankDeathEvent extends Event
 		return field;
 	}
 	
-	public Player getPlayer()
+	public Player getKilled()
 	{
-		return player;
+		return killed;
+	}
+	
+	public Player getKiller()
+	{
+		return killer;
 	}
 	
 	@Override

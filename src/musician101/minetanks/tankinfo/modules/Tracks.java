@@ -73,10 +73,10 @@ public enum Tracks
 	IS_4M("IS-4M", TankTypes.HEAVY),
 	IS_7("IS-7", TankTypes.HEAVY),
 	/** Russian TD Tracks */
-	OBJECT_263("Object 263", TankTypes.HEAVY),
-	OBJECT_268("Object 268", TankTypes.HEAVY),
+	OBJECT_263("Object 263", TankTypes.TD),
+	OBJECT_268("Object 268", TankTypes.TD),
 	/** Russian SPG Tracks */
-	OBJECT_261("Object 261", TankTypes.HEAVY),;
+	OBJECT_261("Object 261", TankTypes.ARTY);
 	
 	String name;
 	ItemStack tracks;

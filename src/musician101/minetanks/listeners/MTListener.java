@@ -6,12 +6,13 @@ import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.battlefield.player.PlayerTank;
+import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.events.AttemptMenuOpenEvent;
-import musician101.minetanks.events.PlayerFireEvent;
 import musician101.minetanks.events.PlayerTankDamageEvent;
 import musician101.minetanks.events.PlayerTankDamageEvent.PlayerTankDamageCause;
-import musician101.minetanks.events.PlayerTankDeathEvent;
 import musician101.minetanks.handlers.ExplosionTracker;
+import musician101.minetanks.handlers.ReloadHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +31,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -101,15 +102,21 @@ public class MTListener implements Listener
 	public void onBlockInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
-		if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK)
+		if (event.getItem() == null || event.getItem().getType() == Material.BOW)
 			return;
 		
-		if (!isSword(event.getItem().getType()) || event.getItem().getType() != Material.WATCH)
+		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+			return;
+		
+		if (!isSword(event.getItem().getType()) && event.getItem().getType() != Material.WATCH)
 			return;
 		
 		for (String name : plugin.getFieldStorage().getFields().keySet())
 		{
 			Battlefield field = plugin.getFieldStorage().getField(name);
+			if (field.inProgress())
+				return;
+			
 			if (field.getPlayer(event.getPlayer().getUniqueId()) != null)
 				Bukkit.getPluginManager().callEvent(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
 		}
@@ -142,19 +149,7 @@ public class MTListener implements Listener
 		player.teleport(new Location(Bukkit.getWorld(yml.getString("world")), yml.getDouble("x"), yml.getDouble("y"), yml.getDouble("z")));
 		file.delete();
 	}
-	
-	@EventHandler
-	public void onPlayerDeath(PlayerDeathEvent event)
-	{
-		Player player = event.getEntity();
-		for (String name : plugin.getFieldStorage().getFields().keySet())
-		{
-			Battlefield field = plugin.getFieldStorage().getField(name);
-			if (field.getPlayer(player.getUniqueId()) != null)
-				Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), player));
-		}
-	}
-	
+		
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event)
 	{
@@ -177,6 +172,10 @@ public class MTListener implements Listener
 			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(player.getUniqueId()) != null)
 			{
+				PlayerTank pt = field.getPlayer(player.getUniqueId());
+				if (pt.getTeam() == MTTeam.SPECTATOR)
+					return;
+				
 				Location loc = player.getLocation();
 				double[] x = new double[2];
 				x[0] = field.getPoint1().getX();
@@ -186,10 +185,24 @@ public class MTListener implements Listener
 				z[0] = field.getPoint1().getZ();
 				z[1] = field.getPoint2().getZ();
 				Arrays.sort(z);
-				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
+				if ((loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1]) && (loc.getX() > x[0] || loc.getX() < x[1] || loc.getZ() > z[0] || loc.getZ() < z[1]))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Out of bounds!");
-					event.setCancelled(true);
+					double newX = loc.getX();
+					double newZ = loc.getZ();
+					if (loc.getX() < x[0] || loc.getX() < x[1])
+						newX = loc.getX() + 2;
+					
+					if (loc.getZ() < z[0] || loc.getZ() < z[1])
+						newZ = loc.getZ() + 2;
+					
+					if (loc.getX() > x[0] || loc.getX() > x[1])
+						newX = loc.getX() - 2;
+					
+					if (loc.getZ() > z[0] || loc.getZ() > z[0])
+						newZ = loc.getZ() - 2;
+					
+					player.teleport(new Location(loc.getWorld(), newX, loc.getY(), newZ));
 					return;
 				}
 			}
@@ -205,7 +218,7 @@ public class MTListener implements Listener
 	
 	@EventHandler
 	public void onBowShoot(EntityShootBowEvent event)
-	{
+	{//TODO implement auto loader & auto cannon systems
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
@@ -215,9 +228,24 @@ public class MTListener implements Listener
 			Battlefield field = plugin.getFieldStorage().getField(name);
 			if (field.getPlayer(player.getUniqueId()) != null)
 			{
-				PlayerFireEvent ev = new PlayerFireEvent(player, field.getPlayer(player.getUniqueId()));
-				Bukkit.getPluginManager().callEvent(ev);
-				event.setCancelled(ev.isCancelled());
+				PlayerTank pt = field.getPlayer(player.getUniqueId());
+				if (pt.getTeam() == MTTeam.SPECTATOR)
+					return;
+				
+				ReloadHandler reload = new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue());
+				event.setCancelled(reload.isReloading());
+				if (!event.isCancelled())
+				{
+					Inventory inv = player.getInventory();
+					for (ItemStack item : inv.getContents())
+					{
+						if (item.getType() == Material.ARROW)
+						{
+							item.setAmount(item.getAmount() - 1);
+							return;
+						}
+					}
+				}
 				return;
 			}
 		}
@@ -289,6 +317,7 @@ public class MTListener implements Listener
 				Arrow arrow = (Arrow) event.getEntity();
 				ExplosionTracker.addArrow(arrow);
 				event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
+				event.getEntity().remove();
 			}
 		}.runTaskLater(plugin, 1L);
 	}
@@ -296,9 +325,6 @@ public class MTListener implements Listener
 	@EventHandler
 	public void onExplosion(EntityExplodeEvent event)
 	{
-		if (!(event.getEntity() instanceof Arrow))
-			return;
-		
 		if (event.isCancelled())
 			return;
 		
@@ -316,8 +342,11 @@ public class MTListener implements Listener
 				z[0] = field.getPoint1().getZ();
 				z[1] = field.getPoint2().getZ();
 				Arrays.sort(z);
-				if (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1])
-					event.setCancelled(true);
+				if ((loc.getX() > x[0] || loc.getX() < x[1] || loc.getZ() > z[0] || loc.getZ() < z[1]) || (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1]))
+				{
+					event.blockList().clear();
+					return;
+				}
 			}
 		}
 	}

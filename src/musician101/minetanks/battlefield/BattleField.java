@@ -26,6 +26,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Battlefield
 {
@@ -38,7 +39,6 @@ public class Battlefield
 	private MTScoreboard sb;
 	private boolean inProgress = false;
 	String worldName;
-	List<ItemStack> awards = new ArrayList<ItemStack>();
 	
 	public Battlefield(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
@@ -199,26 +199,27 @@ public class Battlefield
 			return false;
 		}
 		
-		player.setExp(0);
+		player.setExp(0F);
+		player.setLevel(0);
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
 		player.getInventory().setChestplate(null);
 		player.getInventory().setLeggings(null);
 		player.getInventory().setBoots(null);
-		player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
-		player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
-		unassigned++;
+		if (team == MTTeam.SPECTATOR)
+		{
+			player.teleport(spectators);
+			player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You are now spectating in " + name + ".");
+		}
+		else
+		{
+			player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
+			player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
+			unassigned++;
+		}
+		
 		players.put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
 		return true;
-	}
-	
-	public void removePlayer(Player player, boolean getPrize)
-	{
-		if (!removePlayer(player) || !getPrize)
-			return;
-		
-		for (ItemStack item : awards)
-			player.getInventory().addItem(item);
 	}
 	
 	public boolean removePlayer(Player player)
@@ -240,6 +241,7 @@ public class Battlefield
 				armor[slot] = yml.getItemStack("armor." + slot);
 			
 			player.getInventory().setArmorContents(armor);
+			file.delete();
 		}
 		
 		if (sb.isOnGreen(player) || sb.isOnRed(player))
@@ -346,7 +348,7 @@ public class Battlefield
 			field.set("spectators.z", spectators.getZ());
 		}
 		
-		field.set("awards", awards);
+		field.set("enabled", enabled);
 		try
 		{
 			field.save(file);
@@ -394,12 +396,14 @@ public class Battlefield
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
 				sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
+				Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
 			}
 			else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
 				sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
+				Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
 			}
 		}
@@ -407,8 +411,8 @@ public class Battlefield
 		inProgress = true;
 		for (UUID uuid : players)
 		{
-			PlayerTank pt = getPlayer(uuid);
-			Player player = Bukkit.getPlayer(uuid);
+			final PlayerTank pt = getPlayer(uuid);
+			final Player player = Bukkit.getPlayer(uuid);
 			if (sb.isOnGreen(player))
 				player.teleport(greenSpawn);
 			
@@ -417,16 +421,26 @@ public class Battlefield
 			
 			player.setScoreboard(sb.getScoreboard());
 			sb.setPlayerHealth(uuid, pt.getTank().getHealth());
-			player.getInventory().setContents(pt.getTank().getWeapons().getContents());
-			player.getInventory().setContents(pt.getTank().getArmor());
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					player.getInventory().setContents(pt.getTank().getWeapons().getContents());
+					player.getInventory().setArmorContents(pt.getTank().getArmor());
+				}
+			}.runTaskLater(plugin, 1L);
 			new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue()).isReloading();
 		}
 	}
 	
 	public void endMatch()
 	{
-		if (sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0)
+		if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress)
 			return;
+		
+		if (sb.getGreenTeamSize() == 0 && sb.getRedTeamSize() == 0)
+			inProgress = false;
 		
 		if (sb.getGreenTeamSize() == 0)
 		{
@@ -434,10 +448,18 @@ public class Battlefield
 			{
 				Player player = Bukkit.getPlayer(uuid);
 				player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
-				removePlayer(player, sb.isOnRed(player));
+				player.teleport(spectators);
+				player.getInventory().setHelmet(null);
+				player.getInventory().setChestplate(null);
+				player.getInventory().setLeggings(null);
+				player.getInventory().setBoots(null);
+				player.getInventory().clear();
+				player.removePotionEffect(PotionEffectType.SLOW);
+				player.removePotionEffect(PotionEffectType.SPEED);
+				getPlayer(player.getUniqueId()).setTeam(MTTeam.SPECTATOR);
+				sb.playerDeath(player);
 			}
 			
-			inProgress = false;
 			return;
 		}
 		
@@ -447,10 +469,17 @@ public class Battlefield
 			{
 				Player player = Bukkit.getPlayer(uuid);
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
-				removePlayer(player, sb.isOnGreen(player));
+				getPlayer(player.getUniqueId()).setTeam(MTTeam.SPECTATOR);
+				player.getInventory().setHelmet(null);
+				player.getInventory().setChestplate(null);
+				player.getInventory().setLeggings(null);
+				player.getInventory().setBoots(null);
+				player.removePotionEffect(PotionEffectType.SLOW);
+				player.removePotionEffect(PotionEffectType.SPEED);
+				player.getInventory().clear();
+				sb.playerDeath(player);
 			}
 			
-			inProgress = false;
 			return;
 		}
 	}
@@ -463,6 +492,7 @@ public class Battlefield
 	public void playerKilled(UUID player)
 	{
 		getPlayer(player).killed();
+		sb.playerDeath(Bukkit.getPlayer(player));
 		Bukkit.getPlayer(player).teleport(spectators);
 	}
 	

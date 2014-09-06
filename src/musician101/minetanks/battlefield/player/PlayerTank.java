@@ -13,7 +13,7 @@ public class PlayerTank
 	public PlayerTank(UUID player, MTTeam team)
 	{
 		this.team = team;
-		this.isReady = true;
+		this.isReady = false;
 	}
 	
 	public Tanks getTank()

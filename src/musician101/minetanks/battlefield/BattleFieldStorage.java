@@ -1,10 +1,7 @@
 package musician101.minetanks.battlefield;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -12,9 +9,7 @@ import musician101.minetanks.MineTanks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
 
 public class BattleFieldStorage
 {
@@ -29,10 +24,10 @@ public class BattleFieldStorage
 	
 	public boolean createField(String name)
 	{
-		return createField(name, false, null, null, null, null, null, Arrays.asList(new ItemStack(Material.DIAMOND, 0, (short) 5)));
+		return createField(name, false, null, null, null, null, null);
 	}
 	
-	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators, List<ItemStack> items)
+	public boolean createField(String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		for (String field : fields.keySet())
 			if (getField(field).equals(name))
@@ -82,7 +77,6 @@ public class BattleFieldStorage
 				Location greenSpawn = null;
 				Location redSpawn = null;
 				Location spectators = null;
-				List<ItemStack> items = new ArrayList<ItemStack>();
 				
 				if (field.isSet("world"))
 				{
@@ -102,18 +96,7 @@ public class BattleFieldStorage
 						spectators = new Location(Bukkit.getWorld(field.getString("world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 				}
 				
-				if (field.isSet("awards"))
-				{
-					for (Object o : field.getList("awards"))
-					{
-						ItemStack item = (ItemStack) o;
-						items.add(item);
-					}
-				}
-				else
-					items.add(new ItemStack(Material.DIAMOND, 0, (short) 5));
-				
-				if (!createField(name, enabled, p1, p2, greenSpawn, redSpawn, spectators, items))
+				if (!createField(name, enabled, p1, p2, greenSpawn, redSpawn, spectators))
 					plugin.getLogger().warning("Failed to load " + file.getName());
 			}
 		}
@@ -132,10 +115,16 @@ public class BattleFieldStorage
 	
 	public boolean setEdit(String name)
 	{
-		if (getField(name) == null)
-			return false;
+		for (String field : getFields().keySet())
+		{
+			if (name.equalsIgnoreCase(field))
+			{
+				edit = getField(field);
+				return true;
+			}
+		}
 		
-		return true;
+		return false;
 	}
 	
 	public boolean canPlayerExit(UUID player)

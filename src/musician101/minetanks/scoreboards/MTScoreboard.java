@@ -37,7 +37,7 @@ public class MTScoreboard
 		greenScore = teamCount.getScore(ChatColor.GREEN + "Green Team");
 		redScore = teamCount.getScore(ChatColor.RED + "Red Team");
 		health = board.registerNewObjective("health", "dummy");
-		health.setDisplaySlot(DisplaySlot.SIDEBAR);
+		health.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 		health.setDisplayName("Health");
 	}
 	
@@ -70,12 +70,16 @@ public class MTScoreboard
 	{
 		green.removePlayer(player);
 		greenScore.setScore(green.getSize());
+		player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+		player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 	}
 	
 	private void redPlayerDeath(Player player)
 	{
 		red.removePlayer(player);
 		redScore.setScore(red.getSize());
+		player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+		player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 	}
 	
 	public boolean isOnGreen(Player player)

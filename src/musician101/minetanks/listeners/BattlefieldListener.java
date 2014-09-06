@@ -6,12 +6,10 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.events.AttemptMenuOpenEvent;
-import musician101.minetanks.events.PlayerFireEvent;
 import musician101.minetanks.events.PlayerTankDamageEvent;
 import musician101.minetanks.events.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.events.PlayerTankDeathEvent;
 import musician101.minetanks.handlers.DamageHandler;
-import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
@@ -21,8 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class BattlefieldListener implements Listener
 {
@@ -60,7 +56,7 @@ public class BattlefieldListener implements Listener
 			return;
 		}
 		
-		plugin.getMenuHandler().openCountryMenu(player);
+		plugin.getMenuHandler().openTankMenu(player);
 		return;
 	}
 	
@@ -68,34 +64,25 @@ public class BattlefieldListener implements Listener
 	public void onPlayerDeath(PlayerTankDeathEvent event)
 	{
 		Battlefield field = plugin.getFieldStorage().getField(event.getField());
-		Player player = event.getPlayer();
-		player.getInventory().clear();
-		player.getInventory().setHelmet(null);
-		player.getInventory().setChestplate(null);
-		player.getInventory().setLeggings(null);
-		player.getInventory().setBoots(null);
-		field.playerKilled(player.getUniqueId());
-		field.endMatch();
-	}
-	
-	@EventHandler
-	public void onPlayerFire(PlayerFireEvent event)
-	{
-		int reloadTime = ((Double) event.getPlayerTank().getTank().reloadTime()).intValue();
-		ReloadHandler reload = new ReloadHandler(plugin, event.getPlayer(), reloadTime);
-		event.setCancelled(reload.isReloading());
-		if (!event.isCancelled())
+		Player killed = event.getKilled();
+		for (Player player : Bukkit.getOnlinePlayers())
 		{
-			Inventory inv = event.getPlayer().getInventory();
-			for (ItemStack item : inv.getContents())
+			if (field.getPlayer(player.getUniqueId()) != null)
 			{
-				if (item.getType() == Material.ARROW)
-				{
-					item.setAmount(item.getAmount() - 1);
-					return;
-				}
+				Player killer = event.getKiller();
+				MTScoreboard sb = field.getScoreboard();
+				String dmgdMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killer.getName());
+				String dmgrMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killed.getName());
+				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
 			}
 		}
+		killed.getInventory().clear();
+		killed.getInventory().setHelmet(null);
+		killed.getInventory().setChestplate(null);
+		killed.getInventory().setLeggings(null);
+		killed.getInventory().setBoots(null);
+		field.playerKilled(killed.getUniqueId());
+		field.endMatch();
 	}
 	
 	@EventHandler
@@ -110,10 +97,13 @@ public class BattlefieldListener implements Listener
 		UUID dmgr = event.getDamager();
 		int damage = event.getDamage();
 		MTScoreboard sb = field.getScoreboard();
+		if (sb.getPlayerHealth(dmgd) <= 0 || sb.getPlayerHealth(dmgr) <=0)
+			return;
+		
 		if ((sb.isOnGreen(Bukkit.getPlayer(dmgr)) && sb.isOnGreen(Bukkit.getPlayer(dmgd))) || (sb.isOnRed(Bukkit.getPlayer(dmgr)) && sb.isOnRed(Bukkit.getPlayer(dmgd))))
 		{
 			if (event.getCause() == PlayerTankDamageCause.RAM)
-				dh.meleeHitFriendly(field, dmgr, dmgd);
+				dh.meleeHitFriendly(field, dmgr, dmgd, damage);
 			
 			if (event.getCause() == PlayerTankDamageCause.SPLASH)
 				dh.playerHitFriendly(field, dmgd, dmgr, damage);
@@ -125,7 +115,7 @@ public class BattlefieldListener implements Listener
 		}
 		
 		if (event.getCause() == PlayerTankDamageCause.RAM)
-			dh.meleeHitEnemy(field, dmgd, dmgr);
+			dh.meleeHitEnemy(field, dmgd, dmgr, damage);
 		
 		if (event.getCause() == PlayerTankDamageCause.SPLASH)
 			dh.playerHitEnemy(field, dmgd, dmgr, damage);

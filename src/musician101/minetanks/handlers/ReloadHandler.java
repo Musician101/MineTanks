@@ -20,7 +20,7 @@ public class ReloadHandler
 	
 	public boolean isReloading()
 	{
-		if (player.getLevel() != 0)
+		if (player.getLevel() > 0)
 			return true;
 		
 		player.setLevel(reloadTime);

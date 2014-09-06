@@ -61,20 +61,12 @@ public enum Turrets
 	/** American Light Turrets */
 	T71(TankTypes.LIGHT, 22.2, 22.2, 22.2),
 	/** American Medium Turrets */
-	M87(TankTypes.MEDIUM, 177.8, 76.2, 50.8),
+	T87(TankTypes.MEDIUM, 177.8, 76.2, 50.8),
 	M60(TankTypes.MEDIUM, 177.8, 76.2, 50.8),
 	/** American Heavy Turrets */
 	T169(TankTypes.HEAVY, 127, 137, 50.8),
 	T53(TankTypes.HEAVY, 203, 127, 70),
 	/** American TD Turrets */
-	T87(TankTypes.TD, 38, 25, 25),
-	M10T72M1(TankTypes.TD, 57, 25, 25),
-	T49(TankTypes.TD, 25, 19, 13),
-	M36T78(TankTypes.TD, 76, 25, 25),
-	M18_M1("M18 M1", TankTypes.TD, 76.2, 31.8, 127),
-	T25_2T7("T25/2T7", TankTypes.TD, 76, 25, 25),
-	T28P_D1("T28P D1", TankTypes.TD, 203.2, 127, 101.6),
-	T30D1(TankTypes.TD, 279, 127, 102),
 	T110E4(TankTypes.TD, 203, 152, 152),
 	/** Russian Medium Turrets */
 	OBJECT_140("Object 140", TankTypes.MEDIUM, 240, 187, 65),

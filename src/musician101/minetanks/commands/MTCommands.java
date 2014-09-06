@@ -4,7 +4,6 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,7 +31,7 @@ public class MTCommands implements CommandExecutor
 			}
 			
 			Player player = (Player) sender;
-			if (args[0].equalsIgnoreCase("join"))
+			if (args[0].equalsIgnoreCase("join") && args.length == 2)
 			{
 				if (!player.hasPermission("minetanks.participate"))
 				{
@@ -40,10 +39,16 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				Battlefield field = plugin.getFieldStorage().getFields().get(0);
-				if (args.length == 2)
-					if (plugin.getFieldStorage().getField(args[1]) != null)
-						field = plugin.getFieldStorage().getField(args[1]);
+				Battlefield field = null;
+				for (String name : plugin.getFieldStorage().getFields().keySet())
+					if (name.equalsIgnoreCase(args[1]))
+						field = plugin.getFieldStorage().getField(name);
+				
+				if (field == null)
+				{
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+					return false;
+				}
 				
 				if (!field.isReady())
 				{
@@ -58,7 +63,7 @@ public class MTCommands implements CommandExecutor
 				}
 				
 				field.addPlayer(player, MTTeam.UNASSIGNED);
-				plugin.getMenuHandler().openCountryMenu(player);
+				plugin.getMenuHandler().openTankMenu(player);
 				return true;
 			}
 			
@@ -87,7 +92,7 @@ public class MTCommands implements CommandExecutor
 				return false;
 			}
 			
-			if (args[0].equalsIgnoreCase("spectate"))
+			if (args[0].equalsIgnoreCase("spectate") && args.length == 2)
 			{
 				if (!player.hasPermission("minetanks.participate"))
 				{
@@ -95,10 +100,16 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				Battlefield field = plugin.getFieldStorage().getFields().get(0);
-				if (args.length == 2)
-					if (plugin.getFieldStorage().getField(args[1]) != null)
+				Battlefield field = null;
+				for (String name : plugin.getFieldStorage().getFields().keySet())
+					if (name.equalsIgnoreCase(args[1]))
 						field = plugin.getFieldStorage().getField(args[1]);
+				
+				if (field == null)
+				{
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+					return false;
+				}
 				
 				if (!field.isReady())
 				{
@@ -131,7 +142,18 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("edit")  && args.length == 2)
 			{
-				if (!plugin.getFieldStorage().setEdit(args[1]))
+				Battlefield field = null;
+				for (String name : plugin.getFieldStorage().getFields().keySet())
+					if (name.equalsIgnoreCase(args[1]))
+						field = plugin.getFieldStorage().getField(name);
+				
+				if (field == null)
+				{
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+					return false;
+				}
+				
+				if (!plugin.getFieldStorage().setEdit(field.getName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + args[1] + " does not exist.");
 					return false;
@@ -141,10 +163,26 @@ public class MTCommands implements CommandExecutor
 				return true;
 			}
 			
+			if (args[0].equalsIgnoreCase("enable"))
+			{
+				Battlefield field = plugin.getFieldStorage().getEdit();
+				if (field.isEnabled())
+				{
+					field.setEnabled(false);
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " " + field.getName() + " has been disabled.");
+				}
+				else if (!field.isEnabled())
+				{
+					field.setEnabled(true);
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " " + field.getName() + " has been enabled.");
+				}
+				return true;
+			}
+			
 			if (args[0].equalsIgnoreCase("p1"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (!player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
 					return false;
@@ -158,7 +196,7 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("p2"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (!player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
 					return false;
@@ -172,7 +210,7 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("greenSpawn"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (!player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
 					return false;
@@ -186,7 +224,7 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("redSpawn"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (!player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
 					return false;
@@ -200,7 +238,7 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("spectators"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (!player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
 					return false;
@@ -232,7 +270,18 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("remove") && args.length == 2)
 			{
-				if (!plugin.getFieldStorage().removeField(args[1]))
+				Battlefield field = null;
+				for (String name : plugin.getFieldStorage().getFields().keySet())
+					if (name.equalsIgnoreCase(args[1]))
+						field = plugin.getFieldStorage().getField(name);
+				
+				if (field == null)
+				{
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+					return false;
+				}
+				
+				if (!plugin.getFieldStorage().removeField(field.getName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " " + args[1] + " does not exist.");
 					return false;
@@ -244,8 +293,8 @@ public class MTCommands implements CommandExecutor
 		}
 		
 		sender.sendMessage(ChatColor.GREEN + "===== MineTanks =====");
-		sender.sendMessage(ChatColor.GREEN + "Version:" + plugin.getDescription().getVersion());
-		sender.sendMessage(ChatColor.GREEN + "Recommended BukkitAPI Version: " + Bukkit.getVersion());
+		sender.sendMessage(ChatColor.GREEN + "Version: " + plugin.getDescription().getVersion());
+		sender.sendMessage(ChatColor.GREEN + "Recommended BukkitAPI Version: 1.7.10-R0.1");
 		sender.sendMessage(ChatColor.GREEN + "World of Tanks version: 0.9.2");
 		if (sender.hasPermission("minetanks.participate") || sender.hasPermission("minetanks.edit"))
 			sender.sendMessage(ChatColor.GREEN + "[] = optional, <> = mandatory");
@@ -261,10 +310,12 @@ public class MTCommands implements CommandExecutor
 		{
 			sender.sendMessage(ChatColor.GREEN + "/mt create <name>:" + ChatColor.AQUA + " Create a new battle field.");
 			sender.sendMessage(ChatColor.GREEN + "/mt edit <name>:" + ChatColor.AQUA + " Set the battle field that you wish to edit.");
+			sender.sendMessage(ChatColor.GREEN + "/mt enable:" + ChatColor.AQUA + " Toggle whether the currently selected battle field is enabled or disabled.");
 			sender.sendMessage(ChatColor.GREEN + "/mt greenspawn:" + ChatColor.AQUA + " Set the green spawn point of the currently selected battle field.");
 			sender.sendMessage(ChatColor.GREEN + "/mt p1:" + ChatColor.AQUA + " Set point 1 of the currently selected battle field.");
 			sender.sendMessage(ChatColor.GREEN + "/mt p2:" + ChatColor.AQUA + " Set point 2 of the currently selected battle field.");
 			sender.sendMessage(ChatColor.GREEN + "/mt redspawn:" + ChatColor.AQUA + " Set the red spawn point of the currently selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt spectate <name>:" + ChatColor.AQUA + " Spectate the battle field that you specified.");
 			sender.sendMessage(ChatColor.GREEN + "/mt spectators:" + ChatColor.AQUA + " Set the spectators spawn point of the currently selected battle field.");
 			sender.sendMessage(ChatColor.GREEN + "/mt status:" + ChatColor.AQUA + " Check the status of the currently selected battle field.");
 			sender.sendMessage(ChatColor.GREEN + "/mt remove <name>:" + ChatColor.AQUA + " Remove the selected battle field.");

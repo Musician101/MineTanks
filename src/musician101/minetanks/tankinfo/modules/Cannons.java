@@ -19,7 +19,7 @@ public class Cannons
 	{
 		this.name = name;
 		this.ammoCount = ammoCount;
-		this.reloadTime = rateOfFire / 60;
+		this.reloadTime = 60 / rateOfFire;
 		parseCannon();
 	}
 	
