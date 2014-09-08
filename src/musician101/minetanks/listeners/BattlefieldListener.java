@@ -65,17 +65,14 @@ public class BattlefieldListener implements Listener
 	{
 		Battlefield field = plugin.getFieldStorage().getField(event.getField());
 		Player killed = event.getKilled();
+		Player killer = event.getKiller();
+		MTScoreboard sb = field.getScoreboard();
+		String dmgdMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
+		String dmgrMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
 		for (Player player : Bukkit.getOnlinePlayers())
-		{
 			if (field.getPlayer(player.getUniqueId()) != null)
-			{
-				Player killer = event.getKiller();
-				MTScoreboard sb = field.getScoreboard();
-				String dmgdMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killer.getName());
-				String dmgrMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killed.getName());
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
-			}
-		}
+		
 		killed.getInventory().clear();
 		killed.getInventory().setHelmet(null);
 		killed.getInventory().setChestplate(null);

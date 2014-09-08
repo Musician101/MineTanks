@@ -1,14 +1,20 @@
 package musician101.minetanks.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 public class MTCommands implements CommandExecutor
 {
@@ -177,6 +183,37 @@ public class MTCommands implements CommandExecutor
 					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " " + field.getName() + " has been enabled.");
 				}
 				return true;
+			}
+			
+			if (args[0].equalsIgnoreCase("forceend") && args.length == 2)
+			{
+				Battlefield field = null;
+				for (String name : plugin.getFieldStorage().getFields().keySet())
+					if (args[1].equalsIgnoreCase(name))
+						field = plugin.getFieldStorage().getField(name);
+				
+				if (field == null)
+				{
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+					return false;
+				}
+				
+				List<UUID> uuids = new ArrayList<UUID>();
+				for (UUID uuid : field.getPlayers().keySet())
+					uuids.add(uuid);
+				
+				for (UUID uuid : uuids)
+				{
+					Player p = Bukkit.getPlayer(uuid);
+					p.removePotionEffect(PotionEffectType.SLOW);
+					p.removePotionEffect(PotionEffectType.SPEED);
+					p.sendMessage(ChatColor.RED + plugin.getPrefix() + " An admin has forcibly terminated the match.");
+					field.removePlayer(p);
+				}
+				
+				field.setInProgress(false);
+				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Match terminated.");
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("p1"))

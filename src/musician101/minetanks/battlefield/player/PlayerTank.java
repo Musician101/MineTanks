@@ -9,6 +9,7 @@ public class PlayerTank
 	private Tanks tank;
 	private boolean isReady;
 	private MTTeam team;
+	private int clipSize = 0;
 	
 	public PlayerTank(UUID player, MTTeam team)
 	{
@@ -29,6 +30,16 @@ public class PlayerTank
 	public void setTank(Tanks tank)
 	{
 		this.tank = tank;
+	}
+	
+	public void setClipSize(int size)
+	{
+		this.clipSize = size;
+	}
+	
+	public int getClipSize()
+	{
+		return clipSize;
 	}
 	
 	public void setTeam(MTTeam team)

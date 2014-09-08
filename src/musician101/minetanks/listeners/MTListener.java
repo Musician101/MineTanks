@@ -13,6 +13,8 @@ import musician101.minetanks.events.PlayerTankDamageEvent;
 import musician101.minetanks.events.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.handlers.ExplosionTracker;
 import musician101.minetanks.handlers.ReloadHandler;
+import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.tankinfo.modules.Cannons.CannonTypes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,6 +43,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class MTListener implements Listener
@@ -218,7 +221,7 @@ public class MTListener implements Listener
 	
 	@EventHandler
 	public void onBowShoot(EntityShootBowEvent event)
-	{//TODO implement auto loader & auto cannon systems
+	{
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
@@ -232,17 +235,24 @@ public class MTListener implements Listener
 				if (pt.getTeam() == MTTeam.SPECTATOR)
 					return;
 				
-				ReloadHandler reload = new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue());
+				Tanks tank = pt.getTank();
+				pt.setClipSize(pt.getClipSize() - 1);
+				ReloadHandler reload = new ReloadHandler(plugin, player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize());
 				event.setCancelled(reload.isReloading());
 				if (!event.isCancelled())
 				{
 					Inventory inv = player.getInventory();
 					for (ItemStack item : inv.getContents())
 					{
+						if (item == null)
+							continue;
 						if (item.getType() == Material.ARROW)
-						{
 							item.setAmount(item.getAmount() - 1);
-							return;
+						else if (item.getType() == Material.BOW && tank.getCannonType() == CannonTypes.AUTO_LOADER)
+						{
+							ItemMeta meta = item.getItemMeta();
+							meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + pt.getClipSize() + "/" + tank.getClipSize(),"Cycle Time: " + tank.cycleTime(), "Clip Reload Time: " + tank.reloadTime()));
+							item.setItemMeta(meta);
 						}
 					}
 				}

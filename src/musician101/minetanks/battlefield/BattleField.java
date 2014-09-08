@@ -14,6 +14,7 @@ import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.scoreboards.MTScoreboard;
+import musician101.minetanks.tankinfo.Tanks;
 import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
@@ -248,6 +249,9 @@ public class Battlefield
 			sb.playerDeath(player);
 		
 		players.remove(player.getUniqueId());
+		if (unassigned > 0)
+			unassigned--;
+		
 		return true;
 	}
 	
@@ -412,25 +416,34 @@ public class Battlefield
 		for (UUID uuid : players)
 		{
 			final PlayerTank pt = getPlayer(uuid);
+			final Tanks tank = pt.getTank();
 			final Player player = Bukkit.getPlayer(uuid);
-			if (sb.isOnGreen(player))
-				player.teleport(greenSpawn);
-			
-			if (sb.isOnRed(player))
-				player.teleport(redSpawn);
-			
-			player.setScoreboard(sb.getScoreboard());
-			sb.setPlayerHealth(uuid, pt.getTank().getHealth());
-			new BukkitRunnable()
+			if (pt.getTeam() != MTTeam.SPECTATOR)
 			{
-				@Override
-				public void run()
+				if (sb.isOnGreen(player))
+					player.teleport(greenSpawn);
+				
+				if (sb.isOnRed(player))
+					player.teleport(redSpawn);
+				
+				player.setScoreboard(sb.getScoreboard());
+				sb.setPlayerHealth(uuid, tank.getHealth());
+				new BukkitRunnable()
 				{
-					player.getInventory().setContents(pt.getTank().getWeapons().getContents());
-					player.getInventory().setArmorContents(pt.getTank().getArmor());
-				}
-			}.runTaskLater(plugin, 1L);
-			new ReloadHandler(plugin, player, ((Double) pt.getTank().reloadTime()).intValue()).isReloading();
+					@Override
+					public void run()
+					{
+						player.getInventory().setContents(tank.getWeapons().getContents());
+						player.getInventory().setArmorContents(tank.getArmor());
+					}
+				}.runTaskLater(plugin, 1L);
+				new ReloadHandler(plugin, player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
+			}
+			else
+			{
+				pt.setTank(null);
+				player.getInventory().clear();
+			}
 		}
 	}
 	
@@ -439,15 +452,12 @@ public class Battlefield
 		if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress)
 			return;
 		
-		if (sb.getGreenTeamSize() == 0 && sb.getRedTeamSize() == 0)
-			inProgress = false;
-		
-		if (sb.getGreenTeamSize() == 0)
+		if (sb.getGreenTeamSize() == 0 || sb.getRedTeamSize() == 0)
 		{
+			inProgress = false;
 			for (UUID uuid : players.keySet())
 			{
 				Player player = Bukkit.getPlayer(uuid);
-				player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
 				player.teleport(spectators);
 				player.getInventory().setHelmet(null);
 				player.getInventory().setChestplate(null);
@@ -456,31 +466,15 @@ public class Battlefield
 				player.getInventory().clear();
 				player.removePotionEffect(PotionEffectType.SLOW);
 				player.removePotionEffect(PotionEffectType.SPEED);
-				getPlayer(player.getUniqueId()).setTeam(MTTeam.SPECTATOR);
+				PlayerTank pt = getPlayer(uuid);
+				pt.setTeam(MTTeam.SPECTATOR);
+				pt.setTank(null);
 				sb.playerDeath(player);
+				if (sb.getGreenTeamSize() == 0)
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
+				else if (sb.getRedTeamSize() == 0)
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
 			}
-			
-			return;
-		}
-		
-		if (sb.getRedTeamSize() == 0)
-		{
-			for (UUID uuid : players.keySet())
-			{
-				Player player = Bukkit.getPlayer(uuid);
-				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
-				getPlayer(player.getUniqueId()).setTeam(MTTeam.SPECTATOR);
-				player.getInventory().setHelmet(null);
-				player.getInventory().setChestplate(null);
-				player.getInventory().setLeggings(null);
-				player.getInventory().setBoots(null);
-				player.removePotionEffect(PotionEffectType.SLOW);
-				player.removePotionEffect(PotionEffectType.SPEED);
-				player.getInventory().clear();
-				sb.playerDeath(player);
-			}
-			
-			return;
 		}
 	}
 	
@@ -488,7 +482,12 @@ public class Battlefield
 	{
 		return inProgress;
 	}
-
+	
+	public void setInProgress(boolean inProgress)
+	{
+		this.inProgress = inProgress;
+	}
+	
 	public void playerKilled(UUID player)
 	{
 		getPlayer(player).killed();

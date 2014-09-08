@@ -4,13 +4,11 @@ import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
-import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.events.PlayerTankDeathEvent;
 import musician101.minetanks.scoreboards.MTScoreboard;
+import musician101.minetanks.tankinfo.TankTypes;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class DamageHandler
 {
@@ -21,10 +19,23 @@ public class DamageHandler
 		this.plugin = plugin;
 	}
 	
-	public void meleeHitEnemy(Battlefield field, UUID rammed, UUID rammer, int damage)
+	private int getModifier(TankTypes type)
 	{
-		double rammerDmg = damage * 20;
-		double rammedDmg = damage * 15;
+		if (type == TankTypes.LIGHT)
+			return 1;
+		else if (type == TankTypes.MEDIUM || type == TankTypes.TD)
+			return 2;
+		else if (type == TankTypes.ARTY)
+			return 3;
+		else if (type == TankTypes.HEAVY)
+			return 5;
+		
+		return 0;
+	}
+	public void meleeHitEnemy(Battlefield field, UUID rammed, UUID rammer, int damage)
+	{	
+		double rammerDmg = damage * getModifier(field.getPlayer(rammed).getTank().getType());
+		double rammedDmg = damage * getModifier(field.getPlayer(rammer).getTank().getType());
 		if (rammerDmg > 0)
 			playerHitEnemy(field, rammed, rammer, (int) rammerDmg);
 		
@@ -42,10 +53,11 @@ public class DamageHandler
 	
 	public void gravityHit(Battlefield field, UUID player, int damage)
 	{
-		PlayerTank pt = field.getPlayer(player);
-		double dmg = 0.5 * pt.getTank().getWeight() * (pt.getTank().getSpeedEffect().getAmplifier()^2);
+		double dmg = damage * 5;
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(player, sb.getPlayerHealth(player) - (int) dmg);
+		if (sb.getPlayerHealth(player) <= 0)
+			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(player), null));
 	}
 	
 	public void meleeHitFriendly(Battlefield field, UUID rammed, UUID rammer, int damage)
@@ -64,17 +76,6 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
-		{
 			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(dmgd), Bukkit.getPlayer(dmgr)));
-			for (Player player : Bukkit.getOnlinePlayers())
-			{
-				if (field.getPlayer(player.getUniqueId()) != null)
-				{
-					String dmgdMsg = (sb.isOnGreen(Bukkit.getPlayer(dmgd)) ? ChatColor.GREEN + Bukkit.getPlayer(dmgd).getName() : ChatColor.RED + Bukkit.getPlayer(dmgd).getName());
-					String dmgrMsg = (sb.isOnGreen(Bukkit.getPlayer(dmgr)) ? ChatColor.GREEN + Bukkit.getPlayer(dmgr).getName() : ChatColor.RED + Bukkit.getPlayer(dmgr).getName());
-					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
-				}
-			}
-		}
 	}
 }

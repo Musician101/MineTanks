@@ -29,8 +29,10 @@ public class MTScoreboard
 		board = sbm.getNewScoreboard();
 		green = board.registerNewTeam("green");
 		green.setDisplayName("Green Team");
+		green.setPrefix(ChatColor.GREEN + "");
 		red = board.registerNewTeam("red");
 		red.setDisplayName("Red Team");
+		red.setPrefix(ChatColor.RED + "");
 		teamCount = board.registerNewObjective("teamcount", "dummy");
 		teamCount.setDisplaySlot(DisplaySlot.SIDEBAR);
 		teamCount.setDisplayName("Team Count");
