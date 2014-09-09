@@ -15,6 +15,7 @@ import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.scoreboards.MTScoreboard;
 import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.util.Cuboid;
 import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
@@ -33,21 +34,20 @@ public class Battlefield
 {
 	private MineTanks plugin;
 	private String name;
-	private Location p1, p2, greenSpawn, redSpawn, spectators;
+	private Location greenSpawn, redSpawn, spectators;
 	private Map<UUID, PlayerTank> players = new HashMap<UUID, PlayerTank>();
 	private boolean enabled;
 	private int unassigned = 0;
 	private MTScoreboard sb;
 	private boolean inProgress = false;
-	String worldName;
+	private Cuboid cuboid;
 	
-	public Battlefield(MineTanks plugin, String name, boolean enabled, Location p1, Location p2, Location greenSpawn, Location redSpawn, Location spectators)
+	public Battlefield(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		this.plugin = plugin;
 		this.name = name;
 		this.enabled = enabled;
-		this.p1 = p1;
-		this.p2 = p2;
+		this.cuboid = cuboid;
 		this.greenSpawn = greenSpawn;
 		this.redSpawn = redSpawn;
 		this.spectators = spectators;
@@ -68,34 +68,15 @@ public class Battlefield
 	{
 		return name;
 	}
-	
-	public String getWorldName()
+		
+	public Cuboid getCuboid()
 	{
-		return worldName;
+		return cuboid;
 	}
 	
-	public Location getPoint1()
+	public void setCuboid(Cuboid cuboid)
 	{
-		return p1;
-	}
-	
-	public void setPoint1(Location loc)
-	{
-		p1 = loc;
-		if (worldName != null || worldName == "")
-			worldName = loc.getWorld().getName();
-	}
-	
-	public Location getPoint2()
-	{
-		return p2;
-	}
-	
-	public void setPoint2(Location loc)
-	{
-		p2 = loc;
-		if (worldName != null || worldName == "")
-			worldName = loc.getWorld().getName();
+		this.cuboid = cuboid;
 	}
 	
 	public Location getGreenSpawn()
@@ -106,8 +87,6 @@ public class Battlefield
 	public void setGreenSpawn(Location loc)
 	{
 		greenSpawn = loc;
-		if (worldName != null || worldName == "")
-			worldName = loc.getWorld().getName();
 	}
 	
 	public Location getRedSpawn()
@@ -118,8 +97,6 @@ public class Battlefield
 	public void setRedSpawn(Location loc)
 	{
 		redSpawn = loc;
-		if (worldName != null || worldName == "")
-			worldName = loc.getWorld().getName();
 	}
 	
 	public Location getSpectators()
@@ -130,8 +107,6 @@ public class Battlefield
 	public void setSpectators(Location loc)
 	{
 		spectators = loc;
-		if (worldName != null || worldName == "")
-			worldName = loc.getWorld().getName();
 	}
 	
 	public boolean addPlayer(Player player, MTTeam team)
@@ -267,10 +242,7 @@ public class Battlefield
 	
 	public boolean isReady()
 	{
-		if (p1 == null)
-			return false;
-		
-		if (p2 == null)
+		if (cuboid == null)
 			return false;
 		
 		if (greenSpawn == null)
@@ -302,31 +274,12 @@ public class Battlefield
 		}
 		
 		YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
-		if (p1 != null)
-		{
-			if (!field.isSet("world"))
-				field.set("world", p1.getWorld().getName());
-			
-			field.set("p1.x", p1.getX());
-			field.set("p1.y", p1.getY());
-			field.set("p1.z", p1.getZ());
-		}
-		
-		if (p2 != null)
-		{
-			if (!field.isSet("world"))
-				field.set("world", p2.getWorld().getName());
-			
-			field.set("p2.x", p2.getX());
-			field.set("p2.y", p2.getY());
-			field.set("p2.z", p2.getZ());
-		}
+		if (cuboid != null)
+			field.set("cuboid", cuboid.serialize());
 		
 		if (greenSpawn != null)
 		{
-			if (!field.isSet("world"))
-				field.set("world", greenSpawn.getWorld().getName());
-			
+			field.set("greenSpawn.world", greenSpawn.getWorld().getName());
 			field.set("greenSpawn.x", greenSpawn.getX());
 			field.set("greenSpawn.y", greenSpawn.getY());
 			field.set("greenSpawn.z", greenSpawn.getZ());
@@ -334,9 +287,7 @@ public class Battlefield
 		
 		if (redSpawn != null)
 		{
-			if (!field.isSet("world"))
-				field.set("world", redSpawn.getWorld().getName());
-			
+			field.set("redSpawn.world", redSpawn.getWorld().getName());
 			field.set("redSpawn.x", redSpawn.getX());
 			field.set("redSpawn.y", redSpawn.getY());
 			field.set("redSpawn.z", redSpawn.getZ());
@@ -344,9 +295,7 @@ public class Battlefield
 		
 		if (spectators != null)
 		{
-			if (!field.isSet("world"))
-				field.set("world", spectators.getWorld().getName());
-			
+			field.set("spectators.world", spectators.getWorld().getName());
 			field.set("spectators.x", spectators.getX());
 			field.set("spectators.y", spectators.getY());
 			field.set("spectators.z", spectators.getZ());

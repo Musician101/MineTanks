@@ -22,7 +22,6 @@ public class MineTanks extends JavaPlugin
 		prefix = "[" + getDescription().getPrefix() + "]";
 		new File(getDataFolder() + File.separator + "battlefields").mkdirs();
 		new File(getDataFolder() + File.separator + "inventorystorage").mkdirs();
-		new File(getDataFolder() + File.separator + "playerstats").mkdirs();
 		
 		fieldStorage = new BattleFieldStorage(this);
 		fieldStorage.loadFromFiles();

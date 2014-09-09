@@ -7,6 +7,7 @@ import java.util.UUID;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
+import musician101.minetanks.util.Cuboid;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,13 +89,13 @@ public class MTCommands implements CommandExecutor
 					{
 						if (field.removePlayer(player))
 						{
-							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have left the battle field.");
+							player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have left the battlefield.");
 							return true;
 						}
 					}
 				}
 				
-				player.sendMessage(ChatColor.RED + plugin.getPrefix() + " You are not in a battle field.");
+				player.sendMessage(ChatColor.RED + plugin.getPrefix() + " You are not in a battlefield.");
 				return false;
 			}
 			
@@ -133,7 +134,7 @@ public class MTCommands implements CommandExecutor
 				return false;
 			}
 			
-			if (args[0].equalsIgnoreCase("create")  && args.length == 2)
+			if (args[0].equalsIgnoreCase("create") && args.length >= 2)
 			{
 				if (!plugin.getFieldStorage().createField(args[1]))
 				{
@@ -142,8 +143,51 @@ public class MTCommands implements CommandExecutor
 				}
 				
 				plugin.getFieldStorage().createField(args[1]);
-				player.sendMessage(new String[]{ChatColor.GREEN + plugin.getPrefix() + " " + args[1] + " successfully created", ChatColor.GREEN + plugin.getPrefix() + " Check the status of the battle field by using /mt status."});
+				player.sendMessage(new String[]{ChatColor.GREEN + plugin.getPrefix() + " " + args[1] + " successfully created", ChatColor.GREEN + plugin.getPrefix() + " Check the status of the battlefield by using /mt status."});
 				return true;
+			}
+			
+			if (args[0].equalsIgnoreCase("cuboid"))
+			{
+				Battlefield field = plugin.getFieldStorage().getEdit();
+				if (args.length == 2)
+				{
+					int radius = 0;
+					try
+					{
+						radius = Integer.valueOf(args[1]);
+					}
+					catch (NumberFormatException e)
+					{
+						player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: " + args[1] + " is not a number.");
+						return false;
+					}
+					
+					field.setCuboid(Cuboid.createFromLocationRadius(player.getLocation(), radius));
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Cuboid set.");
+					return true;
+				}
+				else if (args.length == 4)
+				{
+					int xRadius = 0;
+					int yRadius = 0;
+					int zRadius = 0;
+					try
+					{
+						xRadius = Integer.valueOf(args[1]);
+						yRadius = Integer.valueOf(args[2]);
+						zRadius = Integer.valueOf(args[3]);
+					}
+					catch (NumberFormatException e )
+					{
+						player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: One or more of the inputted radii is not a number.");
+						return false;
+					}
+					
+					field.setCuboid(Cuboid.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
+					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Cuboid set.");
+					return true;
+				}
 			}
 			
 			if (args[0].equalsIgnoreCase("edit")  && args.length == 2)
@@ -216,40 +260,12 @@ public class MTCommands implements CommandExecutor
 				return false;
 			}
 			
-			if (args[0].equalsIgnoreCase("p1"))
-			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
-				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
-					return false;
-				}
-				
-				field.setPoint1(player.getLocation());
-				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Point 1 set.");
-				return true;
-			}
-			
-			if (args[0].equalsIgnoreCase("p2"))
-			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
-				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
-					return false;
-				}
-				
-				field.setPoint2(player.getLocation());
-				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Point 2 set.");
-				return true;
-			}
-			
 			if (args[0].equalsIgnoreCase("greenSpawn"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
 				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains no cuboid or the cuboid in another world.");
 					return false;
 				}
 				
@@ -261,9 +277,9 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("redSpawn"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
 				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains no cuboid or the cuboid in another world.");
 					return false;
 				}
 				
@@ -275,9 +291,9 @@ public class MTCommands implements CommandExecutor
 			if (args[0].equalsIgnoreCase("spectators"))
 			{
 				Battlefield field = plugin.getFieldStorage().getEdit();
-				if (field.getWorldName() != null && !player.getWorld().getName().equals(field.getWorldName()))
+				if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
 				{
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains points in another world.");
+					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains no cuboid or the cuboid in another world.");
 					return false;
 				}
 				
@@ -297,8 +313,7 @@ public class MTCommands implements CommandExecutor
 				
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Status of " + field.getName());
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Enabled: " + field.isEnabled());
-				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Point 1: " + (field.getPoint1() == null ? "Not Set" : "Set"));
-				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Point 2: " + (field.getPoint2() == null ? "Not Set" : "Set"));
+				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Cuboid: " + (field.getCuboid() == null ? "Not Set" : "Set"));
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green Spawn: " + (field.getGreenSpawn() == null ? "Not Set" : "Set"));
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Red Spawn: " + (field.getRedSpawn() == null ? "Not Set" : "Set"));
 				player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn: " + (field.getSpectators() == null ? "Not Set" : "Set"));
@@ -338,24 +353,23 @@ public class MTCommands implements CommandExecutor
 		
 		if (sender.hasPermission("minetanks.participate"))
 		{
-			sender.sendMessage(ChatColor.GREEN + "/mt join [field]:" + ChatColor.AQUA + " Enter the selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt leave:" + ChatColor.AQUA + " Leave the battle field you are currently in.");
-			sender.sendMessage(ChatColor.GREEN + "/mt spectate [field]:" + ChatColor.AQUA + " Spectate the selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt join [field]:" + ChatColor.AQUA + " Enter the selected battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt leave:" + ChatColor.AQUA + " Leave the battlefield you are currently in.");
+			sender.sendMessage(ChatColor.GREEN + "/mt spectate [field]:" + ChatColor.AQUA + " Spectate the selected battlefield.");
 		}
 		
 		if (sender.hasPermission("minetanks.edit"))
 		{
-			sender.sendMessage(ChatColor.GREEN + "/mt create <name>:" + ChatColor.AQUA + " Create a new battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt edit <name>:" + ChatColor.AQUA + " Set the battle field that you wish to edit.");
-			sender.sendMessage(ChatColor.GREEN + "/mt enable:" + ChatColor.AQUA + " Toggle whether the currently selected battle field is enabled or disabled.");
-			sender.sendMessage(ChatColor.GREEN + "/mt greenspawn:" + ChatColor.AQUA + " Set the green spawn point of the currently selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt p1:" + ChatColor.AQUA + " Set point 1 of the currently selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt p2:" + ChatColor.AQUA + " Set point 2 of the currently selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt redspawn:" + ChatColor.AQUA + " Set the red spawn point of the currently selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt spectate <name>:" + ChatColor.AQUA + " Spectate the battle field that you specified.");
-			sender.sendMessage(ChatColor.GREEN + "/mt spectators:" + ChatColor.AQUA + " Set the spectators spawn point of the currently selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt status:" + ChatColor.AQUA + " Check the status of the currently selected battle field.");
-			sender.sendMessage(ChatColor.GREEN + "/mt remove <name>:" + ChatColor.AQUA + " Remove the selected battle field.");
+			sender.sendMessage(ChatColor.GREEN + "/mt create <name>:" + ChatColor.AQUA + " Create a new battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt cuboid <radius|xradius yradius zradius>:" + ChatColor.AQUA + " Set the cuboid of the currently selected battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt edit <name>:" + ChatColor.AQUA + " Set the battlefield that you wish to edit.");
+			sender.sendMessage(ChatColor.GREEN + "/mt enable:" + ChatColor.AQUA + " Toggle whether the currently selected battlefield is enabled or disabled.");
+			sender.sendMessage(ChatColor.GREEN + "/mt greenspawn:" + ChatColor.AQUA + " Set the green spawn point of the currently selected battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt redspawn:" + ChatColor.AQUA + " Set the red spawn point of the currently selected battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt remove <name>:" + ChatColor.AQUA + " Remove the selected battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt spectate <name>:" + ChatColor.AQUA + " Spectate the battlefield that you specified.");
+			sender.sendMessage(ChatColor.GREEN + "/mt spectators:" + ChatColor.AQUA + " Set the spectators spawn point of the currently selected battlefield.");
+			sender.sendMessage(ChatColor.GREEN + "/mt status:" + ChatColor.AQUA + " Check the status of the currently selected battlefield.");
 		}
 		
 		return true;

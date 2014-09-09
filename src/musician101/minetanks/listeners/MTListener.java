@@ -92,13 +92,59 @@ public class MTListener implements Listener
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		event.setCancelled(isInField(event.getPlayer().getUniqueId()));
+		if (event.isCancelled())
+			return;
+		
+		for (String name : plugin.getFieldStorage().getFields().keySet())
+		{
+			Battlefield field = plugin.getFieldStorage().getField(name);
+			double x = event.getBlock().getX();
+			double y = event.getBlock().getY();
+			double z = event.getBlock().getZ();
+			double minX = field.getCuboid().getMinX();
+			double maxX = field.getCuboid().getMaxX();
+			double minY = field.getCuboid().getMinY();
+			double maxY = field.getCuboid().getMaxY();
+			double minZ = field.getCuboid().getMinZ();
+			double maxZ = field.getCuboid().getMaxZ();
+			if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
+			{
+				if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
+					return;
+				
+				event.setCancelled(true);
+				return;
+			}
+		}
 	}
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		event.setCancelled(isInField(event.getPlayer().getUniqueId()));
+		if (event.isCancelled())
+			return;
+		
+		for (String name : plugin.getFieldStorage().getFields().keySet())
+		{
+			Battlefield field = plugin.getFieldStorage().getField(name);
+			double x = event.getBlock().getX();
+			double y = event.getBlock().getY();
+			double z = event.getBlock().getZ();
+			double minX = field.getCuboid().getMinX();
+			double maxX = field.getCuboid().getMaxX();
+			double minY = field.getCuboid().getMinY();
+			double maxY = field.getCuboid().getMaxY();
+			double minZ = field.getCuboid().getMinZ();
+			double maxZ = field.getCuboid().getMaxZ();
+			if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
+			{
+				if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
+					return;
+				
+				event.setCancelled(true);
+				return;
+			}
+		}
 	}
 	
 	@EventHandler
@@ -179,33 +225,26 @@ public class MTListener implements Listener
 				if (pt.getTeam() == MTTeam.SPECTATOR)
 					return;
 				
-				Location loc = player.getLocation();
-				double[] x = new double[2];
-				x[0] = field.getPoint1().getX();
-				x[1] = field.getPoint2().getX();
-				Arrays.sort(x);
-				double[] z = new double[2];
-				z[0] = field.getPoint1().getZ();
-				z[1] = field.getPoint2().getZ();
-				Arrays.sort(z);
-				if ((loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1]) && (loc.getX() > x[0] || loc.getX() < x[1] || loc.getZ() > z[0] || loc.getZ() < z[1]))
+				double minX = field.getCuboid().getMinX();
+				double maxX = field.getCuboid().getMaxX();
+				double minZ = field.getCuboid().getMinZ();
+				double maxZ = field.getCuboid().getMaxZ();
+				double x = player.getLocation().getX();
+				double z = player.getLocation().getZ();
+				double correction = 2.0;
+				if (x <= minX || x >= maxX || z <= minZ || z >= maxZ)
 				{
+					if (x <= minX)
+						x = minX + correction;
+					else if (x >= maxX)
+						x = maxX - correction;
+					if (z <= minZ)
+						z = minZ + correction;
+					else if (z >= maxZ)
+						z = maxZ - correction;
+					
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Out of bounds!");
-					double newX = loc.getX();
-					double newZ = loc.getZ();
-					if (loc.getX() < x[0] || loc.getX() < x[1])
-						newX = loc.getX() + 2;
-					
-					if (loc.getZ() < z[0] || loc.getZ() < z[1])
-						newZ = loc.getZ() + 2;
-					
-					if (loc.getX() > x[0] || loc.getX() > x[1])
-						newX = loc.getX() - 2;
-					
-					if (loc.getZ() > z[0] || loc.getZ() > z[0])
-						newZ = loc.getZ() - 2;
-					
-					player.teleport(new Location(loc.getWorld(), newX, loc.getY(), newZ));
+					player.teleport(new Location(player.getLocation().getWorld(), x, player.getLocation().getY(), z));
 					return;
 				}
 			}
@@ -342,20 +381,13 @@ public class MTListener implements Listener
 		{
 			for (String name : plugin.getFieldStorage().getFields().keySet())
 			{
-				Battlefield field = plugin.getFieldStorage().getField(name);
-				Location loc = block.getLocation();
-				double[] x = new double[2];
-				x[0] = field.getPoint1().getX();
-				x[1] = field.getPoint2().getX();
-				Arrays.sort(x);
-				double[] z = new double[2];
-				z[0] = field.getPoint1().getZ();
-				z[1] = field.getPoint2().getZ();
-				Arrays.sort(z);
-				if ((loc.getX() > x[0] || loc.getX() < x[1] || loc.getZ() > z[0] || loc.getZ() < z[1]) || (loc.getX() < x[0] || loc.getX() > x[1] || loc.getZ() < z[0] || loc.getZ() > z[1]))
+				for (Block b : plugin.getFieldStorage().getField(name).getCuboid().getBlocks())
 				{
-					event.blockList().clear();
-					return;
+					if (block.getLocation() == b.getLocation())
+					{
+						event.blockList().clear();
+						return;
+					}
 				}
 			}
 		}
