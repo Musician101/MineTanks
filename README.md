@@ -3,4 +3,4 @@ MineTanks
 
 Minecraft PVP minigame heavily based on World of Tanks.
 
-Currently not available for download.
+Note: Due to the CraftBukkit DMCA, this project will be converted to use SpongeAPI.
