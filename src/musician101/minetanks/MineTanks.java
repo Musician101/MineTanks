@@ -2,7 +2,7 @@ package musician101.minetanks;
 
 import java.io.File;
 
-import musician101.minetanks.battlefield.BattleFieldStorage;
+import musician101.minetanks.battlefield.BattlefieldStorage;
 import musician101.minetanks.command.MTCommandExecutor;
 import musician101.minetanks.handler.TankSelectionHandler;
 import musician101.minetanks.listener.BattlefieldListener;
@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MineTanks extends JavaPlugin
 {
-	static BattleFieldStorage fieldStorage;
+	static BattlefieldStorage fieldStorage;
 	static String prefix;
 	static IconMenu tankSelection;
 	
@@ -29,7 +29,7 @@ public class MineTanks extends JavaPlugin
 		new File(getDataFolder() + File.separator + "battlefields").mkdirs();
 		new File(getDataFolder() + File.separator + "inventorystorage").mkdirs();
 		
-		fieldStorage = new BattleFieldStorage(this);
+		fieldStorage = new BattlefieldStorage(this);
 		fieldStorage.loadFromFiles();
 		
 		initMenu();
@@ -49,7 +49,7 @@ public class MineTanks extends JavaPlugin
 		getLogger().info("Pack it up, boys. We're heading home.");
 	}
 	
-	public static BattleFieldStorage getFieldStorage()
+	public static BattlefieldStorage getFieldStorage()
 	{
 		return fieldStorage;
 	}

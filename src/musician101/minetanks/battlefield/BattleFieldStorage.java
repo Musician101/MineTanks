@@ -12,13 +12,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class BattleFieldStorage
+public class BattlefieldStorage
 {
 	MineTanks plugin;
 	Map<String, Battlefield> fields = new HashMap<String, Battlefield>();
 	Battlefield edit;
 	
-	public BattleFieldStorage(MineTanks plugin)
+	public BattlefieldStorage(MineTanks plugin)
 	{
 		this.plugin = plugin;
 	}
