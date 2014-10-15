@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.util.Cuboid;
+import musician101.minetanks.util.CuboidUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,10 +28,10 @@ public class BattleFieldStorage
 		return createField(name, false, null, null, null, null);
 	}
 	
-	public boolean createField(String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+	public boolean createField(String name, boolean enabled, CuboidUtil cuboid, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		for (String field : fields.keySet())
-			if (getField(field).equals(name))
+			if (field.equalsIgnoreCase(name))
 				return false;
 		
 		Battlefield field = new Battlefield(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators); 
@@ -42,11 +42,16 @@ public class BattleFieldStorage
 	
 	public boolean removeField(String field)
 	{
-		if (!fields.containsKey(field))
-			return false;
+		for (String name : fields.keySet())
+		{
+			if (name.equalsIgnoreCase(field))
+			{
+				fields.remove(field);
+				return new File(plugin.getDataFolder() + File.separator + "battlefields", field + ".yml").delete();
+			}
+		}
 		
-		fields.remove(field);
-		return new File(plugin.getDataFolder() + File.separator + "battlefields", field + ".yml").delete();
+		return false;
 	}
 	
 	public Battlefield getField(String name)
@@ -72,13 +77,13 @@ public class BattleFieldStorage
 				YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
 				String name = file.getName().replace(".yml", "");
 				boolean enabled = field.getBoolean("enabled");
-				Cuboid cuboid = null;
+				CuboidUtil cuboid = null;
 				Location greenSpawn = null;
 				Location redSpawn = null;
 				Location spectators = null;
 				
 				if (field.isSet("cuboid"))
-					cuboid = Cuboid.deserialize(field.getConfigurationSection("cuboid").getValues(false));
+					cuboid = CuboidUtil.deserialize(field.getConfigurationSection("cuboid").getValues(false));
 				
 				if (field.isSet("greenSpawn.x"))
 					greenSpawn = new Location(Bukkit.getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
@@ -130,5 +135,14 @@ public class BattleFieldStorage
 		}
 		
 		return false;
+	}
+	
+	public Battlefield getPlayerField(UUID player)
+	{
+		for (Battlefield field : fields.values())
+			if (field.getPlayer(player) != null)
+				return field;
+		
+		return null;
 	}
 }

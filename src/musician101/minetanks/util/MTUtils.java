@@ -2,12 +2,12 @@ package musician101.minetanks.util;
 
 import java.util.Arrays;
 
-import musician101.minetanks.tankinfo.Tanks;
-import musician101.minetanks.tankinfo.modules.Cannons;
-import musician101.minetanks.tankinfo.modules.Engines;
-import musician101.minetanks.tankinfo.modules.Radios;
-import musician101.minetanks.tankinfo.modules.Tracks;
-import musician101.minetanks.tankinfo.modules.Turrets;
+import musician101.minetanks.tank.Tanks;
+import musician101.minetanks.tank.module.Cannon;
+import musician101.minetanks.tank.module.Engine;
+import musician101.minetanks.tank.module.Radio;
+import musician101.minetanks.tank.module.Tracks;
+import musician101.minetanks.tank.module.Turrets;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ public class MTUtils
 		return (front + side + rear) / 3;
 	}
 	
-	public static Inventory parseWeapons(Cannons cannon)
+	public static Inventory parseWeapons(Cannon cannon)
 	{
 		Inventory inv = Bukkit.createInventory(null, InventoryType.PLAYER);
 		inv.setItem(0, cannon.getCannon());
@@ -32,7 +32,7 @@ public class MTUtils
 		return inv;
 	}
 	
-	public static ItemStack[] parseArmor(Engines engine, Radios radio, Tracks tracks, Turrets turret, double armor, int speed)
+	public static ItemStack[] parseArmor(Engine engine, Radio radio, Tracks tracks, Turrets turret, double armor, int speed)
 	{
 		return new ItemStack[]{parseArmorValue(tracks.getTracks(), armor),
 				parseArmorValue(parseSpeedValue(engine.getEngine(), speed), armor),

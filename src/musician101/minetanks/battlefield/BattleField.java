@@ -12,14 +12,14 @@ import java.util.UUID;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
-import musician101.minetanks.handlers.ReloadHandler;
-import musician101.minetanks.scoreboards.MTScoreboard;
-import musician101.minetanks.tankinfo.Tanks;
-import musician101.minetanks.util.Cuboid;
+import musician101.minetanks.handler.ReloadHandler;
+import musician101.minetanks.lib.Reference.Messages;
+import musician101.minetanks.scoreboard.MTScoreboard;
+import musician101.minetanks.tank.Tanks;
+import musician101.minetanks.util.CuboidUtil;
 import musician101.minetanks.util.MTUtils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -40,9 +40,9 @@ public class Battlefield
 	private int unassigned = 0;
 	private MTScoreboard sb;
 	private boolean inProgress = false;
-	private Cuboid cuboid;
+	private CuboidUtil cuboid;
 	
-	public Battlefield(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+	public Battlefield(MineTanks plugin, String name, boolean enabled, CuboidUtil cuboid, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		this.plugin = plugin;
 		this.name = name;
@@ -69,12 +69,12 @@ public class Battlefield
 		return name;
 	}
 		
-	public Cuboid getCuboid()
+	public CuboidUtil getCuboid()
 	{
 		return cuboid;
 	}
 	
-	public void setCuboid(Cuboid cuboid)
+	public void setCuboid(CuboidUtil cuboid)
 	{
 		this.cuboid = cuboid;
 	}
@@ -118,7 +118,7 @@ public class Battlefield
 		}
 		catch (IOException e)
 		{
-			player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
+			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			return false;
 		}
 		
@@ -161,7 +161,7 @@ public class Battlefield
 		}
 		catch (IOException e)
 		{
-			player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
+			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			for (Map<String, Object> effect : effects)
 			{
 				PotionEffectType type = PotionEffectType.getByName(effect.get("type").toString());
@@ -185,7 +185,7 @@ public class Battlefield
 		if (team == MTTeam.SPECTATOR)
 		{
 			player.teleport(spectators);
-			player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You are now spectating in " + name + ".");
+			player.sendMessage(Messages.POSITIVE_PREFIX + "You are now spectating in " + name + ".");
 		}
 		else
 		{
@@ -203,6 +203,9 @@ public class Battlefield
 		PlayerTank pt = getPlayer(player.getUniqueId());
 		if (pt == null)
 			return false;
+		
+		player.removePotionEffect(PotionEffectType.SLOW);
+		player.removePotionEffect(PotionEffectType.SPEED);
 		
 		File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
 		if (file.exists())
@@ -420,9 +423,9 @@ public class Battlefield
 				pt.setTank(null);
 				sb.playerDeath(player);
 				if (sb.getGreenTeamSize() == 0)
-					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
+					player.sendMessage(Messages.NEGATIVE_PREFIX + "Red team wins!");
 				else if (sb.getRedTeamSize() == 0)
-					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
+					player.sendMessage(Messages.POSITIVE_PREFIX + "Green team wins!");
 			}
 		}
 	}

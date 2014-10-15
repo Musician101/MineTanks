@@ -2,7 +2,7 @@ package musician101.minetanks.battlefield.player;
 
 import java.util.UUID;
 
-import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.tank.Tanks;
 
 public class PlayerTank
 {

@@ -1,6 +1,6 @@
 package musician101.minetanks.util;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,8 +37,9 @@ public class IconMenu implements Listener
         this.optionIcons = new ItemStack[size];
         plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
     }
-   
-    public IconMenu setOption(int position, ItemStack icon, String name, String... info)
+    
+    //Original arguments were int position, ItemStack icon, String name, String... info
+    public IconMenu setOption(int position, ItemStack icon, String name, List<String> info)
     {
         optionNames[position] = name;
         optionIcons[position] = setItemNameAndLore(icon, name, info);
@@ -152,11 +153,12 @@ public class IconMenu implements Listener
         }
     }
     
-    private ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore)
+    //Original arguments were ItemStack item, String name, String[] lore
+    private ItemStack setItemNameAndLore(ItemStack item, String name, List<String> lore)
     {
         ItemMeta im = item.getItemMeta();
         im.setDisplayName(name);
-        im.setLore(Arrays.asList(lore));
+        im.setLore(lore);
         item.setItemMeta(im);
         return item;
     }

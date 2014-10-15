@@ -1,8 +1,8 @@
 package musician101.minetanks.util;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.handlers.MenuHandlers.TankSelectionHandler;
-import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.handler.TankSelectionHandler;
+import musician101.minetanks.tank.Tanks;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,8 +17,12 @@ public class Menus
 	{
 		this.plugin = plugin;
 		this.tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
-		for (final Tanks tank : Tanks.values())
-			tankSelection.setOption(tank.getId(), new ItemStack(Material.MINECART, 1), "§a" + tank.getName(), tank.getDescription());
+		int nextId = 0;
+		for (Tanks tank : Tanks.values())
+		{
+			nextId++;
+			tankSelection.setOption(nextId, new ItemStack(Material.MINECART, 1), "§a" + tank.getName(), tank.getDescription());
+		}
 	}
 	
 	public void openTankMenu(Player player)
