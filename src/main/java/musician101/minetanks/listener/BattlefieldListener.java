@@ -7,46 +7,38 @@ import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.event.AttemptMenuOpenEvent;
 import musician101.minetanks.event.PlayerTankDamageEvent;
-import musician101.minetanks.event.PlayerTankDeathEvent;
 import musician101.minetanks.event.PlayerTankDamageEvent.PlayerTankDamageCause;
+import musician101.minetanks.event.PlayerTankDeathEvent;
 import musician101.minetanks.handler.DamageHandler;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.scoreboard.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.event.Subscribe;
 
-public class BattlefieldListener implements Listener
+public class BattlefieldListener
 {
-	MineTanks plugin;
-	
-	public BattlefieldListener(MineTanks plugin)
-	{
-		this.plugin = plugin;
-	}
-	
-	@EventHandler
+	//TODO inventory handling not implemented
+	@Subscribe
 	public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
 	{
 		Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
-		Player player = Bukkit.getPlayer(event.getPlayer());
+		Player player = MineTanks.getGame().getPlayer(event.getPlayer()).get();
 		PlayerTank pt = event.getPlayerTank();
-		if (event.getMaterial () == Material.WATCH)
+		if (event.getMaterial() == ItemTypes.CLOCK)
 		{
 			if (pt.isReady())
 			{
 				pt.setReady(false);
-				player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
+				player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", "You are currently not ready."));
 				return;
 			}
 			
 			pt.setReady(true);
-			player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Unready", "You are currently ready."));
+			player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Unready", "You are currently ready."));
 			field.startMatch();
 			return;
 		}
@@ -61,32 +53,33 @@ public class BattlefieldListener implements Listener
 		return;
 	}
 	
-	@EventHandler
+	@Subscribe
 	public void onPlayerDeath(PlayerTankDeathEvent event)
 	{
 		Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
 		Player killed = event.getKilled();
 		Player killer = event.getKiller();
 		MTScoreboard sb = field.getScoreboard();
-		String dmgdMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
-		String dmgrMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
-		for (Player player : Bukkit.getOnlinePlayers())
+		String dmgdMsg = (sb.isOnGreen(killed) ? TextColors.GREEN + killed.getName() : TextColors.RED + killed.getName());
+		String dmgrMsg = (sb.isOnGreen(killer) ? TextColors.GREEN + killer.getName() : TextColors.RED + killer.getName());
+		for (Player player : MineTanks.getGame().getOnlinePlayers())
 			if (field.getPlayer(player.getUniqueId()) != null)
-				player.sendMessage(ChatColor.GREEN + MineTanks.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
+				player.sendMessage(TextColors.GREEN + MineTanks.getPrefix() + TextColors.RESET + " " + dmgdMsg + TextColors.RESET + " was killed by " + dmgrMsg + TextColors.RESET + ".");
 		
 		killed.getInventory().clear();
 		killed.getInventory().setHelmet(null);
 		killed.getInventory().setChestplate(null);
 		killed.getInventory().setLeggings(null);
 		killed.getInventory().setBoots(null);
+		//TODO for some reason getting an entity's UUID isn't a possibility
 		field.playerKilled(killed.getUniqueId());
 		field.endMatch();
 	}
 	
-	@EventHandler
+	@Subscribe
 	public void onPlayerDamageEvent(PlayerTankDamageEvent event)
 	{
-		DamageHandler dh = new DamageHandler(plugin);
+		DamageHandler dh = new DamageHandler();
 		Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
 		UUID dmgd = event.getDamagedPlayer();
 		if (event.getCause() == PlayerTankDamageCause.FALL)
@@ -98,7 +91,7 @@ public class BattlefieldListener implements Listener
 		if (sb.getPlayerHealth(dmgd) <= 0 || sb.getPlayerHealth(dmgr) <=0)
 			return;
 		
-		if ((sb.isOnGreen(Bukkit.getPlayer(dmgr)) && sb.isOnGreen(Bukkit.getPlayer(dmgd))) || (sb.isOnRed(Bukkit.getPlayer(dmgr)) && sb.isOnRed(Bukkit.getPlayer(dmgd))))
+		if ((sb.isOnGreen(MineTanks.getGame().getPlayer(dmgr).get()) && sb.isOnGreen(MineTanks.getGame().getPlayer(dmgd).get())) || (sb.isOnRed(MineTanks.getGame().getPlayer(dmgr).get()) && sb.isOnRed(MineTanks.getGame().getPlayer(dmgd).get())))
 		{
 			if (event.getCause() == PlayerTankDamageCause.RAM)
 				dh.meleeHitFriendly(field, dmgr, dmgd, damage);

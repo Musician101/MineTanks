@@ -5,23 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.spongepowered.api.world.Location;
+
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.util.CuboidUtil;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 public class BattlefieldStorage
 {
-	MineTanks plugin;
 	Map<String, Battlefield> fields = new HashMap<String, Battlefield>();
 	Battlefield edit;
-	
-	public BattlefieldStorage(MineTanks plugin)
-	{
-		this.plugin = plugin;
-	}
 	
 	public boolean createField(String name)
 	{
@@ -34,7 +26,7 @@ public class BattlefieldStorage
 			if (field.equalsIgnoreCase(name))
 				return false;
 		
-		Battlefield field = new Battlefield(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators); 
+		Battlefield field = new Battlefield(name, enabled, cuboid, greenSpawn, redSpawn, spectators); 
 		fields.put(name, field);
 		edit = field;
 		return true;
@@ -47,7 +39,7 @@ public class BattlefieldStorage
 			if (name.equalsIgnoreCase(field))
 			{
 				fields.remove(field);
-				return new File(plugin.getDataFolder() + File.separator + "battlefields", field + ".yml").delete();
+				return new File(MineTanks.battlefields, field + ".yml").delete();
 			}
 		}
 		
@@ -69,8 +61,7 @@ public class BattlefieldStorage
 	
 	public void loadFromFiles()
 	{
-		File files = new File(plugin.getDataFolder() + File.separator + "battlefields");
-		for (File file : files.listFiles())
+		for (File file : MineTanks.battlefields.listFiles())
 		{
 			if (file.getName().endsWith(".yml"))
 			{
@@ -86,16 +77,16 @@ public class BattlefieldStorage
 					cuboid = CuboidUtil.deserialize(field.getConfigurationSection("cuboid").getValues(false));
 				
 				if (field.isSet("greenSpawn.x"))
-					greenSpawn = new Location(Bukkit.getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
+					greenSpawn = new Location(MineTanks.getGame().getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
 				
 				if (field.isSet("redSpawn.x"))
-					redSpawn = new Location(Bukkit.getWorld(field.getString("redSpawn.world")), field.getInt("redSpawn.x"), field.getInt("redSpawn.y"), field.getInt("redSpawn.z"));
+					redSpawn = new Location(MineTanks.getGame().getWorld(field.getString("redSpawn.world")), field.getInt("redSpawn.x"), field.getInt("redSpawn.y"), field.getInt("redSpawn.z"));
 				
 				if (field.isSet("spectators.x"))
-					spectators = new Location(Bukkit.getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
+					spectators = new Location(MineTanks.getGame().getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 				
 				if (!createField(name, enabled, cuboid, greenSpawn, redSpawn, spectators))
-					plugin.getLogger().warning("Failed to load " + file.getName());
+					MineTanks.getLogger().warn("Failed to load " + file.getName());
 			}
 		}
 	}

@@ -1,57 +1,105 @@
 package musician101.minetanks;
 
 import java.io.File;
+import java.util.Arrays;
 
 import musician101.minetanks.battlefield.BattlefieldStorage;
 import musician101.minetanks.command.MTCommandExecutor;
 import musician101.minetanks.handler.TankSelectionHandler;
+import musician101.minetanks.lib.Reference;
 import musician101.minetanks.listener.BattlefieldListener;
 import musician101.minetanks.listener.MTListener;
 import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.util.IconMenu;
 import musician101.minetanks.util.MTUtils;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.event.state.PreInitializationEvent;
+import org.spongepowered.api.event.state.ServerStoppingEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.util.Owner;
+import org.spongepowered.api.util.event.Subscribe;
 
-public class MineTanks extends JavaPlugin
+@Plugin(id = Reference.ID, name = Reference.NAME, version = Reference.VERSION)
+public class MineTanks
 {
 	static BattlefieldStorage fieldStorage;
-	static String prefix;
+	//TODO move to battlefieldstorage or battlfield class
+	@Deprecated
+	public static File battlefields;
+	//TODO move to battlefieldstorage or battlefield class
+	@Deprecated
+	public static File inventoryStorage;
+	static Game game;
 	static IconMenu tankSelection;
+	static Logger logger;
+	static Owner owner;
+	static String prefix;
 	
-	@Override
-	public void onEnable()
+	@Subscribe
+	public void preInit(PreInitializationEvent event)
 	{
-		prefix = "[" + getDescription().getPrefix() + "]";
-		new File(getDataFolder() + File.separator + "battlefields").mkdirs();
-		new File(getDataFolder() + File.separator + "inventorystorage").mkdirs();
+		game = event.getGame();
+		logger = event.getPluginLog();
+		prefix = "[" + Reference.NAME + "]";
 		
-		fieldStorage = new BattlefieldStorage(this);
+		//TODO Temporary workaround until Owner get's a full implementation
+		owner = new Owner()
+		{
+			public String getId()
+			{
+				return Reference.ID;
+			}
+		};
+		
+		//TODO move battlefields object to BattleFieldStorage
+		battlefields = new File(event.getRecommendedConfigurationDirectory(), "battlefields");
+		battlefields.mkdirs();
+		inventoryStorage = new File(event.getRecommendedConfigurationDirectory(), "inventorystorage");
+		inventoryStorage.mkdirs();
+		
+		fieldStorage = new BattlefieldStorage();
 		fieldStorage.loadFromFiles();
 		
 		initMenu();
 		
-		getServer().getPluginManager().registerEvents(new MTListener(this), this);
-		getServer().getPluginManager().registerEvents(new BattlefieldListener(this), this);
+		game.getEventManager().register(owner, new MTListener());
+		game.getEventManager().register(owner, new BattlefieldListener());
 		
-		getCommand("minetanks").setExecutor(new MTCommandExecutor());
+		game.getCommandDispatcher().register(owner, new MTCommandExecutor(), Arrays.asList("mt"));
 		
-		getLogger().info("Movin' on out. Shuck 'em up!");
+		logger.info("Movin' on out. Shuck 'em up!");
 	}
 	
-	@Override
-	public void onDisable()
+	@Subscribe
+	public void serverStopping(ServerStoppingEvent event)
 	{
 		fieldStorage.saveToFiles();
-		getLogger().info("Pack it up, boys. We're heading home.");
+		logger.info("Pack it up, boys. We're heading home.");
 	}
 	
 	public static BattlefieldStorage getFieldStorage()
 	{
 		return fieldStorage;
+	}
+	
+	public static Game getGame()
+	{
+		return game;
+	}
+	
+	public static Logger getLogger()
+	{
+		return logger;
+	}
+	
+	public static Owner getOwner()
+	{
+		return owner;
 	}
 	
 	public static String getPrefix()
@@ -61,9 +109,9 @@ public class MineTanks extends JavaPlugin
 	
 	private void initMenu()
 	{
-		tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler(this), this);
+		tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler());
 		for (Tanks tank : Tanks.values())
-			tankSelection.setOption(tank.getId(), new ItemStack(Material.MINECART, 1), "§a" + tank.getName(), tank.getDescription());
+			tankSelection.setOption(tank.getId(), new ItemStack(ItemTypes.MINECART, 1), "\u00A7a" + tank.getName(), tank.getDescription());
 	}
 	
 	public static void openTankMenu(Player player)

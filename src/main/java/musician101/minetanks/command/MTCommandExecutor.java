@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import musician101.luc.bukkit.command.ICommand;
 import musician101.minetanks.lib.Reference.Messages;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.util.command.CommandCallable;
+import org.spongepowered.api.util.command.CommandException;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class MTCommandExecutor implements CommandExecutor
+import com.google.common.base.Optional;
+
+public class MTCommandExecutor implements CommandCallable
 {
 	CommandManager cm;
 	
@@ -20,24 +21,31 @@ public class MTCommandExecutor implements CommandExecutor
 	{
 		cm = new CommandManager();
 	}
-	
+	//TODO fix all of these so they do not return null
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] mainArgs)
+	public List<String> getSuggestions(CommandSource source, String arguments) throws CommandException
 	{
-		if (!(sender instanceof Player))
+		return null;
+	}
+
+	@Override
+	public boolean call(CommandSource source, String arguments, List<String> parents) throws CommandException
+	{
+		if (!(source instanceof Player))
 		{
 			for (String msg : cm.getHelp(0))
-				sender.sendMessage(msg);
+				source.sendMessage(msg);
 			
 			return true;
 		}
 		
+		String[] mainArgs = arguments.split(" ");
 		List<String> args = new ArrayList<String>();
 		Collections.addAll(args, mainArgs);
 		if (mainArgs.length > 0)
 			args.remove(mainArgs[0]);
 		
-		for (ICommand cmd : cm.getCommandList())
+		for (ISubCommand cmd : cm.getCommandList())
 		{
 			for (String alias : cmd.getAliases())
 			{
@@ -45,11 +53,11 @@ public class MTCommandExecutor implements CommandExecutor
 				{
 					try
 					{
-						cmd.execute((Player) sender, args);
+						cmd.execute((Player) source, args);
 					}
 					catch (Exception e)
 					{
-						sender.sendMessage(e.getMessage());
+						source.sendMessage(e.getMessage());
 						return true;
 					}
 					return true;
@@ -57,8 +65,31 @@ public class MTCommandExecutor implements CommandExecutor
 			}
 		}
 		
-		sender.sendMessage(Messages.NEGATIVE_PREFIX + "Unkown command: " + mainArgs[0]);
+		source.sendMessage(Messages.NEGATIVE_PREFIX + "Unkown command: " + mainArgs[0]);
 		return true;
 	}
 
+	@Override
+	public boolean testPermission(CommandSource source)
+	{
+		return false;
+	}
+
+	@Override
+	public Optional<String> getShortDescription()
+	{
+		return null;
+	}
+
+	@Override
+	public Optional<String> getHelp()
+	{
+		return null;
+	}
+
+	@Override
+	public String getUsage()
+	{
+		return null;
+	}
 }

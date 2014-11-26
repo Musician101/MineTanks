@@ -2,11 +2,9 @@ package musician101.minetanks.tank.module;
 
 import java.util.Arrays;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 public class Cannon
 {
@@ -67,9 +65,60 @@ public class Cannon
 		return type;
 	}
 	
+	@SuppressWarnings("serial")
 	private void parseCannon()
 	{
-		cannon = new ItemStack(Material.BOW);
+		cannon = new ItemStack()
+		{
+			@Override
+			public int compareTo(ItemStack o)
+			{
+				return 0;
+			}
+
+			@Override
+			public ItemType getItem()
+			{
+				return ItemTypes.BOW;
+			}
+
+			@Override
+			public short getDamage()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setDamage(short damage)
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getQuantity()
+			{
+				return 1;
+			}
+
+			@Override
+			public void setQuantity(int quantity) throws IllegalArgumentException
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getMaxStackQuantity()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setMaxStackQuantity(int quantity)
+			{
+				//NOOP
+			}
+		};
+		
 		ItemMeta meta = cannon.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);

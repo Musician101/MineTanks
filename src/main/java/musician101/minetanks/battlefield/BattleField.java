@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.world.Location;
+
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
@@ -19,20 +23,8 @@ import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.util.CuboidUtil;
 import musician101.minetanks.util.MTUtils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-
 public class Battlefield
 {
-	private MineTanks plugin;
 	private String name;
 	private Location greenSpawn, redSpawn, spectators;
 	private Map<UUID, PlayerTank> players = new HashMap<UUID, PlayerTank>();
@@ -42,9 +34,8 @@ public class Battlefield
 	private boolean inProgress = false;
 	private CuboidUtil cuboid;
 	
-	public Battlefield(MineTanks plugin, String name, boolean enabled, CuboidUtil cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+	public Battlefield(String name, boolean enabled, CuboidUtil cuboid, Location greenSpawn, Location redSpawn, Location spectators)
 	{
-		this.plugin = plugin;
 		this.name = name;
 		this.enabled = enabled;
 		this.cuboid = cuboid;
@@ -111,7 +102,8 @@ public class Battlefield
 	
 	public boolean addPlayer(Player player, MTTeam team)
 	{
-		File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
+		@SuppressWarnings("deprecation")
+		File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
 		try
 		{
 			file.createNewFile();
@@ -121,7 +113,7 @@ public class Battlefield
 			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			return false;
 		}
-		
+		//TODO configuration support is incomplete
 		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
 		Inventory inv = player.getInventory();
 		for (int slot = 0; slot < inv.getSize(); slot++)
@@ -130,6 +122,7 @@ public class Battlefield
 		for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
 			yml.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
 		
+		//TODO potion effects are not implemented
 		List<Map<String, Object>> effects = new ArrayList<Map<String, Object>>();
 		for (PotionEffect effect : player.getActivePotionEffects())
 		{
@@ -143,15 +136,15 @@ public class Battlefield
 		}
 		
 		yml.set("effects", effects);
-		
+		//TODO player.getLocation() doesn't have a real replacement yet
 		Location loc = player.getLocation();
 		Map<String, Object> pl = new HashMap<String, Object>();
 		pl.put("world", loc.getWorld().getName());
-		pl.put("x", loc.getX());
-		pl.put("y", loc.getY());
-		pl.put("z", loc.getZ());
-		pl.put("yaw", loc.getYaw());
-		pl.put("pitch", loc.getPitch());
+		pl.put("x", loc.getPosition().getX());
+		pl.put("y", loc.getPosition().getY());
+		pl.put("z", loc.getPosition().getZ());
+		pl.put("yaw", player.getRotation().getYaw());
+		pl.put("pitch", player.getRotation().getPitch());
 		yml.set("location", pl);
 		yml.set("xp", player.getExp());
 		
@@ -174,7 +167,7 @@ public class Battlefield
 			file.delete();
 			return false;
 		}
-		
+		//TODO experience handling has not been implemented
 		player.setExp(0F);
 		player.setLevel(0);
 		player.getInventory().clear();
@@ -207,7 +200,7 @@ public class Battlefield
 		player.removePotionEffect(PotionEffectType.SLOW);
 		player.removePotionEffect(PotionEffectType.SPEED);
 		
-		File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
+		File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
 		if (file.exists())
 		{
 			YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
@@ -265,14 +258,14 @@ public class Battlefield
 	
 	public void saveToFile()
 	{
-		File file = new File(plugin.getDataFolder() + File.separator + "battlefields", this.name + ".yml");
+		File file = new File(MineTanks.battlefields, this.name + ".yml");
 		try
 		{
 			file.createNewFile();
 		}
 		catch (IOException e)
 		{
-			plugin.getLogger().warning("Error: Failed to create file: " + file.getName());
+			MineTanks.getLogger().warn("Error: Failed to create file: " + file.getName());
 			return;
 		}
 		
@@ -283,25 +276,25 @@ public class Battlefield
 		if (greenSpawn != null)
 		{
 			field.set("greenSpawn.world", greenSpawn.getWorld().getName());
-			field.set("greenSpawn.x", greenSpawn.getX());
-			field.set("greenSpawn.y", greenSpawn.getY());
-			field.set("greenSpawn.z", greenSpawn.getZ());
+			field.set("greenSpawn.x", greenSpawn.getPosition().getX());
+			field.set("greenSpawn.y", greenSpawn.getPosition().getY());
+			field.set("greenSpawn.z", greenSpawn.getPosition().getZ());
 		}
 		
 		if (redSpawn != null)
 		{
 			field.set("redSpawn.world", redSpawn.getWorld().getName());
-			field.set("redSpawn.x", redSpawn.getX());
-			field.set("redSpawn.y", redSpawn.getY());
-			field.set("redSpawn.z", redSpawn.getZ());
+			field.set("redSpawn.x", redSpawn.getPosition().getX());
+			field.set("redSpawn.y", redSpawn.getPosition().getY());
+			field.set("redSpawn.z", redSpawn.getPosition().getZ());
 		}
 		
 		if (spectators != null)
 		{
 			field.set("spectators.world", spectators.getWorld().getName());
-			field.set("spectators.x", spectators.getX());
-			field.set("spectators.y", spectators.getY());
-			field.set("spectators.z", spectators.getZ());
+			field.set("spectators.x", spectators.getPosition().getX());
+			field.set("spectators.y", spectators.getPosition().getY());
+			field.set("spectators.z", spectators.getPosition().getZ());
 		}
 		
 		field.set("enabled", enabled);
@@ -311,7 +304,7 @@ public class Battlefield
 		}
 		catch (IOException e)
 		{
-			plugin.getLogger().warning("Error: Could not save " + file.getName());
+			MineTanks.getLogger().warn("Error: Could not save " + file.getName());
 		}
 	}
 
@@ -351,15 +344,16 @@ public class Battlefield
 			else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
+				//TODO Nothing to determine if a player is online or offline
 				sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
-				Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
+				MineTanks.getGame().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
 			}
 			else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
 				sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
-				Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
+				MineTanks.getGame().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
 			}
 		}
@@ -369,7 +363,7 @@ public class Battlefield
 		{
 			final PlayerTank pt = getPlayer(uuid);
 			final Tanks tank = pt.getTank();
-			final Player player = Bukkit.getPlayer(uuid);
+			final Player player = MineTanks.getGame().getPlayer(uuid).get();
 			if (pt.getTeam() != MTTeam.SPECTATOR)
 			{
 				if (sb.isOnGreen(player))
@@ -380,6 +374,7 @@ public class Battlefield
 				
 				player.setScoreboard(sb.getScoreboard());
 				sb.setPlayerHealth(uuid, tank.getHealth());
+				//TODO convert to Sponge Task
 				new BukkitRunnable()
 				{
 					@Override
@@ -409,7 +404,7 @@ public class Battlefield
 			inProgress = false;
 			for (UUID uuid : players.keySet())
 			{
-				Player player = Bukkit.getPlayer(uuid);
+				Player player = MineTanks.getGame().getPlayer(uuid).get();
 				player.teleport(spectators);
 				player.getInventory().setHelmet(null);
 				player.getInventory().setChestplate(null);
@@ -443,8 +438,8 @@ public class Battlefield
 	public void playerKilled(UUID player)
 	{
 		getPlayer(player).killed();
-		sb.playerDeath(Bukkit.getPlayer(player));
-		Bukkit.getPlayer(player).teleport(spectators);
+		sb.playerDeath(MineTanks.getGame().getPlayer(player).get());
+		MineTanks.getGame().getPlayer(player).get().teleport(spectators);
 	}
 	
 	public MTScoreboard getScoreboard()

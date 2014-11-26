@@ -9,13 +9,11 @@ import musician101.minetanks.tank.module.Radio;
 import musician101.minetanks.tank.module.Tracks;
 import musician101.minetanks.tank.module.Turrets;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.math.Vector3d;
+import org.spongepowered.api.world.Location;
 
 public class MTUtils
 {
@@ -24,12 +22,62 @@ public class MTUtils
 		return (front + side + rear) / 3;
 	}
 	
-	public static Inventory parseWeapons(Cannon cannon)
+	@SuppressWarnings("serial")
+	public static ItemStack[] parseWeapons(final Cannon cannon)
 	{
-		Inventory inv = Bukkit.createInventory(null, InventoryType.PLAYER);
-		inv.setItem(0, cannon.getCannon());
-		inv.addItem(new ItemStack(Material.ARROW, cannon.getAmmoCount()));
-		return inv;
+		ItemStack[] items = new ItemStack[2];
+		items[0] = cannon.getCannon();
+		items[1] = new ItemStack()
+		{
+			@Override
+			public int compareTo(ItemStack arg0)
+			{
+				return 0;
+			}
+
+			@Override
+			public ItemType getItem()
+			{
+				return ItemTypes.ARROW;
+			}
+
+			@Override
+			public short getDamage()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setDamage(short damage)
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getQuantity()
+			{
+				return cannon.getAmmoCount();
+			}
+
+			@Override
+			public void setQuantity(int quantity) throws IllegalArgumentException
+			{
+				
+			}
+
+			@Override
+			public int getMaxStackQuantity()
+			{
+				return cannon.getAmmoCount();
+			}
+
+			@Override
+			public void setMaxStackQuantity(int quantity)
+			{
+				//NOOP
+			}
+		};
+		return items;
 	}
 	
 	public static ItemStack[] parseArmor(Engine engine, Radio radio, Tracks tracks, Turrets turret, double armor, int speed)
@@ -78,16 +126,70 @@ public class MTUtils
 		return item;
 	}
 	
-	public static ItemStack createCustomItem(Material material, String displayName)
+	public static ItemStack createCustomItem(ItemType type, String displayName)
 	{
-		return createCustomItem(material, displayName, "");
+		return createCustomItem(type, displayName, "");
 	}
 	
-	public static ItemStack createCustomItem(Material material, String displayName, String description)
+	@SuppressWarnings("serial")
+	public static ItemStack createCustomItem(final ItemType type, String displayName, String description)
 	{
-		ItemStack item = new ItemStack(material, 1);
+		//TODO item metadata has not been implemented
+		ItemStack item = new ItemStack()
+		{
+
+			@Override
+			public int compareTo(ItemStack o)
+			{
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public ItemType getItem()
+			{
+				return type;
+			}
+
+			@Override
+			public short getDamage()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setDamage(short damage)
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getQuantity()
+			{
+				return 1;
+			}
+
+			@Override
+			public void setQuantity(int quantity) throws IllegalArgumentException
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getMaxStackQuantity()
+			{
+				return getItem().getMaxStackQuantity();
+			}
+
+			@Override
+			public void setMaxStackQuantity(int quantity)
+			{
+				//NOOP
+			}
+		};
+		
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§a" + displayName);
+		meta.setDisplayName("\u00A7a" + displayName);
 		if (!description.equals(""))
 			meta.setLore(Arrays.asList(description));
 		
@@ -102,5 +204,19 @@ public class MTUtils
 			rows++;
 		
 		return rows * 9;
+	}
+	
+	public static Location addPosition(Location loc, double x, double y, double z)
+	{
+		Vector3d vec = loc.getPosition().add(x, y, z);
+		loc.setPosition(vec);
+		return loc;
+	}
+	
+	public static Location subPosition(Location loc, double x, double y, double z)
+	{
+		Vector3d vec = loc.getPosition().sub(x, y, z);
+		loc.setPosition(vec);
+		return loc;
 	}
 }

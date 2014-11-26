@@ -1,5 +1,7 @@
 package musician101.minetanks.handler;
 
+import org.spongepowered.api.entity.Player;
+
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.lib.Reference.Messages;
@@ -8,17 +10,8 @@ import musician101.minetanks.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.util.IconMenu.OptionClickEventHandler;
 import musician101.minetanks.util.MTUtils;
 
-import org.bukkit.entity.Player;
-
 public class TankSelectionHandler implements OptionClickEventHandler
 {
-	MineTanks plugin;
-	
-	public TankSelectionHandler(MineTanks plugin)
-	{
-		this.plugin = plugin;
-	}
-	
 	@Override
 	public void onOptionClick(OptionClickEvent event)
 	{

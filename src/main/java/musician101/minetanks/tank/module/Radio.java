@@ -2,13 +2,11 @@ package musician101.minetanks.tank.module;
 
 import java.util.Arrays;
 
-import musician101.minetanks.tank.Tanks.TankTypes;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import musician101.minetanks.tank.Tanks.TankTypes;
 
 public class Radio
 {
@@ -31,21 +29,72 @@ public class Radio
 		return radio;
 	}
 	
+	@SuppressWarnings("serial")
 	private void parseRadio(TankTypes type)
 	{
-		Material material = Material.AIR;
+		final ItemType iType;
 		if (type == TankTypes.LIGHT)
-			material = Material.LEATHER_CHESTPLATE;
+			iType = ItemTypes.LEATHER_CHESTPLATE;
 		else if (type == TankTypes.MEDIUM)
-			material = Material.IRON_CHESTPLATE;
+			iType = ItemTypes.IRON_CHESTPLATE;
 		else if (type == TankTypes.HEAVY)
-			material = Material.DIAMOND_CHESTPLATE;
+			iType = ItemTypes.DIAMOND_CHESTPLATE;
 		else if (type == TankTypes.TD)
-			material = Material.CHAINMAIL_CHESTPLATE;
+			iType = ItemTypes.CHAINMAIL_CHESTPLATE;
 		else if (type == TankTypes.ARTY)
-			material = Material.GOLD_CHESTPLATE;
+			iType = ItemTypes.GOLDEN_CHESTPLATE;
 		
-		radio = new ItemStack(material);
+		radio = new ItemStack()
+		{
+			@Override
+			public int compareTo(ItemStack o)
+			{
+				return 0;
+			}
+
+			@Override
+			public ItemType getItem()
+			{
+				return iType;
+			}
+
+			@Override
+			public short getDamage()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setDamage(short damage)
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getQuantity()
+			{
+				return 1;
+			}
+
+			@Override
+			public void setQuantity(int quantity) throws IllegalArgumentException
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getMaxStackQuantity()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setMaxStackQuantity(int quantity)
+			{
+				//NOOP
+			}
+		};
+		
 		ItemMeta meta = radio.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + this.name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);

@@ -1,55 +1,28 @@
 package musician101.minetanks.command;
 
-import java.util.Arrays;
 import java.util.List;
 
-import musician101.luc.bukkit.command.ICommand;
-import musician101.luc.bukkit.exception.NoPermissionException;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
-import musician101.minetanks.lib.Reference.Perms;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class Status implements ICommand
+public class Status extends SubCommand
 {
 
-	@Override
-	public String getName()
+	public Status(String name, String description, List<String> aliases)
 	{
-		return "status";
+		super(name, description, aliases);
 	}
 
 	@Override
-	public String getDescription()
+	public void execute(CommandSource source, List<String> args) throws Exception
 	{
-		return "Check the status of the currently selected battlefield.";
-	}
-
-	@Override
-	public String getUsage()
-	{
-		return "/mt " + getName();
-	}
-
-	@Override
-	public String getPermission()
-	{
-		return Perms.PERMS_PREFIX + getName();
-	}
-
-	@Override
-	public List<String> getAliases()
-	{
-		return Arrays.asList(getName(), "st");
-	}
-
-	@Override
-	public void execute(Player player, List<String> args) throws Exception
-	{
+		Player player = (Player) source;
 		if (!player.hasPermission(getPermission()))
 			throw new NoPermissionException(Messages.NO_PERMISSION);
 		
@@ -64,12 +37,12 @@ public class Status implements ICommand
 		}
 		
 		player.sendMessage(new String[]{Messages.POSITIVE_PREFIX + "Status of " + field.getName(),
-				Messages.POSITIVE_PREFIX + "Enabled: " + (field.isEnabled() ? ChatColor.RED + "Yes" : ChatColor.GREEN + "No"),
-				Messages.POSITIVE_PREFIX + "Cuboid: " + (field.getCuboid() == null ? ChatColor.RED + "Not Set" : ChatColor.GREEN + "Set"),
-				Messages.POSITIVE_PREFIX + "Green Spawn: " + (field.getGreenSpawn() == null ? ChatColor.RED + "Not Set" : ChatColor.GREEN + "Set"),
-				Messages.POSITIVE_PREFIX + "Red Spawn: " + (field.getRedSpawn() == null ? ChatColor.RED + "Not Set" : ChatColor.GREEN + "Set"),
-				Messages.POSITIVE_PREFIX + "Spectators Spawn: " + (field.getSpectators() == null ? ChatColor.RED + "Not Set" : ChatColor.GREEN + "Set"),
-				Messages.POSITIVE_PREFIX + "Match in progress: " + (field.inProgress() ? ChatColor.RED + "Yes" : ChatColor.GREEN + "No")});
+				Messages.POSITIVE_PREFIX + "Enabled: " + (field.isEnabled() ? TextColors.RED + "Yes" : TextColors.GREEN + "No"),
+				Messages.POSITIVE_PREFIX + "Cuboid: " + (field.getCuboid() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
+				Messages.POSITIVE_PREFIX + "Green Spawn: " + (field.getGreenSpawn() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
+				Messages.POSITIVE_PREFIX + "Red Spawn: " + (field.getRedSpawn() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
+				Messages.POSITIVE_PREFIX + "Spectators Spawn: " + (field.getSpectators() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
+				Messages.POSITIVE_PREFIX + "Match in progress: " + (field.inProgress() ? TextColors.RED + "Yes" : TextColors.GREEN + "No")});
 	}
 	
 }

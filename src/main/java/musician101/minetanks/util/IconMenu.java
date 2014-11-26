@@ -2,40 +2,35 @@ package musician101.minetanks.util;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
+import musician101.minetanks.MineTanks;
+import musician101.minetanks.lib.Reference;
+
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.scheduler.Task;
+import org.spongepowered.api.util.event.Subscribe;
 
 /**
  * @author nisovin on BukkitDev
+ * @note Ported to Sponge by Musician101
  */
-public class IconMenu implements Listener
+public class IconMenu
 {
  
     private String name;
     private int size;
     private OptionClickEventHandler handler;
-    private Plugin plugin;
     private String[] optionNames;
     private ItemStack[] optionIcons;
    
-    public IconMenu(String name, int size, OptionClickEventHandler handler, Plugin plugin)
+    public IconMenu(String name, int size, OptionClickEventHandler handler)
     {
         this.name = name;
         this.size = size;
         this.handler = handler;
-        this.plugin = plugin;
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
-        plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
     }
     
     //Original arguments were int position, ItemStack icon, String name, String... info
@@ -58,14 +53,12 @@ public class IconMenu implements Listener
    
     public void destroy()
     {
-        HandlerList.unregisterAll(this);
         handler = null;
-        plugin = null;
         optionNames = null;
         optionIcons = null;
     }
    
-    @EventHandler(priority=EventPriority.MONITOR)
+    @Subscribe
     void onInventoryClick(InventoryClickEvent event)
     {
         if (event.getInventory().getTitle().equals(name))
@@ -74,13 +67,12 @@ public class IconMenu implements Listener
             int slot = event.getRawSlot();
             if (slot >= 0 && slot < size && optionNames[slot] != null)
             {
-                Plugin plugin = this.plugin;
                 OptionClickEvent e = new OptionClickEvent((Player)event.getWhoClicked(), slot, optionNames[slot]);
                 handler.onOptionClick(e);
                 if (e.willClose())
                 {
                     final Player p = (Player)event.getWhoClicked();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+                    MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getGame().getPluginManager().getPlugin(Reference.ID).get(), new Runnable()
                     {
                         public void run()
                         {

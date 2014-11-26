@@ -4,11 +4,9 @@ import java.util.Arrays;
 
 import musician101.minetanks.tank.Tanks.TankTypes;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 public enum Turrets
 {
@@ -112,21 +110,72 @@ public enum Turrets
 		return armor;
 	}
 	
+	@SuppressWarnings("serial")
 	private void parseHelmet(TankTypes type)
 	{	
-		Material material = Material.AIR;
+		final ItemType iType;
 		if (type == TankTypes.LIGHT)
-			material = Material.LEATHER_HELMET;
+			iType = ItemTypes.LEATHER_HELMET;
 		else if (type == TankTypes.MEDIUM)
-			material = Material.IRON_HELMET;
+			iType = ItemTypes.IRON_HELMET;
 		else if (type == TankTypes.HEAVY)
-			material = Material.DIAMOND_HELMET;
+			iType = ItemTypes.DIAMOND_HELMET;
 		else if (type == TankTypes.TD)
-			material = Material.CHAINMAIL_HELMET;
+			iType = ItemTypes.CHAINMAIL_HELMET;
 		else if (type == TankTypes.ARTY)
-			material = Material.GOLD_HELMET;
+			iType = ItemTypes.GOLDEN_HELMET;
 		
-		helmet = new ItemStack(material);
+		helmet = new ItemStack()
+		{
+			@Override
+			public int compareTo(ItemStack o)
+			{
+				return 0;
+			}
+
+			@Override
+			public ItemType getItem()
+			{
+				return iType;
+			}
+
+			@Override
+			public short getDamage()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setDamage(short damage)
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getQuantity()
+			{
+				return 1;
+			}
+
+			@Override
+			public void setQuantity(int quantity) throws IllegalArgumentException
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getMaxStackQuantity()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setMaxStackQuantity(int quantity)
+			{
+				//NOOP
+			}
+		};
+		
 		ItemMeta meta = helmet.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + this.name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);

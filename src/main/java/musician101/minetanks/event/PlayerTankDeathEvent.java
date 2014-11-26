@@ -1,12 +1,11 @@
 package musician101.minetanks.event;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Result;
 
-public class PlayerTankDeathEvent extends Event
+public class PlayerTankDeathEvent implements Event
 {
-	private static final HandlerList handlers = new HandlerList();
 	String field;
 	Player killed;
 	Player killer;
@@ -32,15 +31,22 @@ public class PlayerTankDeathEvent extends Event
 	{
 		return killer;
 	}
-	
+
 	@Override
-	public HandlerList getHandlers()
+	public boolean isCancellable()
 	{
-		return handlers;
+		return false;
 	}
-	
-	public static HandlerList getHandlerList()
+
+	@Override
+	public Result getResult()
 	{
-		return handlers;
+		return null;
+	}
+
+	@Override
+	public void setResult(Result result)
+	{
+		//NOOP
 	}
 }

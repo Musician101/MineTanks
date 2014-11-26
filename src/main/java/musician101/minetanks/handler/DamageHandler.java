@@ -8,17 +8,8 @@ import musician101.minetanks.event.PlayerTankDeathEvent;
 import musician101.minetanks.scoreboard.MTScoreboard;
 import musician101.minetanks.tank.Tanks.TankTypes;
 
-import org.bukkit.Bukkit;
-
 public class DamageHandler
 {
-	MineTanks plugin;
-	
-	public DamageHandler(MineTanks plugin)
-	{
-		this.plugin = plugin;
-	}
-	
 	private int getModifier(TankTypes type)
 	{
 		if (type == TankTypes.LIGHT)
@@ -48,7 +39,7 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
-			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(dmgd), Bukkit.getPlayer(dmgr)));
+			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getPlayer(dmgd).get(), MineTanks.getGame().getPlayer(dmgr).get()));
 	}
 	
 	public void gravityHit(Battlefield field, UUID player, int damage)
@@ -57,7 +48,7 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(player, sb.getPlayerHealth(player) - (int) dmg);
 		if (sb.getPlayerHealth(player) <= 0)
-			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(player), null));
+			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getPlayer(player).get(), null));
 	}
 	
 	public void meleeHitFriendly(Battlefield field, UUID rammed, UUID rammer, int damage)
@@ -76,6 +67,6 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
-			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(dmgd), Bukkit.getPlayer(dmgr)));
+			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getPlayer(dmgd).get(), MineTanks.getGame().getPlayer(dmgr).get()));
 	}
 }

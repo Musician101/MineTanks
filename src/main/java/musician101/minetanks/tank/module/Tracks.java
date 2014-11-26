@@ -2,13 +2,11 @@ package musician101.minetanks.tank.module;
 
 import java.util.Arrays;
 
-import musician101.minetanks.tank.Tanks.TankTypes;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import musician101.minetanks.tank.Tanks.TankTypes;
 
 public enum Tracks
 {
@@ -102,21 +100,79 @@ public enum Tracks
 		return tracks;
 	}
 	
+	@SuppressWarnings("serial")
 	private void parseTracks(TankTypes type)
 	{
-		Material material = Material.AIR;
+		boolean parseError = false;
+		final ItemType iType;
 		if (type == TankTypes.LIGHT)
-			material = Material.LEATHER_BOOTS;
+			iType = ItemTypes.LEATHER_BOOTS;
 		else if (type == TankTypes.MEDIUM)
-			material = Material.IRON_BOOTS;
+			iType = ItemTypes.IRON_BOOTS;
 		else if (type == TankTypes.HEAVY)
-			material = Material.DIAMOND_BOOTS;
+			iType = ItemTypes.DIAMOND_BOOTS;
 		else if (type == TankTypes.TD)
-			material = Material.CHAINMAIL_BOOTS;
+			iType = ItemTypes.CHAINMAIL_BOOTS;
 		else if (type == TankTypes.ARTY)
-			material = Material.GOLD_BOOTS;
+			iType = ItemTypes.GOLDEN_BOOTS;
+		else
+		{
+			iType = ItemTypes.LEATHER_BOOTS;
+			parseError = true;
+		}
 		
-		tracks = new ItemStack(material);
+		tracks = new ItemStack()
+		{
+			@Override
+			public int compareTo(ItemStack o)
+			{
+				return 0;
+			}
+
+			@Override
+			public ItemType getItem()
+			{
+				return iType;
+			}
+
+			@Override
+			public short getDamage()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setDamage(short damage)
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getQuantity()
+			{
+				return 1;
+			}
+
+			@Override
+			public void setQuantity(int quantity) throws IllegalArgumentException
+			{
+				//NOOP
+			}
+
+			@Override
+			public int getMaxStackQuantity()
+			{
+				return 0;
+			}
+
+			@Override
+			public void setMaxStackQuantity(int quantity)
+			{
+				//NOOP
+			}
+		};
+		
+		//TODO Item metadata support missing
 		ItemMeta meta = tracks.getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + this.name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);

@@ -4,12 +4,11 @@ import java.util.UUID;
 
 import musician101.minetanks.battlefield.Battlefield;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Result;
 
-public class PlayerTankDamageEvent extends Event
+public class PlayerTankDamageEvent implements Event
 {
-	private static final HandlerList handlers = new HandlerList();
 	int damage;
 	PlayerTankDamageCause cause;
 	UUID dmgd;
@@ -56,14 +55,21 @@ public class PlayerTankDamageEvent extends Event
 	}
 	
 	@Override
-	public HandlerList getHandlers()
+	public boolean isCancellable()
 	{
-		return handlers;
+		return false;
 	}
-	
-	public static HandlerList getHandlerList()
+
+	@Override
+	public Result getResult()
 	{
-		return handlers;
+		return Result.ALLOW;
+	}
+
+	@Override
+	public void setResult(Result result)
+	{
+		//NOOP
 	}
 	
 	public enum PlayerTankDamageCause

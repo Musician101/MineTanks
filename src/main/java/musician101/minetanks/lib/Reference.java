@@ -2,14 +2,18 @@ package musician101.minetanks.lib;
 
 import musician101.minetanks.MineTanks;
 
-import org.bukkit.ChatColor;
+import org.spongepowered.api.text.format.TextColors;
 
 public class Reference
 {
+	public static final String ID = "minetanks";
+	public static final String NAME = "MineTanks";
+	public static final String VERSION = "1.2";
+	
 	public static class Messages
 	{
-		public static final String POSITIVE_PREFIX = ChatColor.GREEN + MineTanks.getPrefix() + " ";
-		public static final String NEGATIVE_PREFIX = ChatColor.RED + MineTanks.getPrefix() + " ";
+		public static final String POSITIVE_PREFIX = TextColors.GREEN + MineTanks.getPrefix() + " ";
+		public static final String NEGATIVE_PREFIX = TextColors.RED + MineTanks.getPrefix() + " ";
 		
 		public static final String FIELD_ALREADY_EXISTS = NEGATIVE_PREFIX + "%s already exists.";
 		public static final String FIELD_DNE = NEGATIVE_PREFIX + "Sorry, that field doesn't exist.";

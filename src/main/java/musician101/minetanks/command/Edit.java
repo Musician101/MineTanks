@@ -3,18 +3,22 @@ package musician101.minetanks.command;
 import java.util.Arrays;
 import java.util.List;
 
-import musician101.luc.bukkit.command.ICommand;
-import musician101.luc.bukkit.exception.NoPermissionException;
-import musician101.luc.bukkit.exception.NotEnoughArgumentsException;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.lib.Reference.Perms;
 
-import org.bukkit.entity.Player;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class Edit implements ICommand
+//TODO get rid of edit command in favor of having an additional argument to specify fields
+@Deprecated
+public class Edit extends SubCommand
 {
+	public Edit(String name, String description, String usage, List<String> aliases)
+	{
+		super(name, description, usage, aliases);
+	}
 	
 	@Override
 	public String getName()
@@ -47,8 +51,9 @@ public class Edit implements ICommand
 	}
 	
 	@Override
-	public void execute(Player player, List<String> args) throws Exception
+	public void execute(CommandSource source, List<String> args) throws Exception
 	{
+		Player player = (Player) source;
 		if (!player.hasPermission(getPermission()))
 			throw new NoPermissionException(Messages.NO_PERMISSION);
 		

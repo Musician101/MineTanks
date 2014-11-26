@@ -1,52 +1,25 @@
 package musician101.minetanks.command;
 
-import java.util.Arrays;
 import java.util.List;
 
-import musician101.luc.bukkit.command.ICommand;
-import musician101.luc.bukkit.exception.NoPermissionException;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.lib.Reference.Messages;
-import musician101.minetanks.lib.Reference.Perms;
 
-import org.bukkit.entity.Player;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class Leave implements ICommand
+public class Leave extends SubCommand
 {
-	@Override
-	public String getName()
+	public Leave(String name, String description, List<String> aliases)
 	{
-		return "leave";
+		super(name, description, aliases);
 	}
 
 	@Override
-	public String getDescription()
+	public void execute(CommandSource source, List<String> args) throws Exception
 	{
-		return "Leave the current battlefield you are in.";
-	}
-
-	@Override
-	public String getUsage()
-	{
-		return "/mt leave";
-	}
-
-	@Override
-	public String getPermission()
-	{
-		return Perms.PERMS_PREFIX + getName();
-	}
-
-	@Override
-	public List<String> getAliases()
-	{
-		return Arrays.asList(getName(), "l");
-	}
-
-	@Override
-	public void execute(Player player, List<String> args) throws Exception
-	{
+		Player player = (Player) source;
 		if (!player.hasPermission(getPermission()) || !MineTanks.getFieldStorage().canPlayerExit(player.getUniqueId()))
 			throw new NoPermissionException(Messages.NO_PERMISSION);
 		

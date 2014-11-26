@@ -5,53 +5,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import musician101.luc.bukkit.command.ICommand;
-import musician101.luc.bukkit.exception.NoPermissionException;
-import musician101.luc.bukkit.exception.NotEnoughArgumentsException;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.lib.Reference.Perms;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class ForceEnd implements ICommand
+public class ForceEnd extends SubCommand
 {
-	@Override
-	public String getName()
+	public ForceEnd(String name, String description, String usage, List<String> aliases)
 	{
-		return "forceend";
+		super(name, description, usage, aliases);
 	}
 
 	@Override
-	public String getDescription()
+	public void execute(CommandSource source, List<String> args) throws Exception
 	{
-		return "Forcibly end the match at the specified field.";
-	}
-
-	@Override
-	public String getUsage()
-	{
-		return "/mt " + getName() + " <field>";
-	}
-
-	@Override
-	public String getPermission()
-	{
-		return Perms.PERMS_PREFIX + getName();
-	}
-
-	@Override
-	public List<String> getAliases()
-	{
-		return Arrays.asList(getName(), "fe");
-	}
-
-	@Override
-	public void execute(Player player, List<String> args) throws Exception
-	{
+		Player player = (Player) source;
 		if (!player.hasPermission(getPermission()))
 			throw new NoPermissionException(Messages.NO_PERMISSION);
 		
@@ -68,7 +41,7 @@ public class ForceEnd implements ICommand
 		
 		for (UUID uuid : uuids)
 		{
-			Player p = Bukkit.getPlayer(uuid);
+			Player p = MineTanks.getGame().getPlayer(uuid).get();
 			p.sendMessage(Messages.NEGATIVE_PREFIX + "An admin has forcibly terminated the match.");
 			field.removePlayer(p);
 		}

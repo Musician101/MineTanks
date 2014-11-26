@@ -3,51 +3,26 @@ package musician101.minetanks.command;
 import java.util.Arrays;
 import java.util.List;
 
-import musician101.luc.bukkit.command.ICommand;
-import musician101.luc.bukkit.exception.NoPermissionException;
-import musician101.luc.bukkit.exception.NotEnoughArgumentsException;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.exception.FieldAlreadyExistsException;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.lib.Reference.Perms;
 
-import org.bukkit.entity.Player;
+import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class Create implements ICommand
+public class Create extends SubCommand
 {
-	@Override
-	public String getName()
+	public Create(String name, String description, String usage, List<String> aliases)
 	{
-		return "create";
+		super(name, description, usage, aliases);
 	}
 
 	@Override
-	public String getDescription()
+	public void execute(CommandSource source, List<String> args) throws Exception
 	{
-		return "Create a battlefield with the given name.";
-	}
-
-	@Override
-	public String getUsage()
-	{
-		return "/mt " + getName() + " <name>";
-	}
-
-	@Override
-	public String getPermission()
-	{
-		return Perms.PERMS_PREFIX + getName();
-	}
-
-	@Override
-	public List<String> getAliases()
-	{
-		return Arrays.asList(getName(), "c");
-	}
-
-	@Override
-	public void execute(Player player, List<String> args) throws Exception
-	{
+		//TODO permissions not implemented
+		Player player = (Player) source;
 		if (!player.hasPermission(getPermission()))
 			throw new NoPermissionException(Messages.NO_PERMISSION);
 		

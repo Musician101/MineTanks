@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.spongepowered.api.item.inventory.ItemStack;
+
 import musician101.minetanks.tank.module.Cannon;
 import musician101.minetanks.tank.module.Engine;
 import musician101.minetanks.tank.module.Radio;
@@ -12,12 +14,6 @@ import musician101.minetanks.tank.module.Tracks;
 import musician101.minetanks.tank.module.Turrets;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
 import musician101.minetanks.util.MTUtils;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public enum Tanks
 {
@@ -93,7 +89,7 @@ public enum Tanks
 	String name;
 	CannonTypes cannonType;
 	ItemStack[] wornArmor;
-	Inventory weapons;
+	ItemStack[] weapons;
 	TankTypes type;
 	List<String> description;
 	double cycleTime, reloadTime;
@@ -124,7 +120,7 @@ public enum Tanks
 		return wornArmor;
 	}
 	
-	public Inventory getWeapons()
+	public ItemStack[] getWeapons()
 	{
 		return weapons;
 	}
@@ -233,6 +229,7 @@ public enum Tanks
 	
 	public static enum TankTypes
 	{
+		//TODO not going to bother changing this until proper itemstack support is implemented
 		LIGHT(0, "Light", new ItemStack(Material.WOOD_SWORD, 1)),
 		MEDIUM(1, "Medium", new ItemStack(Material.STONE_SWORD, 1)),
 		HEAVY(2, "Heavy", new ItemStack(Material.IRON_SWORD, 1)),

@@ -2,27 +2,21 @@ package musician101.minetanks.handler;
 
 import java.util.Arrays;
 
+import org.spongepowered.api.entity.Player;
+
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-
 public class ReloadHandler
 {
-	MineTanks plugin;
 	Player player;
 	CannonTypes type;
 	int reloadTime, cycleTime, clipSize, maxClipSize;
 	
-	public ReloadHandler(MineTanks plugin, Player player, CannonTypes type, int reloadTime, int cycleTime, int clipSize, int maxClipSize)
+	public ReloadHandler(Player player, CannonTypes type, int reloadTime, int cycleTime, int clipSize, int maxClipSize)
 	{
-		this.plugin = plugin;
 		this.player = player;
 		this.type = type;
 		this.reloadTime = reloadTime;
@@ -45,6 +39,7 @@ public class ReloadHandler
 		player.setLevel(time);
 		try
 		{
+			//TODO convert to Sponge Task
 			new BukkitRunnable()
 			{
 				@Override

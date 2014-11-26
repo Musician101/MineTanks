@@ -4,27 +4,28 @@ import java.util.UUID;
 
 import musician101.minetanks.battlefield.player.PlayerTank;
 
-import org.bukkit.Material;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Result;
 
-public class AttemptMenuOpenEvent extends Event
+public class AttemptMenuOpenEvent implements Event
 {
-	private static final HandlerList handlers = new HandlerList();
-	Material material;
+	boolean isCancelled;
+	ItemTypes material;
 	String field;
 	PlayerTank pt;
 	UUID player;
 	
-	public AttemptMenuOpenEvent(Material material, String field, PlayerTank pt, UUID player)
+	public AttemptMenuOpenEvent(ItemTypes type, String field, PlayerTank pt, UUID player)
 	{
-		this.material = material;
+		this.material = type;
 		this.field = field;
 		this.pt = pt;
 		this.player = player;
+		
 	}
 	
-	public Material getMaterial()
+	public ItemTypes getMaterial()
 	{
 		return material;
 	}
@@ -43,15 +44,22 @@ public class AttemptMenuOpenEvent extends Event
 	{
 		return player;
 	}
-	
+
 	@Override
-	public HandlerList getHandlers()
+	public boolean isCancellable()
 	{
-		return handlers;
+		return false;
 	}
-	
-	public static HandlerList getHandlerList()
+
+	@Override
+	public Result getResult()
 	{
-		return handlers;
+		return null;
+	}
+
+	@Override
+	public void setResult(Result result)
+	{
+		//NOOP
 	}
 }
