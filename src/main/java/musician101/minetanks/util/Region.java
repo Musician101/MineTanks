@@ -18,8 +18,7 @@ import org.spongepowered.api.world.World;
  * @link https://gist.github.com/KingFaris10/4527fbaf8caa9fd7b800
  * @authro Musician101 port to SpongeAPI
  */
-//TODO No configuration as of yet
-public class Region implements Iterable<Block>, ConfigurationSerializable
+public class Region implements Iterable<Block>
 {
     private String worldName = "";
     private int x1 = 0, y1 = 0, z1 = 0;
@@ -32,10 +31,10 @@ public class Region implements Iterable<Block>, ConfigurationSerializable
  
     public Region(Location location, Location location2)
     {
-        if (!location.getWorld().getUniqueID().equals(location2.getWorld().getUniqueID()))
+        if (!((World) location.getExtent()).getUniqueID().equals(((World) location2.getExtent()).getUniqueID()))
             throw new IllegalArgumentException("Location 1 must be in the same world as Location 2!");
  
-        this.worldName = location.getWorld().getName();
+        this.worldName = ((World) location.getExtent()).getName();
  
         this.x1 = Math.min((int) location.getPosition().getX(), (int) location2.getPosition().getX());
         this.y1 = Math.min((int) location.getPosition().getY(), (int) location2.getPosition().getY());
@@ -108,8 +107,7 @@ public class Region implements Iterable<Block>, ConfigurationSerializable
     {
         return MineTanks.getGame().getWorld(this.worldName);
     }
- 
-    @Override
+    
     public Map<String, Object> serialize()
     {
         Map<String, Object> serializedCuboid = new HashMap<String, Object>();

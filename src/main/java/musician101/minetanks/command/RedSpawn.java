@@ -7,7 +7,7 @@ import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
 public class RedSpawn extends SubCommand
@@ -28,13 +28,13 @@ public class RedSpawn extends SubCommand
 		if (field == null)
 			throw new FieldDoesNotExistException(Messages.NEGATIVE_PREFIX + "Error: No fields have been created.");
 		
-		if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
+		if (field.getRegion() == null || !player.getWorld().getName().equals(field.getRegion().getWorld().getName()))
 		{
 			player.sendMessage(Messages.MISSING_CUBOID);
 			return;
 		}
 		
-		if (!field.getCuboid().isInCuboid(player.getLocation()))
+		if (!field.getRegion().isInRegion(player.getLocation()))
 		{
 			player.sendMessage(Messages.LOCATION_NOT_IN_CUBOID);
 			return;

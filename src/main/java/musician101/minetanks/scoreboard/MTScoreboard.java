@@ -2,7 +2,7 @@ package musician101.minetanks.scoreboard;
 
 import java.util.UUID;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 
 //TODO no Scoreboard implementation
 public class MTScoreboard

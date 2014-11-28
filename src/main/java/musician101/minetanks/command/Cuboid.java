@@ -1,17 +1,15 @@
 package musician101.minetanks.command;
 
-import java.util.Arrays;
 import java.util.List;
-
-import org.spongepowered.api.entity.Player;
-import org.spongepowered.api.util.command.CommandSource;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
-import musician101.minetanks.lib.Reference.Perms;
-import musician101.minetanks.util.CuboidUtil;
+import musician101.minetanks.util.Region;
+
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.util.command.CommandSource;
 
 public class Cuboid extends SubCommand
 {
@@ -44,7 +42,7 @@ public class Cuboid extends SubCommand
 				return;
 			}
 			
-			field.setCuboid(CuboidUtil.createFromLocationRadius(player.getLocation(), radius));
+			field.setRegion(Region.createFromLocationRadius(player.getLocation(), radius));
 			player.sendMessage(Messages.POSITIVE_PREFIX + "Cuboid set.");
 			return;
 		}
@@ -65,7 +63,7 @@ public class Cuboid extends SubCommand
 				return;
 			}
 			
-			field.setCuboid(CuboidUtil.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
+			field.setRegion(Region.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
 			player.sendMessage(Messages.POSITIVE_PREFIX + "Cuboid set.");
 			return;
 		}

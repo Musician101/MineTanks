@@ -1,15 +1,13 @@
 package musician101.minetanks.command;
 
-import java.util.Arrays;
 import java.util.List;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
-import musician101.minetanks.lib.Reference.Perms;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
 public class Enable extends SubCommand

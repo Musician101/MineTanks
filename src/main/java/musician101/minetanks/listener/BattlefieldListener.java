@@ -14,7 +14,7 @@ import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.scoreboard.MTScoreboard;
 import musician101.minetanks.util.MTUtils;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.event.Subscribe;

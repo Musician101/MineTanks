@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.format.TextColors;
 
 public class Cannon
 {
@@ -120,7 +121,7 @@ public class Cannon
 		};
 		
 		ItemMeta meta = cannon.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + name);
+		meta.setDisplayName(TextColors.GREEN + name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);
 		meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
 		if (type == CannonTypes.SINGLE_SHOT)

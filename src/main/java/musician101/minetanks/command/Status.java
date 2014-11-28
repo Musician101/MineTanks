@@ -7,7 +7,7 @@ import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -38,7 +38,7 @@ public class Status extends SubCommand
 		
 		player.sendMessage(new String[]{Messages.POSITIVE_PREFIX + "Status of " + field.getName(),
 				Messages.POSITIVE_PREFIX + "Enabled: " + (field.isEnabled() ? TextColors.RED + "Yes" : TextColors.GREEN + "No"),
-				Messages.POSITIVE_PREFIX + "Cuboid: " + (field.getCuboid() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
+				Messages.POSITIVE_PREFIX + "Cuboid: " + (field.getRegion() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
 				Messages.POSITIVE_PREFIX + "Green Spawn: " + (field.getGreenSpawn() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
 				Messages.POSITIVE_PREFIX + "Red Spawn: " + (field.getRedSpawn() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),
 				Messages.POSITIVE_PREFIX + "Spectators Spawn: " + (field.getSpectators() == null ? TextColors.RED + "Not Set" : TextColors.GREEN + "Set"),

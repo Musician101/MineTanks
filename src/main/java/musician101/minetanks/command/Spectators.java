@@ -6,7 +6,7 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.lib.Reference.Messages;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
 public class Spectators extends SubCommand
@@ -24,13 +24,13 @@ public class Spectators extends SubCommand
 			throw new NoPermissionException(Messages.NO_PERMISSION);
 		
 		Battlefield field = MineTanks.getFieldStorage().getEdit();
-		if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
+		if (field.getRegion() == null || !player.getWorld().getName().equals(field.getRegion().getWorld().getName()))
 		{
 			player.sendMessage(Messages.MISSING_CUBOID);
 			return;
 		}
 		
-		if (field.getCuboid().isInCuboid(player.getLocation()))
+		if (field.getRegion().isInRegion(player.getLocation()))
 		{
 			player.sendMessage(Messages.LOCATION_NOT_IN_CUBOID);
 			return;

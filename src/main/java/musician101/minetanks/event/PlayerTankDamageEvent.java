@@ -5,7 +5,7 @@ import java.util.UUID;
 import musician101.minetanks.battlefield.Battlefield;
 
 import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Result;
+import org.spongepowered.api.util.event.callback.CallbackList;
 
 public class PlayerTankDamageEvent implements Event
 {
@@ -55,21 +55,9 @@ public class PlayerTankDamageEvent implements Event
 	}
 	
 	@Override
-	public boolean isCancellable()
+	public CallbackList getCallbacks()
 	{
-		return false;
-	}
-
-	@Override
-	public Result getResult()
-	{
-		return Result.ALLOW;
-	}
-
-	@Override
-	public void setResult(Result result)
-	{
-		//NOOP
+		return null;
 	}
 	
 	public enum PlayerTankDamageCause

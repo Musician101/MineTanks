@@ -6,7 +6,7 @@ import java.util.List;
 
 import musician101.minetanks.lib.Reference.Messages;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandCallable;
 import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandSource;
@@ -53,7 +53,7 @@ public class MTCommandExecutor implements CommandCallable
 				{
 					try
 					{
-						cmd.execute((Player) source, args);
+						cmd.execute(source, args);
 					}
 					catch (Exception e)
 					{

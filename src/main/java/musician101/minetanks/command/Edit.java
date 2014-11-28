@@ -8,7 +8,7 @@ import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.lib.Reference.Perms;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
 //TODO get rid of edit command in favor of having an additional argument to specify fields

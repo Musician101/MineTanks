@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.spongepowered.api.world.Location;
-
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.util.CuboidUtil;
+import musician101.minetanks.util.Region;
+
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public class BattlefieldStorage
 {
@@ -20,13 +21,13 @@ public class BattlefieldStorage
 		return createField(name, false, null, null, null, null);
 	}
 	
-	public boolean createField(String name, boolean enabled, CuboidUtil cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+	public boolean createField(String name, boolean enabled, Region region, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		for (String field : fields.keySet())
 			if (field.equalsIgnoreCase(name))
 				return false;
 		
-		Battlefield field = new Battlefield(name, enabled, cuboid, greenSpawn, redSpawn, spectators); 
+		Battlefield field = new Battlefield(name, enabled, region, greenSpawn, redSpawn, spectators); 
 		fields.put(name, field);
 		edit = field;
 		return true;
@@ -68,13 +69,13 @@ public class BattlefieldStorage
 				YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
 				String name = file.getName().replace(".yml", "");
 				boolean enabled = field.getBoolean("enabled");
-				CuboidUtil cuboid = null;
+				Region region = null;
 				Location greenSpawn = null;
 				Location redSpawn = null;
 				Location spectators = null;
 				
 				if (field.isSet("cuboid"))
-					cuboid = CuboidUtil.deserialize(field.getConfigurationSection("cuboid").getValues(false));
+					region = Region.deserialize(field.getConfigurationSection("cuboid").getValues(false));
 				
 				if (field.isSet("greenSpawn.x"))
 					greenSpawn = new Location(MineTanks.getGame().getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
@@ -85,7 +86,7 @@ public class BattlefieldStorage
 				if (field.isSet("spectators.x"))
 					spectators = new Location(MineTanks.getGame().getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 				
-				if (!createField(name, enabled, cuboid, greenSpawn, redSpawn, spectators))
+				if (!createField(name, enabled, world, region, greenSpawn, redSpawn, spectators))
 					MineTanks.getLogger().warn("Failed to load " + file.getName());
 			}
 		}

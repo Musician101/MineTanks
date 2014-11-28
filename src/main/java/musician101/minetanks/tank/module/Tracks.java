@@ -2,11 +2,12 @@ package musician101.minetanks.tank.module;
 
 import java.util.Arrays;
 
+import musician101.minetanks.tank.Tanks.TankTypes;
+
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-
-import musician101.minetanks.tank.Tanks.TankTypes;
+import org.spongepowered.api.text.format.TextColors;
 
 public enum Tracks
 {
@@ -174,7 +175,7 @@ public enum Tracks
 		
 		//TODO Item metadata support missing
 		ItemMeta meta = tracks.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + this.name);
+		meta.setDisplayName(TextColors.GREEN + this.name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);
 		meta.setLore(Arrays.asList("Your Tracks"));
 		tracks.setItemMeta(meta);

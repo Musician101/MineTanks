@@ -2,12 +2,13 @@ package musician101.minetanks.handler;
 
 import java.util.Arrays;
 
-import org.spongepowered.api.entity.Player;
-
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
+
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 public class ReloadHandler
 {

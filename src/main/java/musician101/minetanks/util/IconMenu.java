@@ -5,10 +5,8 @@ import java.util.List;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.lib.Reference;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.util.event.Subscribe;
 
 /**

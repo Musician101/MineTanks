@@ -1,8 +1,8 @@
 package musician101.minetanks.event;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Result;
+import org.spongepowered.api.util.event.callback.CallbackList;
 
 public class PlayerTankDeathEvent implements Event
 {
@@ -33,20 +33,8 @@ public class PlayerTankDeathEvent implements Event
 	}
 
 	@Override
-	public boolean isCancellable()
-	{
-		return false;
-	}
-
-	@Override
-	public Result getResult()
+	public CallbackList getCallbacks()
 	{
 		return null;
-	}
-
-	@Override
-	public void setResult(Result result)
-	{
-		//NOOP
 	}
 }

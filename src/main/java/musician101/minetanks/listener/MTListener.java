@@ -16,13 +16,18 @@ import musician101.minetanks.handler.ReloadHandler;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
-import musician101.minetanks.util.CuboidUtil;
+import musician101.minetanks.util.Region;
 
 import org.spongepowered.api.block.Block;
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.projectile.Arrow;
+import org.spongepowered.api.event.block.BlockChangeEvent;
+import org.spongepowered.api.event.block.BlockInteractEvent;
 import org.spongepowered.api.event.player.PlayerDropItemEvent;
 import org.spongepowered.api.event.player.PlayerInteractEvent;
+import org.spongepowered.api.event.player.PlayerJoinEvent;
 import org.spongepowered.api.event.player.PlayerMoveEvent;
+import org.spongepowered.api.event.player.PlayerQuitEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.event.Subscribe;
@@ -64,9 +69,9 @@ public class MTListener
 		return false;
 	}
 	
-	// TODO Block and Player based events do not exist in Sponge just yet
+	//TODO BlockChangeEvent needs work before I can fully use it
 	@Subscribe
-	public void onBlockBreak(BlockBreakEvent event)
+	public void onBlockBreak(BlockChangeEvent event)
 	{
 		if (event.isCancelled())
 			return;
@@ -77,12 +82,12 @@ public class MTListener
 			double x = event.getBlock().getX();
 			double y = event.getBlock().getY();
 			double z = event.getBlock().getZ();
-			double minX = field.getCuboid().getMinX();
-			double maxX = field.getCuboid().getMaxX();
-			double minY = field.getCuboid().getMinY();
-			double maxY = field.getCuboid().getMaxY();
-			double minZ = field.getCuboid().getMinZ();
-			double maxZ = field.getCuboid().getMaxZ();
+			double minX = field.getRegion().getMinX();
+			double maxX = field.getRegion().getMaxX();
+			double minY = field.getRegion().getMinY();
+			double maxY = field.getRegion().getMaxY();
+			double minZ = field.getRegion().getMinZ();
+			double maxZ = field.getRegion().getMaxZ();
 			if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
 			{
 				if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
@@ -95,7 +100,7 @@ public class MTListener
 	}
 	
 	@Subscribe
-	public void onBlockPlace(BlockPlaceEvent event)
+	public void onBlockPlace(BlockChangeEvent event)
 	{
 		if (event.isCancelled())
 			return;
@@ -106,12 +111,12 @@ public class MTListener
 			double x = event.getBlock().getX();
 			double y = event.getBlock().getY();
 			double z = event.getBlock().getZ();
-			double minX = field.getCuboid().getMinX();
-			double maxX = field.getCuboid().getMaxX();
-			double minY = field.getCuboid().getMinY();
-			double maxY = field.getCuboid().getMaxY();
-			double minZ = field.getCuboid().getMinZ();
-			double maxZ = field.getCuboid().getMaxZ();
+			double minX = field.getRegion().getMinX();
+			double maxX = field.getRegion().getMaxX();
+			double minY = field.getRegion().getMinY();
+			double maxY = field.getRegion().getMaxY();
+			double minZ = field.getRegion().getMinZ();
+			double maxZ = field.getRegion().getMaxZ();
 			if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
 			{
 				if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
@@ -124,7 +129,7 @@ public class MTListener
 	}
 	
 	@Subscribe
-	public void onBlockInteract(PlayerInteractEvent event)
+	public void onBlockInteract(BlockInteractEvent event)
 	{
 		//TODO not fully implemented
 		Player player = event.getPlayer();
@@ -202,15 +207,15 @@ public class MTListener
 				if (pt.getTeam() == MTTeam.SPECTATOR)
 					return;
 				
-				CuboidUtil cuboid = field.getCuboid();
-				double minX = cuboid.getMinX();
-				double maxX = cuboid.getMaxX();
-				double minZ = cuboid.getMinZ();
-				double maxZ = cuboid.getMaxZ();
-				double x = player.getLocation().getX();
-				double z = player.getLocation().getZ();
+				Region region = field.getRegion();
+				double minX = region.getMinX();
+				double maxX = region.getMaxX();
+				double minZ = region.getMinZ();
+				double maxZ = region.getMaxZ();
+				double x = player.getLocation().getPosition().getX();
+				double z = player.getLocation().getPosition().getZ();
 				double correction = 2.0;
-				if (!cuboid.isInCuboid(player.getLocation()))
+				if (!region.isInRegion(player.getLocation()))
 				{
 					if (x <= minX)
 						x = minX + correction;
@@ -222,13 +227,15 @@ public class MTListener
 						z = maxZ - correction;
 					
 					player.sendMessage(Messages.NEGATIVE_PREFIX + "Out of bounds!");
-					player.teleport(new Location(player.getLocation().getWorld(), x, player.getLocation().getY(), z));
+					//TODO Need a way to construct a location with the world and coords
+					player.teleport(new Location(player.getLocation().getExtent(), x, player.getLocation().getPosition().getY(), z));
 					return;
 				}
 			}
 		}
 	}
 	
+	//TODO not implemented
 	@Subscribe
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
@@ -236,7 +243,7 @@ public class MTListener
 			event.setCancelled(isInField(event.getPlayer().getUniqueId()));
 	}
 	
-	//TODO Bow shooting, projectiles and entity damage events not implemented
+	//TODO Bow shooting and entity damage events not implemented
 	@Subscribe
 	public void onBowShoot(EntityShootBowEvent event)
 	{
@@ -255,7 +262,7 @@ public class MTListener
 				
 				Tanks tank = pt.getTank();
 				pt.setClipSize(pt.getClipSize() - 1);
-				ReloadHandler reload = new ReloadHandler(plugin, player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize());
+				ReloadHandler reload = new ReloadHandler(player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize());
 				event.setCancelled(reload.isReloading());
 				if (!event.isCancelled())
 				{
@@ -264,9 +271,9 @@ public class MTListener
 					{
 						if (item == null)
 							continue;
-						if (item.getType() == ItemTypes.ARROW)
-							item.setAmount(item.getQuantity() - 1);
-						else if (item.getType() == ItemTypes.BOW && tank.getCannonType() == CannonTypes.AUTO_LOADER)
+						if (item.getItem() == ItemTypes.ARROW)
+							item.setQuantity(item.getQuantity() - 1);
+						else if (item.getItem() == ItemTypes.BOW && tank.getCannonType() == CannonTypes.AUTO_LOADER)
 						{
 							ItemMeta meta = item.getItemMeta();
 							meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + pt.getClipSize() + "/" + tank.getClipSize(),"Cycle Time: " + tank.cycleTime(), "Clip Reload Time: " + tank.reloadTime()));
@@ -324,6 +331,7 @@ public class MTListener
 		}
 	}
 	
+	//TODO not implemented
 	@Subscribe
 	public void onArrowHitBlock(final ProjectileHitEvent event)
 	{
@@ -361,7 +369,7 @@ public class MTListener
 		{
 			for (String name : MineTanks.getFieldStorage().getFields().keySet())
 			{
-				for (Block b : MineTanks.getFieldStorage().getField(name).getCuboid().getBlocks())
+				for (Block b : MineTanks.getFieldStorage().getField(name).getRegion().getBlocks())
 				{
 					if (block.getLocation() == b.getLocation())
 					{

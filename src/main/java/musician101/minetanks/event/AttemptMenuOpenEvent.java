@@ -6,7 +6,7 @@ import musician101.minetanks.battlefield.player.PlayerTank;
 
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Result;
+import org.spongepowered.api.util.event.callback.CallbackList;
 
 public class AttemptMenuOpenEvent implements Event
 {
@@ -46,20 +46,8 @@ public class AttemptMenuOpenEvent implements Event
 	}
 
 	@Override
-	public boolean isCancellable()
-	{
-		return false;
-	}
-
-	@Override
-	public Result getResult()
+	public CallbackList getCallbacks()
 	{
 		return null;
-	}
-
-	@Override
-	public void setResult(Result result)
-	{
-		//NOOP
 	}
 }

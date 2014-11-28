@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.spongepowered.api.entity.Player;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.world.Location;
-
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
@@ -20,8 +16,13 @@ import musician101.minetanks.handler.ReloadHandler;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.scoreboard.MTScoreboard;
 import musician101.minetanks.tank.Tanks;
-import musician101.minetanks.util.CuboidUtil;
 import musician101.minetanks.util.MTUtils;
+import musician101.minetanks.util.Region;
+
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public class Battlefield
 {
@@ -32,9 +33,9 @@ public class Battlefield
 	private int unassigned = 0;
 	private MTScoreboard sb;
 	private boolean inProgress = false;
-	private CuboidUtil cuboid;
+	private Region cuboid;
 	
-	public Battlefield(String name, boolean enabled, CuboidUtil cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+	public Battlefield(String name, boolean enabled, Region cuboid, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		this.name = name;
 		this.enabled = enabled;
@@ -60,14 +61,14 @@ public class Battlefield
 		return name;
 	}
 		
-	public CuboidUtil getCuboid()
+	public Region getRegion()
 	{
 		return cuboid;
 	}
 	
-	public void setCuboid(CuboidUtil cuboid)
+	public void setRegion(Region region)
 	{
-		this.cuboid = cuboid;
+		this.cuboid = region;
 	}
 	
 	public Location getGreenSpawn()
@@ -139,7 +140,7 @@ public class Battlefield
 		//TODO player.getLocation() doesn't have a real replacement yet
 		Location loc = player.getLocation();
 		Map<String, Object> pl = new HashMap<String, Object>();
-		pl.put("world", loc.getWorld().getName());
+		pl.put("world", player.getWorld().getName());
 		pl.put("x", loc.getPosition().getX());
 		pl.put("y", loc.getPosition().getY());
 		pl.put("z", loc.getPosition().getZ());
@@ -275,7 +276,7 @@ public class Battlefield
 		
 		if (greenSpawn != null)
 		{
-			field.set("greenSpawn.world", greenSpawn.getWorld().getName());
+			field.set("greenSpawn.world", ((World) greenSpawn.getExtent()).getName());
 			field.set("greenSpawn.x", greenSpawn.getPosition().getX());
 			field.set("greenSpawn.y", greenSpawn.getPosition().getY());
 			field.set("greenSpawn.z", greenSpawn.getPosition().getZ());
@@ -283,7 +284,7 @@ public class Battlefield
 		
 		if (redSpawn != null)
 		{
-			field.set("redSpawn.world", redSpawn.getWorld().getName());
+			field.set("redSpawn.world", ((World) redSpawn.getExtent()).getName());
 			field.set("redSpawn.x", redSpawn.getPosition().getX());
 			field.set("redSpawn.y", redSpawn.getPosition().getY());
 			field.set("redSpawn.z", redSpawn.getPosition().getZ());
@@ -291,7 +292,7 @@ public class Battlefield
 		
 		if (spectators != null)
 		{
-			field.set("spectators.world", spectators.getWorld().getName());
+			field.set("spectators.world", ((World) spectators.getExtent()).getName());
 			field.set("spectators.x", spectators.getPosition().getX());
 			field.set("spectators.y", spectators.getPosition().getY());
 			field.set("spectators.z", spectators.getPosition().getZ());
@@ -344,7 +345,7 @@ public class Battlefield
 			else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
-				//TODO Nothing to determine if a player is online or offline
+				//TODO There's a User class but there's no way to access it yet
 				sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
 				MineTanks.getGame().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
