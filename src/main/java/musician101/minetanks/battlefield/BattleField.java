@@ -21,6 +21,8 @@ import musician101.minetanks.util.Region;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.potion.PotionEffect;
+import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -123,9 +125,8 @@ public class Battlefield
 		for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
 			yml.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
 		
-		//TODO potion effects are not implemented
 		List<Map<String, Object>> effects = new ArrayList<Map<String, Object>>();
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for (PotionEffect effect : player.getPotionEffects())
 		{
 			Map<String, Object> pe = new HashMap<String, Object>();
 			pe.put("ambient", effect.isAmbient());
@@ -133,6 +134,7 @@ public class Battlefield
 			pe.put("duration", effect.getDuration());
 			pe.put("amplifier", effect.getAmplifier());
 			effects.add(pe);
+			//TODO currently missing from Potions API
 			player.removePotionEffect(effect.getType());
 		}
 		
@@ -158,6 +160,7 @@ public class Battlefield
 			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			for (Map<String, Object> effect : effects)
 			{
+				//TODO no method to get a potion type by name or id yet
 				PotionEffectType type = PotionEffectType.getByName(effect.get("type").toString());
 				boolean ambient = Boolean.valueOf(effect.get("ambient").toString());
 				int duration = Integer.valueOf(effect.get("duration").toString());

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.potion.PotionEffect;
+import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.potion.PotionEffectTypes;
 
 import musician101.minetanks.tank.module.Cannon;
 import musician101.minetanks.tank.module.Engine;
@@ -154,26 +157,27 @@ public enum Tanks
 		else if (this.speed >= 10)
 			speed = 10;
 		
+		//TODO PotionEffect is an interface
 		if (speed == 1)
-			return new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5);
+			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 5);
 		else if (speed == 2)
-			return new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 4);
+			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 4);
 		else if (speed == 3)
-			return new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 3);
+			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 3);
 		else if (speed == 4)
-			return new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2);
+			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 2);
 		else if (speed == 5)
-			return new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1);
+			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 1);
 		else if (speed == 6)
-			return new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1);
+			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 1);
 		else if (speed == 7)
-			return new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2);
+			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 2);
 		else if (speed == 8)
-			return new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 3);
+			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 3);
 		else if (speed == 9)
-			return new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 4);
+			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 4);
 		
-		return new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 5);
+		return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 5);
 	}
 	
 	public int cycleTime()

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import musician101.minetanks.MineTanks;
 
-import org.spongepowered.api.block.Block;
+import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -18,7 +18,7 @@ import org.spongepowered.api.world.World;
  * @link https://gist.github.com/KingFaris10/4527fbaf8caa9fd7b800
  * @authro Musician101 port to SpongeAPI
  */
-public class Region implements Iterable<Block>
+public class Region implements Iterable<BlockLoc>
 {
     private String worldName = "";
     private int x1 = 0, y1 = 0, z1 = 0;
@@ -91,9 +91,9 @@ public class Region implements Iterable<Block>
         return ((this.x2 - this.x1) + 1) * ((this.y2 - this.y1) + 1) * ((this.z2 - this.z1) + 1);
     }
  
-    public List<Block> getBlocks()
+    public List<BlockLoc> getBlocks()
     {
-        List<Block> blockList = new ArrayList<Block>();
+        List<BlockLoc> blockList = new ArrayList<BlockLoc>();
         World cuboidWorld = this.getWorld();
         for (int x = this.x1; x <= this.x2; x++)
             for (int y = this.y1; y <= this.y2; y++)
@@ -122,7 +122,7 @@ public class Region implements Iterable<Block>
     }
  
     @Override
-    public ListIterator<Block> iterator() 
+    public ListIterator<BlockLoc> iterator() 
     {
         return this.getBlocks().listIterator();
     }

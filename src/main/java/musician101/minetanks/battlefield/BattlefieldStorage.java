@@ -86,7 +86,7 @@ public class BattlefieldStorage
 				if (field.isSet("spectators.x"))
 					spectators = new Location(MineTanks.getGame().getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 				
-				if (!createField(name, enabled, world, region, greenSpawn, redSpawn, spectators))
+				if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
 					MineTanks.getLogger().warn("Failed to load " + file.getName());
 			}
 		}

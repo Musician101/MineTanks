@@ -20,7 +20,7 @@ public class Menus
 		for (Tanks tank : Tanks.values())
 		{
 			nextId++;
-			tankSelection.setOption(nextId, new ItemStack(ItemTypesw.MINECART, 1), "§a" + tank.getName(), tank.getDescription());
+			tankSelection.setOption(nextId, new ItemStack(ItemTypes.MINECART, 1), "\u00A7a" + tank.getName(), tank.getDescription());
 		}
 	}
 	

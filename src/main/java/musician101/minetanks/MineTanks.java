@@ -22,7 +22,6 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.util.Owner;
 import org.spongepowered.api.util.event.Subscribe;
 
 @Plugin(id = Reference.ID, name = Reference.NAME, version = Reference.VERSION)
@@ -38,7 +37,6 @@ public class MineTanks
 	static Game game;
 	static IconMenu tankSelection;
 	static Logger logger;
-	static Owner owner;
 	static String prefix;
 	
 	@Subscribe
@@ -47,15 +45,6 @@ public class MineTanks
 		game = event.getGame();
 		logger = event.getPluginLog();
 		prefix = "[" + Reference.NAME + "]";
-		
-		//TODO Temporary workaround until Owner get's a full implementation
-		owner = new Owner()
-		{
-			public String getId()
-			{
-				return Reference.ID;
-			}
-		};
 		
 		//TODO move battlefields object to BattleFieldStorage
 		battlefields = new File(event.getRecommendedConfigurationDirectory(), "battlefields");
@@ -68,10 +57,11 @@ public class MineTanks
 		
 		initMenu();
 		
-		game.getEventManager().register(owner, new MTListener());
-		game.getEventManager().register(owner, new BattlefieldListener());
+		//TODO using 'this' might not work. Won't know for sure until all missing API is implemented
+		game.getEventManager().register(this, new MTListener());
+		game.getEventManager().register(this, new BattlefieldListener());
 		
-		game.getCommandDispatcher().register(owner, new MTCommandExecutor(), Arrays.asList("mt"));
+		game.getCommandDispatcher().register(this, new MTCommandExecutor(), Arrays.asList("mt"));
 		
 		logger.info("Movin' on out. Shuck 'em up!");
 	}
@@ -96,11 +86,6 @@ public class MineTanks
 	public static Logger getLogger()
 	{
 		return logger;
-	}
-	
-	public static Owner getOwner()
-	{
-		return owner;
 	}
 	
 	public static String getPrefix()
