@@ -1,7 +1,7 @@
 // Gradle repositories and dependencies
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         
@@ -11,6 +11,7 @@ buildscript {
 // Apply plugin
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 // Default tasks
 defaultTasks 'clean', 'build'
@@ -27,14 +28,15 @@ targetCompatibility = '1.6'
 // Project repositories
 repositories {
     mavenCentral()
+    maven {
+        name 'Sponge maven repo'
+        url 'http://repo.spongepowered.org/Sponge/maven'
+    }
 }
 
 // Project dependencies
 dependencies {
-    //compile 'org.slf4j:slf4j-api:1.7.7'
-    //compile 'com.google.guava:guava:16.0'
-    //compile 'com.google.code.findbugs:jsr305:1.3.9'
-    
+    compile "org.spongepowered:spongeapi:1.0"
     testCompile 'junit:junit:4.11'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'org.mockito:mockito-core:1.9.0'
