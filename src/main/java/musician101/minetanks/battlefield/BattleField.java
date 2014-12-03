@@ -20,9 +20,11 @@ import musician101.minetanks.util.MTUtils;
 import musician101.minetanks.util.Region;
 
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.potion.PotionEffectTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -116,8 +118,9 @@ public class Battlefield
 			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			return false;
 		}
-		//TODO configuration support is incomplete
+		//TODO configuration support is incomplete but I should at least try and start on it
 		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+		//TODO Invnetory API is in the works still
 		Inventory inv = player.getInventory();
 		for (int slot = 0; slot < inv.getSize(); slot++)
 			yml.set("inventory." + slot, inv.getItem(slot));
@@ -134,12 +137,10 @@ public class Battlefield
 			pe.put("duration", effect.getDuration());
 			pe.put("amplifier", effect.getAmplifier());
 			effects.add(pe);
-			//TODO currently missing from Potions API
 			player.removePotionEffect(effect.getType());
 		}
 		
 		yml.set("effects", effects);
-		//TODO player.getLocation() doesn't have a real replacement yet
 		Location loc = player.getLocation();
 		Map<String, Object> pl = new HashMap<String, Object>();
 		pl.put("world", player.getWorld().getName());
@@ -149,6 +150,7 @@ public class Battlefield
 		pl.put("yaw", player.getRotation().getYaw());
 		pl.put("pitch", player.getRotation().getPitch());
 		yml.set("location", pl);
+		//TODO Player experience API status is uknown
 		yml.set("xp", player.getExp());
 		
 		try
@@ -160,11 +162,12 @@ public class Battlefield
 			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			for (Map<String, Object> effect : effects)
 			{
-				//TODO no method to get a potion type by name or id yet
+				//TODO Custom class/enum to gather PotionEffectTypes?
 				PotionEffectType type = PotionEffectType.getByName(effect.get("type").toString());
 				boolean ambient = Boolean.valueOf(effect.get("ambient").toString());
 				int duration = Integer.valueOf(effect.get("duration").toString());
 				int amplifier = Integer.valueOf(effect.get("amplifier").toString());
+				//TODO no Constructor for PotionEffects yet
 				player.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
 			}
 			
@@ -186,8 +189,8 @@ public class Battlefield
 		}
 		else
 		{
-			player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
-			player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
+			player.getInventory().setItem(0, MTUtils.createCustomItem(ItemTypes.STICK, "Open Hangar", "Tank: None"));
+			player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", "You are currently not ready."));
 			unassigned++;
 		}
 		
@@ -201,8 +204,8 @@ public class Battlefield
 		if (pt == null)
 			return false;
 		
-		player.removePotionEffect(PotionEffectType.SLOW);
-		player.removePotionEffect(PotionEffectType.SPEED);
+		player.removePotionEffect(PotionEffectTypes.SLOWNESS);
+		player.removePotionEffect(PotionEffectTypes.SPEED);
 		
 		File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
 		if (file.exists())
@@ -350,14 +353,14 @@ public class Battlefield
 				pt.setTeam(MTTeam.ASSIGNED);
 				//TODO There's a User class but there's no way to access it yet
 				sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
-				MineTanks.getGame().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect());
+				MineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
 				unassigned--;
 			}
 			else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
 				sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
-				MineTanks.getGame().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect());
+				MineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
 				unassigned--;
 			}
 		}
@@ -367,7 +370,7 @@ public class Battlefield
 		{
 			final PlayerTank pt = getPlayer(uuid);
 			final Tanks tank = pt.getTank();
-			final Player player = MineTanks.getGame().getPlayer(uuid).get();
+			final Player player = MineTanks.getGame().getServer().get().getPlayer(uuid).get();
 			if (pt.getTeam() != MTTeam.SPECTATOR)
 			{
 				if (sb.isOnGreen(player))
@@ -388,7 +391,7 @@ public class Battlefield
 						player.getInventory().setArmorContents(tank.getArmor());
 					}
 				}.runTaskLater(plugin, 1L);
-				new ReloadHandler(plugin, player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
+				new ReloadHandler(player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
 			}
 			else
 			{
@@ -408,15 +411,15 @@ public class Battlefield
 			inProgress = false;
 			for (UUID uuid : players.keySet())
 			{
-				Player player = MineTanks.getGame().getPlayer(uuid).get();
+				Player player = MineTanks.getGame().getServer().get().getPlayer(uuid).get();
 				player.teleport(spectators);
 				player.getInventory().setHelmet(null);
 				player.getInventory().setChestplate(null);
 				player.getInventory().setLeggings(null);
 				player.getInventory().setBoots(null);
 				player.getInventory().clear();
-				player.removePotionEffect(PotionEffectType.SLOW);
-				player.removePotionEffect(PotionEffectType.SPEED);
+				player.removePotionEffect(PotionEffectTypes.SLOWNESS);
+				player.removePotionEffect(PotionEffectTypes.SPEED);
 				PlayerTank pt = getPlayer(uuid);
 				pt.setTeam(MTTeam.SPECTATOR);
 				pt.setTank(null);
@@ -442,8 +445,8 @@ public class Battlefield
 	public void playerKilled(UUID player)
 	{
 		getPlayer(player).killed();
-		sb.playerDeath(MineTanks.getGame().getPlayer(player).get());
-		MineTanks.getGame().getPlayer(player).get().teleport(spectators);
+		sb.playerDeath(MineTanks.getGame().getServer().get().getPlayer(player).get());
+		MineTanks.getGame().getServer().get().getPlayer(player).get().teleport(spectators);
 	}
 	
 	public MTScoreboard getScoreboard()

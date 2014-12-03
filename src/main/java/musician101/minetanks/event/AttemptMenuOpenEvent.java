@@ -4,19 +4,19 @@ import java.util.UUID;
 
 import musician101.minetanks.battlefield.player.PlayerTank;
 
-import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.callback.CallbackList;
 
 public class AttemptMenuOpenEvent implements Event
 {
 	boolean isCancelled;
-	ItemTypes material;
+	ItemType material;
 	String field;
 	PlayerTank pt;
 	UUID player;
 	
-	public AttemptMenuOpenEvent(ItemTypes type, String field, PlayerTank pt, UUID player)
+	public AttemptMenuOpenEvent(ItemType type, String field, PlayerTank pt, UUID player)
 	{
 		this.material = type;
 		this.field = field;
@@ -25,7 +25,7 @@ public class AttemptMenuOpenEvent implements Event
 		
 	}
 	
-	public ItemTypes getMaterial()
+	public ItemType getItemType()
 	{
 		return material;
 	}

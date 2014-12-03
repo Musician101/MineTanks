@@ -26,9 +26,9 @@ public class BattlefieldListener
 	public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
 	{
 		Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
-		Player player = MineTanks.getGame().getPlayer(event.getPlayer()).get();
+		Player player = MineTanks.getGame().getServer().get().getPlayer(event.getPlayer()).get();
 		PlayerTank pt = event.getPlayerTank();
-		if (event.getMaterial() == ItemTypes.CLOCK)
+		if (event.getItemType() == ItemTypes.CLOCK)
 		{
 			if (pt.isReady())
 			{
@@ -62,7 +62,7 @@ public class BattlefieldListener
 		MTScoreboard sb = field.getScoreboard();
 		String dmgdMsg = (sb.isOnGreen(killed) ? TextColors.GREEN + killed.getName() : TextColors.RED + killed.getName());
 		String dmgrMsg = (sb.isOnGreen(killer) ? TextColors.GREEN + killer.getName() : TextColors.RED + killer.getName());
-		for (Player player : MineTanks.getGame().getOnlinePlayers())
+		for (Player player : MineTanks.getGame().getServer().get().getOnlinePlayers())
 			if (field.getPlayer(player.getUniqueId()) != null)
 				player.sendMessage(TextColors.GREEN + MineTanks.getPrefix() + TextColors.RESET + " " + dmgdMsg + TextColors.RESET + " was killed by " + dmgrMsg + TextColors.RESET + ".");
 		
@@ -71,7 +71,6 @@ public class BattlefieldListener
 		killed.getInventory().setChestplate(null);
 		killed.getInventory().setLeggings(null);
 		killed.getInventory().setBoots(null);
-		//TODO for some reason getting an entity's UUID isn't a possibility
 		field.playerKilled(killed.getUniqueId());
 		field.endMatch();
 	}
@@ -91,7 +90,7 @@ public class BattlefieldListener
 		if (sb.getPlayerHealth(dmgd) <= 0 || sb.getPlayerHealth(dmgr) <=0)
 			return;
 		
-		if ((sb.isOnGreen(MineTanks.getGame().getPlayer(dmgr).get()) && sb.isOnGreen(MineTanks.getGame().getPlayer(dmgd).get())) || (sb.isOnRed(MineTanks.getGame().getPlayer(dmgr).get()) && sb.isOnRed(MineTanks.getGame().getPlayer(dmgd).get())))
+		if ((sb.isOnGreen(MineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnGreen(MineTanks.getGame().getPlayer(dmgd).get())) || (sb.isOnRed(MineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnRed(MineTanks.getGame().getServer().get().getPlayer(dmgd).get())))
 		{
 			if (event.getCause() == PlayerTankDamageCause.RAM)
 				dh.meleeHitFriendly(field, dmgr, dmgd, damage);

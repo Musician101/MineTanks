@@ -12,8 +12,9 @@ import musician101.minetanks.tank.module.Turrets;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.math.Vector3d;
 import org.spongepowered.api.world.Location;
+
+import com.flowpowered.math.vector.Vector3d;
 
 public class MTUtils
 {

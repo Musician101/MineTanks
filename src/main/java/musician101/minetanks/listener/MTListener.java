@@ -18,16 +18,19 @@ import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
 import musician101.minetanks.util.Region;
 
-import org.spongepowered.api.block.Block;
+import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.event.block.BlockChangeEvent;
 import org.spongepowered.api.event.block.BlockInteractEvent;
+import org.spongepowered.api.event.entity.ProjectileLaunchEvent;
 import org.spongepowered.api.event.player.PlayerDropItemEvent;
 import org.spongepowered.api.event.player.PlayerInteractEvent;
 import org.spongepowered.api.event.player.PlayerJoinEvent;
 import org.spongepowered.api.event.player.PlayerMoveEvent;
 import org.spongepowered.api.event.player.PlayerQuitEvent;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.event.Subscribe;
@@ -44,7 +47,7 @@ public class MTListener
 		return false;
 	}
 	
-	private boolean isSword(ItemTypes type)
+	private boolean isSword(ItemType type)
 	{
 		//It's technically a sword without a blade.
 		//Stick is the default item if a player hasn't chosen a tank.
@@ -69,10 +72,10 @@ public class MTListener
 		return false;
 	}
 	
-	//TODO BlockChangeEvent needs work before I can fully use it
 	@Subscribe
 	public void onBlockBreak(BlockChangeEvent event)
 	{
+		//TODO does not extend Cancellable
 		if (event.isCancelled())
 			return;
 		
@@ -102,6 +105,7 @@ public class MTListener
 	@Subscribe
 	public void onBlockPlace(BlockChangeEvent event)
 	{
+		//TODO does not extend Cancellable
 		if (event.isCancelled())
 			return;
 		
@@ -129,17 +133,17 @@ public class MTListener
 	}
 	
 	@Subscribe
-	public void onBlockInteract(BlockInteractEvent event)
+	public void onBlockInteract(PlayerInteractEvent event)
 	{
-		//TODO not fully implemented
 		Player player = event.getPlayer();
-		if (event.getItem() == null || event.getItem() == ItemTypes.BOW)
+		ItemType type = (player.getItemInHand().isPresent() ? player.getItemInHand().get().getItem() : null);
+		if (type == null || type == ItemTypes.BOW)
 			return;
 		
-		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+		if (event.getInteractionType() != EntityInteractionType.RIGHT_CLICK)
 			return;
 		
-		if (!isSword(event.getItem().getType()) && event.getItem().getType() != ItemTypes.CLOCK)
+		if (!isSword(type) && type != ItemTypes.CLOCK)
 			return;
 		
 		for (String name : MineTanks.getFieldStorage().getFields().keySet())
@@ -149,7 +153,7 @@ public class MTListener
 				return;
 			
 			if (field.getPlayer(event.getPlayer().getUniqueId()) != null)
-				MineTanks.getGame().getEventManager().post(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
+				MineTanks.getGame().getEventManager().post(new AttemptMenuOpenEvent(type, field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
 		}
 	}
 	
@@ -168,6 +172,7 @@ public class MTListener
 			return;
 		
 		player.sendMessage(Messages.POSITIVE_PREFIX + "You logged off with items still stored away. They will now be returned to you.");
+		//TODO need to learn how to mess with ConfigFile
 		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++)
 			player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
@@ -227,8 +232,7 @@ public class MTListener
 						z = maxZ - correction;
 					
 					player.sendMessage(Messages.NEGATIVE_PREFIX + "Out of bounds!");
-					//TODO Need a way to construct a location with the world and coords
-					player.teleport(new Location(player.getLocation().getExtent(), x, player.getLocation().getPosition().getY(), z));
+					player.teleport(x, player.getLocation().getPosition().getY(), z, player.getWorld());
 					return;
 				}
 			}
@@ -243,9 +247,8 @@ public class MTListener
 			event.setCancelled(isInField(event.getPlayer().getUniqueId()));
 	}
 	
-	//TODO Bow shooting and entity damage events not implemented
 	@Subscribe
-	public void onBowShoot(EntityShootBowEvent event)
+	public void onBowShoot(ProjectileLaunchEvent event)
 	{
 		if (!(event.getEntity() instanceof Player))
 			return;
@@ -263,9 +266,11 @@ public class MTListener
 				Tanks tank = pt.getTank();
 				pt.setClipSize(pt.getClipSize() - 1);
 				ReloadHandler reload = new ReloadHandler(player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize());
+				//TODO does not extend Cancellable
 				event.setCancelled(reload.isReloading());
 				if (!event.isCancelled())
 				{
+					//TODO inventory api in the works
 					Inventory inv = player.getInventory();
 					for (ItemStack item : inv.getContents())
 					{
@@ -275,6 +280,7 @@ public class MTListener
 							item.setQuantity(item.getQuantity() - 1);
 						else if (item.getItem() == ItemTypes.BOW && tank.getCannonType() == CannonTypes.AUTO_LOADER)
 						{
+							//TODO NBT api perhaps?
 							ItemMeta meta = item.getItemMeta();
 							meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + pt.getClipSize() + "/" + tank.getClipSize(),"Cycle Time: " + tank.cycleTime(), "Clip Reload Time: " + tank.reloadTime()));
 							item.setItemMeta(meta);
@@ -285,7 +291,8 @@ public class MTListener
 			}
 		}
 	}
-
+	
+	//TODO not implemented
 	@Subscribe
 	public void onEntityDamage(EntityDamageByEntityEvent event)
 	{
@@ -359,6 +366,7 @@ public class MTListener
 		}.runTaskLater(plugin, 1L);
 	}
 	
+	//TODO not implemented
 	@Subscribe
 	public void onExplosion(EntityExplodeEvent event)
 	{

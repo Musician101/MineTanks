@@ -6,6 +6,7 @@ import musician101.minetanks.tank.Tanks;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 public class Menus
 {
@@ -20,6 +21,7 @@ public class Menus
 		for (Tanks tank : Tanks.values())
 		{
 			nextId++;
+			//TODO ItemStack is an interface
 			tankSelection.setOption(nextId, new ItemStack(ItemTypes.MINECART, 1), "\u00A7a" + tank.getName(), tank.getDescription());
 		}
 	}

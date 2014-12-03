@@ -39,7 +39,7 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
-			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getPlayer(dmgd).get(), MineTanks.getGame().getPlayer(dmgr).get()));
+			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getServer().get().getPlayer(dmgd).get(), MineTanks.getGame().getServer().get().getPlayer(dmgr).get()));
 	}
 	
 	public void gravityHit(Battlefield field, UUID player, int damage)
@@ -48,7 +48,7 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(player, sb.getPlayerHealth(player) - (int) dmg);
 		if (sb.getPlayerHealth(player) <= 0)
-			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getPlayer(player).get(), null));
+			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getServer().get().getPlayer(player).get(), null));
 	}
 	
 	public void meleeHitFriendly(Battlefield field, UUID rammed, UUID rammer, int damage)
@@ -67,6 +67,6 @@ public class DamageHandler
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
 		if (sb.getPlayerHealth(dmgd) <= 0)
-			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getPlayer(dmgd).get(), MineTanks.getGame().getPlayer(dmgr).get()));
+			MineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MineTanks.getGame().getServer().get().getPlayer(dmgd).get(), MineTanks.getGame().getServer().get().getPlayer(dmgr).get()));
 	}
 }

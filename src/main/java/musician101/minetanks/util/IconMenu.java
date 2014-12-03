@@ -15,7 +15,7 @@ import org.spongepowered.api.util.event.Subscribe;
  */
 public class IconMenu
 {
- 
+	//TODO entire class might need rewriting
     private String name;
     private int size;
     private OptionClickEventHandler handler;

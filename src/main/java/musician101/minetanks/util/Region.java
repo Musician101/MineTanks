@@ -105,7 +105,7 @@ public class Region implements Iterable<BlockLoc>
  
     public World getWorld()
     {
-        return MineTanks.getGame().getWorld(this.worldName);
+        return MineTanks.getGame().getServer().get().getWorld(worldName).get();
     }
     
     public Map<String, Object> serialize()

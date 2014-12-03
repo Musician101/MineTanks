@@ -227,7 +227,6 @@ public enum Tanks
 		{
 			ids.put(tank, id);
 			id++;
-			//TODO test putting id++ in the put method
 		}
 	}
 	

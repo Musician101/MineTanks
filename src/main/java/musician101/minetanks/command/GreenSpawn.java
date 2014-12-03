@@ -34,7 +34,7 @@ public class GreenSpawn extends SubCommand
 			return;
 		}
 		
-		if (!field.getRegion().isInCuboid(player.getLocation()))
+		if (!field.getRegion().isInRegion(player.getLocation()))
 		{
 			player.sendMessage(Messages.LOCATION_NOT_IN_CUBOID);
 			return;

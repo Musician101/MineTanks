@@ -21,36 +21,6 @@ public class Edit extends SubCommand
 	}
 	
 	@Override
-	public String getName()
-	{
-		return "edit";
-	}
-	
-	@Override
-	public String getDescription()
-	{
-		return "Set the battlefield to be edited.";
-	}
-	
-	@Override
-	public String getUsage()
-	{
-		return "/mt " + getName() + " <field>";
-	}
-	
-	@Override
-	public String getPermission()
-	{
-		return Perms.PERMS_PREFIX + getName();
-	}
-	
-	@Override
-	public List<String> getAliases()
-	{
-		return Arrays.asList(getName(), "e");
-	}
-	
-	@Override
 	public void execute(CommandSource source, List<String> args) throws Exception
 	{
 		Player player = (Player) source;

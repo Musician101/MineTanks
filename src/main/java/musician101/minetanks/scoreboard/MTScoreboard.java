@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.spongepowered.api.entity.player.Player;
 
-//TODO no Scoreboard implementation
+//TODO no Scoreboard api
 public class MTScoreboard
 {
 	Scoreboard board;

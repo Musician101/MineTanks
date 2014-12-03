@@ -39,7 +39,7 @@ public class ForceEnd extends SubCommand
 		
 		for (UUID uuid : uuids)
 		{
-			Player p = MineTanks.getGame().getPlayer(uuid).get();
+			Player p = MineTanks.getGame().getServer().get().getPlayer(uuid).get();
 			p.sendMessage(Messages.NEGATIVE_PREFIX + "An admin has forcibly terminated the match.");
 			field.removePlayer(p);
 		}
