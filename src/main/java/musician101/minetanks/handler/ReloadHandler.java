@@ -8,6 +8,7 @@ import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
 
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public class ReloadHandler
@@ -41,40 +42,40 @@ public class ReloadHandler
 		try
 		{
 			//TODO convert to Sponge Task
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					player.setLevel(player.getLevel() - 1);
-					if (player.getLevel() == 0)
+			MineTanks.getGame().getScheduler().runRepeatingTaskAfter(MineTanks.getPluginContainer(),
+					new Runnable()
 					{
-						if (type == CannonTypes.AUTO_LOADER && clipSize == 0)
+						@Override
+						public void run()
 						{
-							for (ItemStack item : player.getInventory().getContents())
+							player.setLevel(player.getLevel() - 1);
+							if (player.getLevel() == 0)
 							{
-								if (item != null && item.getType() == Material.BOW)
+								if (type == CannonTypes.AUTO_LOADER && clipSize == 0)
 								{
-									ItemMeta meta = item.getItemMeta();
-									meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + maxClipSize + "/" + maxClipSize,"Cycle Time: " + cycleTime, "Clip Reload Time: " + reloadTime));
-									item.setItemMeta(meta);
-								}
-							}
-							
-							for (String name : MineTanks.getFieldStorage().getFields().keySet())
-							{
-								Battlefield field = MineTanks.getFieldStorage().getField(name);
-								if (field.getPlayer(player.getUniqueId()) != null)
-								{
-									PlayerTank pt = field.getPlayer(player.getUniqueId());
-									pt.setClipSize(pt.getTank().getClipSize());
+									for (ItemStack item : player.getInventory().getContents())
+									{
+										if (item != null && item.getItem() == ItemTypes.BOW)
+										{
+											ItemMeta meta = item.getItemMeta();
+											meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + maxClipSize + "/" + maxClipSize,"Cycle Time: " + cycleTime, "Clip Reload Time: " + reloadTime));
+											item.setItemMeta(meta);
+										}
+									}
+									
+									for (String name : MineTanks.getFieldStorage().getFields().keySet())
+									{
+										Battlefield field = MineTanks.getFieldStorage().getField(name);
+										if (field.getPlayer(player.getUniqueId()) != null)
+										{
+											PlayerTank pt = field.getPlayer(player.getUniqueId());
+											pt.setClipSize(pt.getTank().getClipSize());
+										}
+									}
 								}
 							}
 						}
-						cancel();
-					}
-				}
-			}.runTaskTimer(plugin, 1L, time);
+					}, 1L, time);
 		}
 		catch (NullPointerException e){}
 		return false;

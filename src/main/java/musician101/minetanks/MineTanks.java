@@ -14,6 +14,7 @@ import musician101.minetanks.util.IconMenu;
 import musician101.minetanks.util.MTUtils;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.state.PreInitializationEvent;
@@ -22,6 +23,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.event.Subscribe;
 
 @Plugin(id = Reference.ID, name = Reference.NAME, version = Reference.VERSION)
@@ -43,10 +45,10 @@ public class MineTanks
 	public void preInit(PreInitializationEvent event)
 	{
 		game = event.getGame();
-		logger = event.getPluginLog();
+		logger = LoggerFactory.getLogger(Reference.NAME);
 		prefix = "[" + Reference.NAME + "]";
 		
-		//TODO move battlefields object to BattleFieldStorage
+		//TODO move file objects to BattlefieldStorage
 		battlefields = new File(event.getRecommendedConfigurationDirectory(), "battlefields");
 		battlefields.mkdirs();
 		inventoryStorage = new File(event.getRecommendedConfigurationDirectory(), "inventorystorage");
@@ -153,5 +155,10 @@ public class MineTanks
 	public static void openTankMenu(Player player)
 	{
 		tankSelection.open(player);
+	}
+	
+	public static PluginContainer getPluginContainer()
+	{
+		return game.getPluginManager().getPlugin(Reference.ID).get();
 	}
 }

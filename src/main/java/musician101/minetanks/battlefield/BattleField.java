@@ -13,6 +13,7 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.handler.ReloadHandler;
+import musician101.minetanks.lib.Reference;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.scoreboard.MTScoreboard;
 import musician101.minetanks.tank.Tanks;
@@ -382,15 +383,16 @@ public class Battlefield
 				player.setScoreboard(sb.getScoreboard());
 				sb.setPlayerHealth(uuid, tank.getHealth());
 				//TODO convert to Sponge Task
-				new BukkitRunnable()
-				{
-					@Override
-					public void run()
-					{
-						player.getInventory().setContents(tank.getWeapons().getContents());
-						player.getInventory().setArmorContents(tank.getArmor());
-					}
-				}.runTaskLater(plugin, 1L);
+				MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getPluginContainer(), 
+						new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								player.getInventory().setContents(tank.getWeapons().getContents());
+								player.getInventory().setArmorContents(tank.getArmor());
+							}
+						}, 1L);
 				new ReloadHandler(player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
 			}
 			else

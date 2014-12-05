@@ -343,27 +343,28 @@ public class MTListener
 	public void onArrowHitBlock(final ProjectileHitEvent event)
 	{
 		//TODO convert to Sponge Task
-		new BukkitRunnable()
-		{
-			@Override
-			public void run()
-			{
-				if (!(event.getEntity().getShooter() instanceof Player))
-					return;
-				
-				if (!(event.getEntity() instanceof Arrow))
-					return;
-				
-				Player player = (Player) event.getEntity().getShooter();
-				if (!isInField(player.getUniqueId()))
-					return;
-				
-				Arrow arrow = (Arrow) event.getEntity();
-				ExplosionTracker.addArrow(arrow);
-				event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
-				event.getEntity().remove();
-			}
-		}.runTaskLater(plugin, 1L);
+		MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getPluginContainer(),
+				new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						if (!(event.getEntity().getShooter() instanceof Player))
+							return;
+						
+						if (!(event.getEntity() instanceof Arrow))
+							return;
+						
+						Player player = (Player) event.getEntity().getShooter();
+						if (!isInField(player.getUniqueId()))
+							return;
+						
+						Arrow arrow = (Arrow) event.getEntity();
+						ExplosionTracker.addArrow(arrow);
+						event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
+						event.getEntity().remove();
+					}
+				}, 1L);
 	}
 	
 	//TODO not implemented
