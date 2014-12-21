@@ -5,18 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.potion.PotionEffect;
-import org.spongepowered.api.potion.PotionEffectType;
-import org.spongepowered.api.potion.PotionEffectTypes;
-
+import musician101.minetanks.MineTanks;
 import musician101.minetanks.tank.module.Cannon;
+import musician101.minetanks.tank.module.Cannon.CannonTypes;
 import musician101.minetanks.tank.module.Engine;
 import musician101.minetanks.tank.module.Radio;
 import musician101.minetanks.tank.module.Tracks;
 import musician101.minetanks.tank.module.Turrets;
-import musician101.minetanks.tank.module.Cannon.CannonTypes;
 import musician101.minetanks.util.MTUtils;
+
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.potion.PotionEffect;
+import org.spongepowered.api.potion.PotionEffectTypes;
 
 public enum Tanks
 {
@@ -157,27 +158,26 @@ public enum Tanks
 		else if (this.speed >= 10)
 			speed = 10;
 		
-		//TODO PotionEffect is an interface
 		if (speed == 1)
-			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 5);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SLOWNESS).amplifier(5).build();
 		else if (speed == 2)
-			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 4);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SLOWNESS).amplifier(4).build();
 		else if (speed == 3)
-			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 3);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SLOWNESS).amplifier(3).build();
 		else if (speed == 4)
-			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 2);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SLOWNESS).amplifier(2).build();
 		else if (speed == 5)
-			return new PotionEffect(PotionEffectTypes.SLOWNESS, Integer.MAX_VALUE, 1);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SLOWNESS).amplifier(1).build();
 		else if (speed == 6)
-			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 1);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SPEED).amplifier(1).build();
 		else if (speed == 7)
-			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 2);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SPEED).amplifier(2).build();
 		else if (speed == 8)
-			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 3);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SPEED).amplifier(3).build();
 		else if (speed == 9)
-			return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 4);
+			return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SPEED).amplifier(4).build();
 		
-		return new PotionEffect(PotionEffectTypes.SPEED, Integer.MAX_VALUE, 5);
+		return MineTanks.getGame().getRegistry().getPotionEffectBuilder().potionType(PotionEffectTypes.SPEED).amplifier(5).build();
 	}
 	
 	public int cycleTime()
@@ -232,12 +232,11 @@ public enum Tanks
 	
 	public static enum TankTypes
 	{
-		//TODO not going to bother changing this until proper itemstack support is implemented
-		LIGHT(0, "Light", new ItemStack(Material.WOOD_SWORD, 1)),
-		MEDIUM(1, "Medium", new ItemStack(Material.STONE_SWORD, 1)),
-		HEAVY(2, "Heavy", new ItemStack(Material.IRON_SWORD, 1)),
-		TD(3, "TD", new ItemStack(Material.GOLD_SWORD, 1)),
-		ARTY(4, "SPG", new ItemStack(Material.DIAMOND_SWORD, 1));
+		LIGHT(0, "Light", MineTanks.getGame().getRegistry().getItemBuilder().withItemType(ItemTypes.WOODEN_SWORD).build()),
+		MEDIUM(1, "Medium", MineTanks.getGame().getRegistry().getItemBuilder().withItemType(ItemTypes.STONE_SWORD).build()),
+		HEAVY(2, "Heavy", MineTanks.getGame().getRegistry().getItemBuilder().withItemType(ItemTypes.IRON_SWORD).build()),
+		TD(3, "TD", MineTanks.getGame().getRegistry().getItemBuilder().withItemType(ItemTypes.GOLDEN_SWORD).build()),
+		ARTY(4, "SPG", MineTanks.getGame().getRegistry().getItemBuilder().withItemType(ItemTypes.DIAMOND_SWORD).build());
 		
 		int id;
 		String name;

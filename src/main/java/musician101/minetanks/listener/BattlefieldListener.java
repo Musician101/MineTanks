@@ -1,5 +1,6 @@
 package musician101.minetanks.listener;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
@@ -33,12 +34,12 @@ public class BattlefieldListener
 			if (pt.isReady())
 			{
 				pt.setReady(false);
-				player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", "You are currently not ready."));
+				player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", Arrays.asList("You are currently not ready.")));
 				return;
 			}
 			
 			pt.setReady(true);
-			player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Unready", "You are currently ready."));
+			player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Unready", Arrays.asList("You are currently ready.")));
 			field.startMatch();
 			return;
 		}

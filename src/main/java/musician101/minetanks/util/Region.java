@@ -8,6 +8,7 @@ import java.util.Map;
 
 import musician101.minetanks.MineTanks;
 
+import org.json.simple.JSONObject;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -45,7 +46,7 @@ public class Region implements Iterable<BlockLoc>
         this.z2 = Math.max((int) location.getPosition().getZ(), (int) location2.getPosition().getZ());
     }
  
-    private Region(Map<String, Object> serializedCuboid)
+    private Region(JSONObject serializedCuboid)
     {
         this.worldName = serializedCuboid.containsKey("World") ? (String) serializedCuboid.get("World") : "";
         this.x1 = serializedCuboid.containsKey("X1") ? (Integer) serializedCuboid.get("X1") : 0;
@@ -132,7 +133,7 @@ public class Region implements Iterable<BlockLoc>
     	return !(location.getPosition().getX() <= x1 || location.getPosition().getX() >= x2 || location.getPosition().getY() <= y1 || location.getPosition().getY() >= y2 || location.getPosition().getZ() <= z1 || location.getPosition().getZ() >= z2);
     }
     
-    public static Region deserialize(Map<String, Object> serializedCuboid)
+    public static Region deserialize(JSONObject serializedCuboid)
     {
         return new Region(serializedCuboid);
     }

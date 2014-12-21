@@ -1,6 +1,8 @@
 package musician101.minetanks.battlefield;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,18 +15,21 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.handler.ReloadHandler;
-import musician101.minetanks.lib.Reference;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.scoreboard.MTScoreboard;
 import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.util.MTUtils;
+import musician101.minetanks.util.PotionEffectsEnum;
 import musician101.minetanks.util.Region;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.potion.PotionEffect;
-import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -106,10 +111,11 @@ public class Battlefield
 		spectators = loc;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public boolean addPlayer(Player player, MTTeam team)
 	{
 		@SuppressWarnings("deprecation")
-		File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
+		File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".json");
 		try
 		{
 			file.createNewFile();
@@ -119,15 +125,15 @@ public class Battlefield
 			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			return false;
 		}
-		//TODO configuration support is incomplete but I should at least try and start on it
-		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+		
+		JSONObject playerJSON = new JSONObject();
 		//TODO Invnetory API is in the works still
 		Inventory inv = player.getInventory();
 		for (int slot = 0; slot < inv.getSize(); slot++)
-			yml.set("inventory." + slot, inv.getItem(slot));
+			playerJSON.set("inventory." + slot, inv.getItem(slot));
 		
 		for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
-			yml.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
+			playerJSON.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
 		
 		List<Map<String, Object>> effects = new ArrayList<Map<String, Object>>();
 		for (PotionEffect effect : player.getPotionEffects())
@@ -141,35 +147,36 @@ public class Battlefield
 			player.removePotionEffect(effect.getType());
 		}
 		
-		yml.set("effects", effects);
+		playerJSON.put("effects", effects);
 		Location loc = player.getLocation();
 		Map<String, Object> pl = new HashMap<String, Object>();
 		pl.put("world", player.getWorld().getName());
 		pl.put("x", loc.getPosition().getX());
 		pl.put("y", loc.getPosition().getY());
 		pl.put("z", loc.getPosition().getZ());
-		pl.put("yaw", player.getRotation().getYaw());
-		pl.put("pitch", player.getRotation().getPitch());
-		yml.set("location", pl);
-		//TODO Player experience API status is uknown
-		yml.set("xp", player.getExp());
+		pl.put("yaw", player.getRotation().getX());
+		pl.put("pitch", player.getRotation().getY());
+		playerJSON.put("location", pl);
+		//TODO Player experience API status is unknown
+		playerJSON.put("xp", player.getExp());
 		
 		try
 		{
-			yml.save(file);
+			FileWriter fw = new FileWriter(file);
+			fw.write(playerJSON.toJSONString());
+			fw.close();
 		}
 		catch (IOException e)
 		{
 			player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
 			for (Map<String, Object> effect : effects)
 			{
-				//TODO Custom class/enum to gather PotionEffectTypes?
-				PotionEffectType type = PotionEffectType.getByName(effect.get("type").toString());
-				boolean ambient = Boolean.valueOf(effect.get("ambient").toString());
-				int duration = Integer.valueOf(effect.get("duration").toString());
-				int amplifier = Integer.valueOf(effect.get("amplifier").toString());
-				//TODO no Constructor for PotionEffects yet
-				player.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
+				PotionEffectBuilder peb = MineTanks.getGame().getRegistry().getPotionEffectBuilder();
+				peb.potionType(PotionEffectsEnum.valueOf(effect.get("type").toString()).getPotionEffectType());
+				peb.ambience(Boolean.valueOf(effect.get("ambient").toString()));
+				peb.amplifier(Integer.valueOf(effect.get("amplifier").toString()));
+				peb.duration(Integer.valueOf(effect.get("duration").toString()));
+				player.addPotionEffect(peb.build(), true);
 			}
 			
 			file.delete();
@@ -211,16 +218,31 @@ public class Battlefield
 		File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
 		if (file.exists())
 		{
-			YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+			JSONParser parser = new JSONParser();
+			//TODO need to create custom JSONObject class so that it's a lot more user friendly
+			JSONObject playerJSON = (JSONObject) parser.parse(new FileReader(file));
 			player.getInventory().clear();
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-				player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
+				player.getInventory().setItem(slot, playerJSON.getItemStack("inventory." + slot));
 			
 			ItemStack[] armor = new ItemStack[4];
 			for (int slot = 0; slot < armor.length; slot++)
-				armor[slot] = yml.getItemStack("armor." + slot);
+				armor[slot] = playerJSON.getItemStack("armor." + slot);
 			
 			player.getInventory().setArmorContents(armor);
+			
+			JSONArray effects = (JSONArray) playerJSON.get("effects");
+			for (Object effectObj : effects)
+			{
+				JSONObject effect = (JSONObject) effectObj;
+				PotionEffectBuilder peb = MineTanks.getGame().getRegistry().getPotionEffectBuilder();
+				peb.potionType(PotionEffectsEnum.valueOf(effect.get("type").toString()).getPotionEffectType());
+				peb.ambience(Boolean.valueOf(effect.get("ambient").toString()));
+				peb.amplifier(Integer.valueOf(effect.get("amplifier").toString()));
+				peb.duration(Integer.valueOf(effect.get("duration").toString()));
+				player.addPotionEffect(peb.build(), true);
+			}
+			
 			file.delete();
 		}
 		
@@ -264,9 +286,10 @@ public class Battlefield
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void saveToFile()
 	{
-		File file = new File(MineTanks.battlefields, this.name + ".yml");
+		File file = new File(MineTanks.battlefields, this.name + ".json");
 		try
 		{
 			file.createNewFile();
@@ -277,38 +300,40 @@ public class Battlefield
 			return;
 		}
 		
-		YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
+		JSONObject field = new JSONObject();
 		if (cuboid != null)
-			field.set("cuboid", cuboid.serialize());
+			field.put("cuboid", cuboid.serialize());
 		
 		if (greenSpawn != null)
 		{
-			field.set("greenSpawn.world", ((World) greenSpawn.getExtent()).getName());
-			field.set("greenSpawn.x", greenSpawn.getPosition().getX());
-			field.set("greenSpawn.y", greenSpawn.getPosition().getY());
-			field.set("greenSpawn.z", greenSpawn.getPosition().getZ());
+			field.put("greenSpawn.world", ((World) greenSpawn.getExtent()).getName());
+			field.put("greenSpawn.x", greenSpawn.getPosition().getX());
+			field.put("greenSpawn.y", greenSpawn.getPosition().getY());
+			field.put("greenSpawn.z", greenSpawn.getPosition().getZ());
 		}
 		
 		if (redSpawn != null)
 		{
-			field.set("redSpawn.world", ((World) redSpawn.getExtent()).getName());
-			field.set("redSpawn.x", redSpawn.getPosition().getX());
-			field.set("redSpawn.y", redSpawn.getPosition().getY());
-			field.set("redSpawn.z", redSpawn.getPosition().getZ());
+			field.put("redSpawn.world", ((World) redSpawn.getExtent()).getName());
+			field.put("redSpawn.x", redSpawn.getPosition().getX());
+			field.put("redSpawn.y", redSpawn.getPosition().getY());
+			field.put("redSpawn.z", redSpawn.getPosition().getZ());
 		}
 		
 		if (spectators != null)
 		{
-			field.set("spectators.world", ((World) spectators.getExtent()).getName());
-			field.set("spectators.x", spectators.getPosition().getX());
-			field.set("spectators.y", spectators.getPosition().getY());
-			field.set("spectators.z", spectators.getPosition().getZ());
+			field.put("spectators.world", ((World) spectators.getExtent()).getName());
+			field.put("spectators.x", spectators.getPosition().getX());
+			field.put("spectators.y", spectators.getPosition().getY());
+			field.put("spectators.z", spectators.getPosition().getZ());
 		}
 		
-		field.set("enabled", enabled);
+		field.put("enabled", enabled);
 		try
 		{
-			field.save(file);
+			FileWriter fw = new FileWriter(file);
+			fw.write(field.toJSONString());
+			fw.close();
 		}
 		catch (IOException e)
 		{
@@ -382,7 +407,6 @@ public class Battlefield
 				
 				player.setScoreboard(sb.getScoreboard());
 				sb.setPlayerHealth(uuid, tank.getHealth());
-				//TODO convert to Sponge Task
 				MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getPluginContainer(), 
 						new Runnable()
 						{

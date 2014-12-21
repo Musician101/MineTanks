@@ -1,15 +1,20 @@
 package musician101.minetanks.battlefield;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
+import musician101.minetanks.util.MTUtils;
 import musician101.minetanks.util.Region;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
 public class BattlefieldStorage
 {
@@ -66,28 +71,36 @@ public class BattlefieldStorage
 		{
 			if (file.getName().endsWith(".yml"))
 			{
-				YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
-				String name = file.getName().replace(".yml", "");
-				boolean enabled = field.getBoolean("enabled");
-				Region region = null;
-				Location greenSpawn = null;
-				Location redSpawn = null;
-				Location spectators = null;
-				
-				if (field.isSet("cuboid"))
-					region = Region.deserialize(field.getConfigurationSection("cuboid").getValues(false));
-				
-				if (field.isSet("greenSpawn.x"))
-					greenSpawn = new Location(MineTanks.getGame().getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
-				
-				if (field.isSet("redSpawn.x"))
-					redSpawn = new Location(MineTanks.getGame().getWorld(field.getString("redSpawn.world")), field.getInt("redSpawn.x"), field.getInt("redSpawn.y"), field.getInt("redSpawn.z"));
-				
-				if (field.isSet("spectators.x"))
-					spectators = new Location(MineTanks.getGame().getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
-				
-				if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
+				try
+				{
+					JSONParser parser = new JSONParser();
+					JSONObject field = (JSONObject) parser.parse(new FileReader(file));
+					String name = file.getName().replace(".yml", "");
+					boolean enabled = Boolean.valueOf(field.get("enabled").toString());
+					Region region = null;
+					Location greenSpawn = null;
+					Location redSpawn = null;
+					Location spectators = null;
+					
+					if (field.containsKey("cuboid"))
+						region = Region.deserialize((JSONObject) field.get("cuboid"));
+					
+					if (field.containsKey("greenSpawn"))
+						greenSpawn = MTUtils.deserializeLocation((JSONObject) field.get("greenSpawn"));
+					
+					if (field.containsKey("redSpawn"))
+						redSpawn = MTUtils.deserializeLocation((JSONObject) field.get("redSpawn"));
+					
+					if (field.containsKey("spectators"))
+						spectators = MTUtils.deserializeLocation((JSONObject) field.get("spectators"));
+					
+					if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
+						MineTanks.getLogger().warn("Failed to load " + file.getName());
+				}
+				catch (IOException | ParseException e)
+				{
 					MineTanks.getLogger().warn("Failed to load " + file.getName());
+				}
 			}
 		}
 	}

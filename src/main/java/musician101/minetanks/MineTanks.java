@@ -19,11 +19,10 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.util.event.Subscribe;
 
 @Plugin(id = Reference.ID, name = Reference.NAME, version = Reference.VERSION)
@@ -40,6 +39,8 @@ public class MineTanks
 	static IconMenu tankSelection;
 	static Logger logger;
 	static String prefix;
+	@ConfigDir(sharedRoot = false)
+	File configDir = new File(Reference.NAME);
 	
 	@Subscribe
 	public void preInit(PreInitializationEvent event)
@@ -49,9 +50,9 @@ public class MineTanks
 		prefix = "[" + Reference.NAME + "]";
 		
 		//TODO move file objects to BattlefieldStorage
-		battlefields = new File(event.getRecommendedConfigurationDirectory(), "battlefields");
+		battlefields = new File(configDir, "battlefields");
 		battlefields.mkdirs();
-		inventoryStorage = new File(event.getRecommendedConfigurationDirectory(), "inventorystorage");
+		inventoryStorage = new File(configDir, "inventorystorage");
 		inventoryStorage.mkdirs();
 		
 		fieldStorage = new BattlefieldStorage();
@@ -95,61 +96,11 @@ public class MineTanks
 		return prefix;
 	}
 	
-	@SuppressWarnings("serial")
 	private void initMenu()
 	{
 		tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler());
 		for (Tanks tank : Tanks.values())
-			tankSelection.setOption(tank.getId(), new ItemStack()
-			{
-				@Override
-				public int compareTo(ItemStack arg0)
-				{
-					return 0;
-				}
-
-				@Override
-				public ItemType getItem()
-				{
-					return ItemTypes.MINECART;
-				}
-
-				@Override
-				public short getDamage()
-				{
-					return 0;
-				}
-
-				@Override
-				public void setDamage(short damage)
-				{
-					//NOOP
-				}
-
-				@Override
-				public int getQuantity()
-				{
-					return 1;
-				}
-
-				@Override
-				public void setQuantity(int quantity) throws IllegalArgumentException
-				{
-					//NOOP
-				}
-
-				@Override
-				public int getMaxStackQuantity()
-				{
-					return 1;
-				}
-
-				@Override
-				public void setMaxStackQuantity(int quantity)
-				{
-					//NOOP
-				}
-			}, "\u00A7a" + tank.getName(), tank.getDescription());
+			tankSelection.setOption(tank.getId(), ItemTypes.MINECART, "\u00A7a" + tank.getName(), tank.getDescription());
 	}
 	
 	public static void openTankMenu(Player player)

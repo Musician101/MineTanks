@@ -1,7 +1,9 @@
 package musician101.minetanks.util;
 
 import java.util.Arrays;
+import java.util.List;
 
+import musician101.minetanks.MineTanks;
 import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.tank.module.Cannon;
 import musician101.minetanks.tank.module.Engine;
@@ -9,10 +11,14 @@ import musician101.minetanks.tank.module.Radio;
 import musician101.minetanks.tank.module.Tracks;
 import musician101.minetanks.tank.module.Turrets;
 
+import org.json.simple.JSONObject;
+import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
 
@@ -28,56 +34,7 @@ public class MTUtils
 	{
 		ItemStack[] items = new ItemStack[2];
 		items[0] = cannon.getCannon();
-		items[1] = new ItemStack()
-		{
-			@Override
-			public int compareTo(ItemStack arg0)
-			{
-				return 0;
-			}
-
-			@Override
-			public ItemType getItem()
-			{
-				return ItemTypes.ARROW;
-			}
-
-			@Override
-			public short getDamage()
-			{
-				return 0;
-			}
-
-			@Override
-			public void setDamage(short damage)
-			{
-				//NOOP
-			}
-
-			@Override
-			public int getQuantity()
-			{
-				return cannon.getAmmoCount();
-			}
-
-			@Override
-			public void setQuantity(int quantity) throws IllegalArgumentException
-			{
-				
-			}
-
-			@Override
-			public int getMaxStackQuantity()
-			{
-				return cannon.getAmmoCount();
-			}
-
-			@Override
-			public void setMaxStackQuantity(int quantity)
-			{
-				//NOOP
-			}
-		};
+		items[1] = createCustomItem(ItemTypes.ARROW, 0, cannon.getAmmoCount());
 		return items;
 	}
 	
@@ -129,73 +86,35 @@ public class MTUtils
 	
 	public static ItemStack createCustomItem(ItemType type, String displayName)
 	{
-		return createCustomItem(type, displayName, "");
+		return createCustomItem(type, displayName, null);
+	}
+	
+	public static ItemStack createCustomItem(ItemType type, String displayName, List<String> description)
+	{
+		return createCustomItem(type, 0, 1, displayName, description);
+	}
+	
+	public static ItemStack createCustomItem(ItemType type, int damage, int quantity)
+	{
+		return createCustomItem(type, damage, quantity, "", null);
 	}
 	
 	@SuppressWarnings("serial")
-	public static ItemStack createCustomItem(final ItemType type, String displayName, String description)
+	public static ItemStack createCustomItem(ItemType type, int damage, int quantity, String displayName, List<String> description)
 	{
-		//TODO item metadata has not been implemented
-		ItemStack item = new ItemStack()
-		{
-
-			@Override
-			public int compareTo(ItemStack o)
-			{
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public ItemType getItem()
-			{
-				return type;
-			}
-
-			@Override
-			public short getDamage()
-			{
-				return 0;
-			}
-
-			@Override
-			public void setDamage(short damage)
-			{
-				//NOOP
-			}
-
-			@Override
-			public int getQuantity()
-			{
-				return 1;
-			}
-
-			@Override
-			public void setQuantity(int quantity) throws IllegalArgumentException
-			{
-				//NOOP
-			}
-
-			@Override
-			public int getMaxStackQuantity()
-			{
-				return getItem().getMaxStackQuantity();
-			}
-
-			@Override
-			public void setMaxStackQuantity(int quantity)
-			{
-				//NOOP
-			}
-		};
+		ItemStackBuilder isb = MineTanks.getGame().getRegistry().getItemBuilder();
+		isb.withItemType(type);
+		isb.withDamage(damage);
+		isb.withQuantity(quantity);
 		
+		//TODO item metadata has not been implemented
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName("\u00A7a" + displayName);
 		if (!description.equals(""))
 			meta.setLore(Arrays.asList(description));
 		
 		item.setItemMeta(meta);
-		return item;
+		return isb.build();
 	}
 	
 	public static int getMenuSize()
@@ -205,6 +124,13 @@ public class MTUtils
 			rows++;
 		
 		return rows * 9;
+	}
+	
+	public static Location deserializeLocation(JSONObject locJSON)
+	{
+		Vector3d position = new Vector3d(Integer.valueOf(locJSON.get("x").toString()), Integer.valueOf(locJSON.get("y").toString()), Integer.valueOf(locJSON.get("z").toString()));
+		World world = MineTanks.getGame().getServer().get().getWorld(locJSON.get("world").toString()).get();
+		return new Location(world, position);
 	}
 	
 	public static Location addPosition(Location loc, double x, double y, double z)

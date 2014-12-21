@@ -2,6 +2,8 @@ package musician101.minetanks.tank.module;
 
 import java.util.Arrays;
 
+import musician101.minetanks.util.MTUtils;
+
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -66,60 +68,10 @@ public class Cannon
 		return type;
 	}
 	
-	@SuppressWarnings("serial")
 	private void parseCannon()
 	{
-		cannon = new ItemStack()
-		{
-			@Override
-			public int compareTo(ItemStack o)
-			{
-				return 0;
-			}
-
-			@Override
-			public ItemType getItem()
-			{
-				return ItemTypes.BOW;
-			}
-
-			@Override
-			public short getDamage()
-			{
-				return 0;
-			}
-
-			@Override
-			public void setDamage(short damage)
-			{
-				//NOOP
-			}
-
-			@Override
-			public int getQuantity()
-			{
-				return 1;
-			}
-
-			@Override
-			public void setQuantity(int quantity) throws IllegalArgumentException
-			{
-				//NOOP
-			}
-
-			@Override
-			public int getMaxStackQuantity()
-			{
-				return 0;
-			}
-
-			@Override
-			public void setMaxStackQuantity(int quantity)
-			{
-				//NOOP
-			}
-		};
-		
+		//TODO modules will not be fully updated until MetaData API is released
+		cannon = MTUtils.createCustomItem(ItemTypes.BOW, TextColors.GREEN + name);
 		ItemMeta meta = cannon.getItemMeta();
 		meta.setDisplayName(TextColors.GREEN + name);
 		meta.addEnchant(Enchantment.DURABILITY, 10, true);

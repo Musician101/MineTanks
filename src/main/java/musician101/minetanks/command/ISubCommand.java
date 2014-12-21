@@ -6,7 +6,7 @@ import org.spongepowered.api.util.command.CommandSource;
 
 public interface ISubCommand
 {
-String getName();
+	String getName();
 	
 	String getDescription();
 	

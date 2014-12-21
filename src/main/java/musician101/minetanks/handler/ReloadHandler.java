@@ -41,7 +41,6 @@ public class ReloadHandler
 		player.setLevel(time);
 		try
 		{
-			//TODO convert to Sponge Task
 			MineTanks.getGame().getScheduler().runRepeatingTaskAfter(MineTanks.getPluginContainer(),
 					new Runnable()
 					{

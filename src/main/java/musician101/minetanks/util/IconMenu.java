@@ -6,7 +6,10 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.lib.Reference;
 
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.util.event.Subscribe;
 
 /**
@@ -32,7 +35,7 @@ public class IconMenu
     }
     
     //Original arguments were int position, ItemStack icon, String name, String... info
-    public IconMenu setOption(int position, ItemStack icon, String name, List<String> info)
+    public IconMenu setOption(int position, ItemType icon, String name, List<String> info)
     {
         optionNames[position] = name;
         optionIcons[position] = setItemNameAndLore(icon, name, info);
@@ -144,13 +147,17 @@ public class IconMenu
     }
     
     //Original arguments were ItemStack item, String name, String[] lore
-    private ItemStack setItemNameAndLore(ItemStack item, String name, List<String> lore)
+    private ItemStack setItemNameAndLore(ItemType type, String name, List<String> lore)
     {
-        ItemMeta im = item.getItemMeta();
+    	ItemStackBuilder isb = MineTanks.getGame().getRegistry().getItemBuilder();
+    	isb.withItemType(ItemTypes.MINECART);
+    	
+    	//TODO no item meta data support
+        ItemMeta im = type.getItemMeta();
         im.setDisplayName(name);
         im.setLore(lore);
-        item.setItemMeta(im);
-        return item;
+        type.setItemMeta(im);
+        return isb.build();
     }
    
 }

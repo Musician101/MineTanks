@@ -1,6 +1,7 @@
 package musician101.minetanks.listener;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -16,14 +17,17 @@ import musician101.minetanks.handler.ReloadHandler;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.tank.module.Cannon.CannonTypes;
+import musician101.minetanks.util.MTUtils;
 import musician101.minetanks.util.Region;
 
-import org.spongepowered.api.block.BlockLoc;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.mockito.cglib.core.Block;
 import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Arrow;
-import org.spongepowered.api.event.block.BlockChangeEvent;
-import org.spongepowered.api.event.block.BlockInteractEvent;
+import org.spongepowered.api.event.block.BlockBreakEvent;
+import org.spongepowered.api.event.block.BlockPlaceEvent;
 import org.spongepowered.api.event.entity.ProjectileLaunchEvent;
 import org.spongepowered.api.event.player.PlayerDropItemEvent;
 import org.spongepowered.api.event.player.PlayerInteractEvent;
@@ -73,9 +77,8 @@ public class MTListener
 	}
 	
 	@Subscribe
-	public void onBlockBreak(BlockChangeEvent event)
+	public void onBlockBreak(BlockBreakEvent event)
 	{
-		//TODO does not extend Cancellable
 		if (event.isCancelled())
 			return;
 		
@@ -103,9 +106,8 @@ public class MTListener
 	}
 	
 	@Subscribe
-	public void onBlockPlace(BlockChangeEvent event)
+	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		//TODO does not extend Cancellable
 		if (event.isCancelled())
 			return;
 		
@@ -173,16 +175,17 @@ public class MTListener
 		
 		player.sendMessage(Messages.POSITIVE_PREFIX + "You logged off with items still stored away. They will now be returned to you.");
 		//TODO need to learn how to mess with ConfigFile
-		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+		JSONParser parser = new JSONParser();
+		JSONObject json = (JSONObject) parser.parse(new FileReader(file));
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-			player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
+			player.getInventory().setItem(slot, json.getItemStack("inventory." + slot));
 		
 		ItemStack[] armor = new ItemStack[4];
 		for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
-			armor[slot] = yml.getItemStack("armor." + slot);
+			armor[slot] = json.getItemStack("armor." + slot);
 		
 		player.getInventory().setArmorContents(armor);
-		player.teleport(new Location(MineTanks.getGame().getWorld(yml.getString("world")), yml.getDouble("x"), yml.getDouble("y"), yml.getDouble("z")));
+		player.teleport(MTUtils.deserializeLocation(json));
 		file.delete();
 	}
 		
