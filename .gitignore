@@ -31,17 +31,5 @@ local.properties
 # Maven
 target/
 
-#################
-## Gradle
-#################
-# https://github.com/github/gitignore/blob/master/Gradle.gitignore
-
-.gradle
-build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Allow the Gradle wrapper
-!gradle-wrapper.jar
-gradle/
+# Custom
+*.jar

@@ -348,14 +348,14 @@ public class Battlefield
 			else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
-				sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
+				sb.addGreenPlayer(Bukkit.getPlayer(uuid));
 				Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
 			}
 			else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
 			{
 				pt.setTeam(MTTeam.ASSIGNED);
-				sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
+				sb.addRedPlayer(Bukkit.getPlayer(uuid));
 				Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
 				unassigned--;
 			}

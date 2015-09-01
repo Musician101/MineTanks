@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -48,29 +47,29 @@ public class MTScoreboard
 		return board;
 	}
 	
-	public void addGreenPlayer(OfflinePlayer offlinePlayer)
+	public void addGreenPlayer(Player player)
 	{
-		green.addPlayer(offlinePlayer);
+		green.addEntry(player.getName());
 		greenScore.setScore(green.getSize());
 	}
 	
-	public void addRedPlayer(OfflinePlayer offlinePlayer)
+	public void addRedPlayer(Player player)
 	{
-		red.addPlayer(offlinePlayer);
+		red.addEntry(player.getName());
 		redScore.setScore(red.getSize());
 	}
 	
 	public void playerDeath(Player player)
 	{
-		if (green.getPlayers().contains(player))
+		if (green.getEntries().contains(player.getName()))
 			greenPlayerDeath(player);
-		else if (red.getPlayers().contains(player))
+		else if (red.getEntries().contains(player.getName()))
 			redPlayerDeath(player);
 	}
 	
 	private void greenPlayerDeath(Player player)
 	{
-		green.removePlayer(player);
+		green.removeEntry(player.getName());
 		greenScore.setScore(green.getSize());
 		player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
 		player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
@@ -78,7 +77,7 @@ public class MTScoreboard
 	
 	private void redPlayerDeath(Player player)
 	{
-		red.removePlayer(player);
+		red.removeEntry(player.getName());
 		redScore.setScore(red.getSize());
 		player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
 		player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
@@ -86,12 +85,12 @@ public class MTScoreboard
 	
 	public boolean isOnGreen(Player player)
 	{
-		return green.getPlayers().contains(player);
+		return green.getEntries().contains(player.getName());
 	}
 	
 	public boolean isOnRed(Player player)
 	{
-		return red.getPlayers().contains(player);
+		return red.getEntries().contains(player.getName());
 	}
 	
 	public int getGreenTeamSize()
