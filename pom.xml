@@ -2,53 +2,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>musician101</groupId>
 	<artifactId>minetanks</artifactId>
+	<version>2.0</version>
 	<name>MineTanks</name>
-	<version>1.0</version>
 	<description>Minecraft PvP plugin heavily based on World of Tanks.</description>
-	<packaging>jar</packaging>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.7.10-R0.1-SNAPSHOT</bukkitVersion>
-		<mainClass>${project.groupId}.${project.artifactId}.${project.name}</mainClass>
-	</properties>
-	<build>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<finalName>${project.name}</finalName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkitVersion}</version>
-		</dependency>
-	</dependencies>
-	<repositories>
-		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
-		</repository>
-	</repositories>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>common</module>
+		<module>platforms/forge</module>
+		<module>platforms/spigot</module>
+		<module>platforms/sponge</module>
+	</modules>
 </project>
