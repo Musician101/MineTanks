@@ -14,7 +14,7 @@ import musician101.minetanks.battlefield.player.PlayerTank;
 import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.handlers.ReloadHandler;
 import musician101.minetanks.scoreboards.MTScoreboard;
-import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.util.Cuboid;
 import musician101.minetanks.util.MTUtils;
 

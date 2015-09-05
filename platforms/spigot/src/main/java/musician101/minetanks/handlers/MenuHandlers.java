@@ -1,7 +1,7 @@
 package musician101.minetanks.handlers;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.tank.Tanks;
 import musician101.minetanks.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.util.IconMenu.OptionClickEventHandler;
 import musician101.minetanks.util.MTUtils;

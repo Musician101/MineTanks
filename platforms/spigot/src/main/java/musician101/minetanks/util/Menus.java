@@ -2,7 +2,7 @@ package musician101.minetanks.util;
 
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.handlers.MenuHandlers.TankSelectionHandler;
-import musician101.minetanks.tankinfo.Tanks;
+import musician101.minetanks.tank.Tanks;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

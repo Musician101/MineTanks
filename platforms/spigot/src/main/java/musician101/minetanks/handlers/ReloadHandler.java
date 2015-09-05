@@ -5,7 +5,7 @@ import java.util.Arrays;
 import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.battlefield.player.PlayerTank;
-import musician101.minetanks.tankinfo.modules.Cannons.CannonTypes;
+import musician101.minetanks.tank.modules.cannon.Cannons.CannonTypes;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

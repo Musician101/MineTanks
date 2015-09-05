@@ -1,4 +1,4 @@
-package musician101.minetanks.tankinfo;
+package musician101.minetanks.tank;
 
 public interface IInfo
 {

@@ -13,8 +13,8 @@ import musician101.minetanks.events.PlayerTankDamageEvent;
 import musician101.minetanks.events.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.handlers.ExplosionTracker;
 import musician101.minetanks.handlers.ReloadHandler;
-import musician101.minetanks.tankinfo.Tanks;
-import musician101.minetanks.tankinfo.modules.Cannons.CannonTypes;
+import musician101.minetanks.tank.Tanks;
+import musician101.minetanks.tank.modules.cannon.Cannons.CannonTypes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

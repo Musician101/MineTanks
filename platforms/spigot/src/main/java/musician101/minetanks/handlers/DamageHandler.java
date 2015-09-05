@@ -6,7 +6,7 @@ import musician101.minetanks.MineTanks;
 import musician101.minetanks.battlefield.Battlefield;
 import musician101.minetanks.events.PlayerTankDeathEvent;
 import musician101.minetanks.scoreboards.MTScoreboard;
-import musician101.minetanks.tankinfo.TankTypes;
+import musician101.minetanks.tank.TankTypes;
 
 import org.bukkit.Bukkit;
 
