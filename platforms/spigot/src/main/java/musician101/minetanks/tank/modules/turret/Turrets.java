@@ -45,13 +45,18 @@ public class Turrets
 	public static final Turret MAUS = new Turret("MAUS", TankTypes.HEAVY, new Armor(240, 210, 210));
 	public static final Turret VK_7201 = new Turret("VK 72.01 (K)", TankTypes.HEAVY, new Armor(200, 160, 120));
 	/** German TD Turrets */
-	public static final Turret WAFFEN_E_100 = new Turret("Waffentrager auf E 100", TankTypes.TD, new Armor(20, 10, 8));
+	public static final Turret WAFFENTRAGER_E_100 = new Turret("Waffentrager auf E 100", TankTypes.TD, new Armor(20, 10, 8));
 	/** Japanese Medium Turrets */
 	public static final Turret STB_1 = new Turret("STB-1", TankTypes.MEDIUM, new Armor(132, 132, 37));
+    /** Japanese Heavy Turrets */
+    public static final Turret TYPE_5_HEAVY = new Turret("Type 5 Heavy", TankTypes.HEAVY, new Armor(260, 210, 200));
 	/** British Medium Turrets */
 	public static final Turret FV4202 = new Turret("FV4202", TankTypes.MEDIUM, new Armor(196, 196, 35));
 	/** British Heavy Turrets */
 	public static final Turret FV215 = new Turret("FV215", TankTypes.HEAVY, new Armor(254, 152.4, 101.6));
+    /** British TD Turrets */
+    public static final Turret FV215B = new Turret("FV215", TankTypes.TD, new Armor(254, 101.6, 76.2));
+    public static final Turret FV4005_STAGE_II = new Turret("FV4005 Stage II", TankTypes.TD, new Armor(14, 14, 14));
 	/** American Light Turrets */
 	public static final Turret T71 = new Turret("T71", TankTypes.LIGHT, new Armor(22.2, 22.2, 22.2));
 	/** American Medium Turrets */
