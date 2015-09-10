@@ -55,23 +55,27 @@ public class Turrets
 	/** British Heavy Turrets */
 	public static final Turret FV215 = new Turret("FV215", TankTypes.HEAVY, new Armor(254, 152.4, 101.6));
     /** British TD Turrets */
-    public static final Turret FV215B = new Turret("FV215", TankTypes.TD, new Armor(254, 101.6, 76.2));
+    public static final Turret FV215B = new Turret("FV215b", TankTypes.TD, new Armor(254, 101.6, 76.2));
     public static final Turret FV4005_STAGE_II = new Turret("FV4005 Stage II", TankTypes.TD, new Armor(14, 14, 14));
 	/** American Light Turrets */
-	public static final Turret T71 = new Turret("T71", TankTypes.LIGHT, new Armor(22.2, 22.2, 22.2));
+	public static final Turret XM551_TEST_BED = new Turret("XM551 test bed", TankTypes.LIGHT, new Armor(38.1, 15.9, 15.9));
 	/** American Medium Turrets */
-	public static final Turret T87 = new Turret("T87", TankTypes.MEDIUM, new Armor(177.8, 76.2, 50.8));
-	public static final Turret M60 = new Turret("M60", TankTypes.MEDIUM, new Armor(177.8, 76.2, 50.8));
+    public static final Turret M60 = new Turret("M60", TankTypes.MEDIUM, new Armor(177.8, 76.2, 50.8));
+	public static final Turret M87 = new Turret("M87", TankTypes.MEDIUM, new Armor(177.8, 76.2, 50.8));
 	/** American Heavy Turrets */
 	public static final Turret T169 = new Turret("T169", TankTypes.HEAVY, new Armor(127, 137, 50.8));
-	public static final Turret T53 = new Turret("T53", TankTypes.HEAVY, new Armor(203, 127, 70));
+	public static final Turret T53 = new Turret("T53", TankTypes.HEAVY, new Armor(203.2, 127, 76.2));
 	/** American TD Turrets */
 	public static final Turret T110E4 = new Turret("T110E4", TankTypes.TD, new Armor(203, 152, 152));
+	/** Russian Light Turrets */
+	public static final Turret T_54_LTWT_VERSION = new Turret("T-54 ltwt. version", TankTypes.LIGHT, new Armor(160, 120, 60));
 	/** Russian Medium Turrets */
 	public static final Turret OBJECT_140 = new Turret("Object 140", TankTypes.MEDIUM, new Armor(240, 187, 65));
-	public static final Turret OBJECT_430 = new Turret("Object 430", TankTypes.MEDIUM, new Armor(240, 185, 63));
+	public static final Turret OBJECT_430 = new Turret("Object 430", TankTypes.MEDIUM, new Armor(248, 185, 63));
+    public static final Turret OBJECT_907 = new Turret("Object 907", TankTypes.MEDIUM, new Armor(228, 180, 46));
 	public static final Turret T_62A = new Turret("T-62A", TankTypes.MEDIUM, new Armor(240, 161, 65));
 	/** Russian Heavy Turrets */
 	public static final Turret IS_4M = new Turret("IS-4M", TankTypes.HEAVY, new Armor(250, 200, 170));
 	public static final Turret IS_7 = new Turret("IS-7", TankTypes.HEAVY, new Armor(240, 185, 94));
+    public static final Turret OBJECT_260_MOD_1945 = new Turret("Object 260 mod 1946", TankTypes.HEAVY, new Armor(350, 240, 100));
 }

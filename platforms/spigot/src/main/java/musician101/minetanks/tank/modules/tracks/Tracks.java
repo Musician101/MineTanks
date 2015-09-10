@@ -49,7 +49,7 @@ public class Tracks
 	/** British SPG Tracks */
     public static final Trackz CONQUEROR_GC = new Trackz("Conqueror Gun Carriage", TankTypes.ARTY);
 	/** American Light Tracks */
-    public static final Trackz T71A1 = new Trackz("T71A1", TankTypes.LIGHT);
+    public static final Trackz XM551_TEST_BED = new Trackz("XM551 test bed", TankTypes.LIGHT);
 	/** American Medium Tracks */
     public static final Trackz T97E2_M = new Trackz("T97E2", TankTypes.MEDIUM);
     public static final Trackz M60 = new Trackz("M60", TankTypes.MEDIUM);
@@ -61,13 +61,17 @@ public class Tracks
     public static final Trackz T110E3 = new Trackz("T110E3", TankTypes.TD);
 	/** American SPG Tracks */
     public static final Trackz T92_T80E1 = new Trackz("T92 T80E1", TankTypes.ARTY);
+    /** Russian Light Tracks */
+    public static final Trackz T_54_ENHANCED_LTWT_VERSION = new Trackz("T-54 enhanced ltwt. version", TankTypes.LIGHT);
 	/** Russian Medium Tracks */
     public static final Trackz OBJECT_140 = new Trackz("Object 140", TankTypes.MEDIUM);
     public static final Trackz OBJECT_430 = new Trackz("Object 430", TankTypes.MEDIUM);
+    public static final Trackz OBJECT_907 = new Trackz("Object 907", TankTypes.MEDIUM);
     public static final Trackz T_62A = new Trackz("T-62A", TankTypes.MEDIUM);
 	/** Russian Heavy Tracks */
     public static final Trackz IS_4M = new Trackz("IS-4M", TankTypes.HEAVY);
     public static final Trackz IS_7 = new Trackz("IS-7", TankTypes.HEAVY);
+    public static final Trackz OBJECT_260_MOD_1945 = new Trackz("Object 260 mod. 1945", TankTypes.HEAVY);
 	/** Russian TD Tracks */
     public static final Trackz OBJECT_263 = new Trackz("Object 263", TankTypes.TD);
     public static final Trackz OBJECT_268 = new Trackz("Object 268", TankTypes.TD);
