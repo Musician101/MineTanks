@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.Battlefield;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 

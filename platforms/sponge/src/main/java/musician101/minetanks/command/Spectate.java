@@ -3,8 +3,8 @@ package musician101.minetanks.command;
 import java.util.List;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
-import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
+import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.exception.FieldDoesNotExistException;
 import musician101.minetanks.lib.Reference.Messages;
 

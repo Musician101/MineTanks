@@ -2,7 +2,7 @@ package musician101.minetanks.event;
 
 import java.util.UUID;
 
-import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.Battlefield;
 
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.callback.CallbackList;

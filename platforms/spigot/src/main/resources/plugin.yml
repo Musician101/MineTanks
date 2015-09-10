@@ -1,5 +1,5 @@
 name: MineTanks
-main: musician101.minetanks.MineTanks
+main: musician101.minetanks.spigot.MineTanks
 version: 0.1
 description: PVP minigame heavily based on World of Tanks.
 author: Musician101

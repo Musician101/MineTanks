@@ -2,7 +2,7 @@ package musician101.minetanks.event;
 
 import java.util.UUID;
 
-import musician101.minetanks.battlefield.player.PlayerTank;
+import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.util.event.Event;

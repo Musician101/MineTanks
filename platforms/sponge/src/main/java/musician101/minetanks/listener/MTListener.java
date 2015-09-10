@@ -6,19 +6,19 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
-import musician101.minetanks.battlefield.player.PlayerTank;
-import musician101.minetanks.battlefield.player.PlayerTank.MTTeam;
+import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.player.PlayerTank;
+import musician101.minetanks.spigot.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.event.AttemptMenuOpenEvent;
 import musician101.minetanks.event.PlayerTankDamageEvent;
 import musician101.minetanks.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.handler.ExplosionTracker;
 import musician101.minetanks.handler.ReloadHandler;
 import musician101.minetanks.lib.Reference.Messages;
-import musician101.minetanks.tank.Tanks;
-import musician101.minetanks.tank.module.Cannon.CannonTypes;
-import musician101.minetanks.util.MTUtils;
-import musician101.minetanks.util.Region;
+import musician101.minetanks.spigot.tank.Tanks;
+import musician101.minetanks.spigot.tank.module.Cannon.CannonTypes;
+import musician101.minetanks.spigot.util.MTUtils;
+import musician101.minetanks.spigot.util.Region;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

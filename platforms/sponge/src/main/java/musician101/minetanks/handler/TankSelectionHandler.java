@@ -3,12 +3,12 @@ package musician101.minetanks.handler;
 import java.util.Arrays;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.Battlefield;
 import musician101.minetanks.lib.Reference.Messages;
-import musician101.minetanks.tank.Tanks;
-import musician101.minetanks.util.IconMenu.OptionClickEvent;
-import musician101.minetanks.util.IconMenu.OptionClickEventHandler;
-import musician101.minetanks.util.MTUtils;
+import musician101.minetanks.spigot.tank.Tanks;
+import musician101.minetanks.spigot.util.IconMenu.OptionClickEvent;
+import musician101.minetanks.spigot.util.IconMenu.OptionClickEventHandler;
+import musician101.minetanks.spigot.util.MTUtils;
 
 import org.spongepowered.api.entity.player.Player;
 

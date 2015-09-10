@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
-import musician101.minetanks.battlefield.player.PlayerTank;
+import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.event.AttemptMenuOpenEvent;
 import musician101.minetanks.event.PlayerTankDamageEvent;
 import musician101.minetanks.event.PlayerTankDamageEvent.PlayerTankDamageCause;
@@ -13,7 +13,7 @@ import musician101.minetanks.event.PlayerTankDeathEvent;
 import musician101.minetanks.handler.DamageHandler;
 import musician101.minetanks.lib.Reference.Messages;
 import musician101.minetanks.scoreboard.MTScoreboard;
-import musician101.minetanks.util.MTUtils;
+import musician101.minetanks.spigot.util.MTUtils;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemTypes;

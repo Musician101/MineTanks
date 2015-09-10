@@ -3,15 +3,15 @@ package musician101.minetanks;
 import java.io.File;
 import java.util.Arrays;
 
-import musician101.minetanks.battlefield.BattlefieldStorage;
+import musician101.minetanks.spigot.battlefield.BattlefieldStorage;
 import musician101.minetanks.command.MTCommandExecutor;
 import musician101.minetanks.handler.TankSelectionHandler;
 import musician101.minetanks.lib.Reference;
 import musician101.minetanks.listener.BattlefieldListener;
 import musician101.minetanks.listener.MTListener;
-import musician101.minetanks.tank.Tanks;
-import musician101.minetanks.util.IconMenu;
-import musician101.minetanks.util.MTUtils;
+import musician101.minetanks.spigot.tank.Tanks;
+import musician101.minetanks.spigot.util.IconMenu;
+import musician101.minetanks.spigot.util.MTUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

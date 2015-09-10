@@ -3,7 +3,7 @@ package musician101.minetanks.command;
 import java.util.List;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.Battlefield;
 import musician101.minetanks.lib.Reference.Messages;
 
 import org.spongepowered.api.entity.player.Player;

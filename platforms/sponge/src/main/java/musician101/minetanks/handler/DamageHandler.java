@@ -3,10 +3,10 @@ package musician101.minetanks.handler;
 import java.util.UUID;
 
 import musician101.minetanks.MineTanks;
-import musician101.minetanks.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.Battlefield;
 import musician101.minetanks.event.PlayerTankDeathEvent;
 import musician101.minetanks.scoreboard.MTScoreboard;
-import musician101.minetanks.tank.Tanks.TankTypes;
+import musician101.minetanks.spigot.tank.Tanks.TankTypes;
 
 public class DamageHandler
 {
