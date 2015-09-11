@@ -2,7 +2,7 @@ package musician101.minetanks.spigot.events;
 
 import java.util.UUID;
 
-import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.BattleField;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -16,12 +16,12 @@ public class PlayerTankDamageEvent extends Event
 	UUID dmgr;
 	String field;
 	
-	public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, Battlefield field, int damage)
+	public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, BattleField field, int damage)
 	{
 		this(cause, dmgd, null, field, damage);
 	}
 	
-	public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, UUID damager, Battlefield field, int damage)
+	public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, UUID damager, BattleField field, int damage)
 	{
 		this.dmgd = dmgd;
 		this.dmgr = damager;

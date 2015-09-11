@@ -2,7 +2,7 @@ package musician101.minetanks.spigot.listeners;
 
 import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.events.AttemptMenuOpenEvent;
 import musician101.minetanks.spigot.events.PlayerTankDamageEvent;
@@ -91,7 +91,7 @@ public class MTListener implements Listener
 
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = plugin.getFieldStorage().getField(name);
+            BattleField field = plugin.getFieldStorage().getField(name);
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
@@ -120,7 +120,7 @@ public class MTListener implements Listener
 
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = plugin.getFieldStorage().getField(name);
+            BattleField field = plugin.getFieldStorage().getField(name);
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
@@ -156,7 +156,7 @@ public class MTListener implements Listener
 
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = plugin.getFieldStorage().getField(name);
+            BattleField field = plugin.getFieldStorage().getField(name);
             if (field.inProgress())
                 return;
 
@@ -212,7 +212,7 @@ public class MTListener implements Listener
         Player player = event.getPlayer();
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = plugin.getFieldStorage().getField(name);
+            BattleField field = plugin.getFieldStorage().getField(name);
             if (field.getPlayer(player.getUniqueId()) != null)
             {
                 PlayerTank pt = field.getPlayer(player.getUniqueId());
@@ -261,7 +261,7 @@ public class MTListener implements Listener
         Player player = (Player) event.getEntity();
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = plugin.getFieldStorage().getField(name);
+            BattleField field = plugin.getFieldStorage().getField(name);
             if (field.getPlayer(player.getUniqueId()) != null)
             {
                 PlayerTank pt = field.getPlayer(player.getUniqueId());
@@ -303,7 +303,7 @@ public class MTListener implements Listener
         UUID dmgd = event.getEntity().getUniqueId();
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = plugin.getFieldStorage().getField(name);
+            BattleField field = plugin.getFieldStorage().getField(name);
             if (field.getPlayer(dmgd) != null)
             {
                 int damage = (int) event.getDamage() * 2;

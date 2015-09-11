@@ -3,7 +3,7 @@ package musician101.minetanks.spigot.listeners;
 import java.util.UUID;
 
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.events.AttemptMenuOpenEvent;
 import musician101.minetanks.spigot.events.PlayerTankDamageEvent;
@@ -32,7 +32,7 @@ public class BattlefieldListener implements Listener
 	@EventHandler
 	public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
 	{
-		Battlefield field = plugin.getFieldStorage().getField(event.getField());
+		BattleField field = plugin.getFieldStorage().getField(event.getField());
 		Player player = Bukkit.getPlayer(event.getPlayer());
 		PlayerTank pt = event.getPlayerTank();
 		if (event.getMaterial () == Material.WATCH)
@@ -63,7 +63,7 @@ public class BattlefieldListener implements Listener
 	@EventHandler
 	public void onPlayerDeath(PlayerTankDeathEvent event)
 	{
-		Battlefield field = plugin.getFieldStorage().getField(event.getField());
+		BattleField field = plugin.getFieldStorage().getField(event.getField());
 		Player killed = event.getKilled();
 		Player killer = event.getKiller();
 		MTScoreboard sb = field.getScoreboard();
@@ -86,7 +86,7 @@ public class BattlefieldListener implements Listener
 	public void onPlayerDamageEvent(PlayerTankDamageEvent event)
 	{
 		DamageHandler dh = new DamageHandler(plugin);
-		Battlefield field = plugin.getFieldStorage().getField(event.getField());
+		BattleField field = plugin.getFieldStorage().getField(event.getField());
 		UUID dmgd = event.getDamagedPlayer();
 		if (event.getCause() == PlayerTankDamageCause.FALL)
 			dh.gravityHit(field, dmgd, event.getDamage());

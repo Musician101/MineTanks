@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class Battlefield
+public class BattleField
 {
 	private MineTanks plugin;
 	private String name;
@@ -37,7 +37,7 @@ public class Battlefield
 	private boolean inProgress = false;
 	private Cuboid cuboid;
 	
-	public Battlefield(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+	public BattleField(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
 	{
 		this.plugin = plugin;
 		this.name = name;

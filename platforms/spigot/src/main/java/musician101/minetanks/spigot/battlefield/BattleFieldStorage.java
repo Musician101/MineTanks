@@ -15,8 +15,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class BattleFieldStorage
 {
 	MineTanks plugin;
-	Map<String, Battlefield> fields = new HashMap<String, Battlefield>();
-	Battlefield edit;
+	Map<String, BattleField> fields = new HashMap<String, BattleField>();
+	BattleField edit;
 	
 	public BattleFieldStorage(MineTanks plugin)
 	{
@@ -34,7 +34,7 @@ public class BattleFieldStorage
 			if (getField(field).equals(name))
 				return false;
 		
-		Battlefield field = new Battlefield(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators); 
+		BattleField field = new BattleField(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators);
 		fields.put(name, field);
 		edit = field;
 		return true;
@@ -49,7 +49,7 @@ public class BattleFieldStorage
 		return new File(plugin.getDataFolder() + File.separator + "battlefields", field + ".yml").delete();
 	}
 	
-	public Battlefield getField(String name)
+	public BattleField getField(String name)
 	{
 		if (!fields.containsKey(name))
 			return null;
@@ -57,7 +57,7 @@ public class BattleFieldStorage
 		return fields.get(name);
 	}
 	
-	public Map<String, Battlefield> getFields()
+	public Map<String, BattleField> getFields()
 	{
 		return fields;
 	}
@@ -101,7 +101,7 @@ public class BattleFieldStorage
 			fields.get(name).saveToFile();
 	}
 	
-	public Battlefield getEdit()
+	public BattleField getEdit()
 	{
 		return edit;
 	}
@@ -124,7 +124,7 @@ public class BattleFieldStorage
 	{
 		for (String name : fields.keySet())
 		{
-			Battlefield field = getField(name);
+			BattleField field = getField(name);
 			if (field.getPlayers().containsKey(player))
 				return field.getPlayer(player).getTeam().canExit();
 		}

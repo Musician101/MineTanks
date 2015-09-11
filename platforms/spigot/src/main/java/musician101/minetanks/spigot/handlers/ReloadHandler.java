@@ -73,7 +73,7 @@ public class ReloadHandler
 
 							for (String name : plugin.getFieldStorage().getFields().keySet())
                             {
-                                Battlefield bf = plugin.getFieldStorage().getField(name);
+                                BattleField bf = plugin.getFieldStorage().getField(name);
                                 if (bf.getPlayer(player.getUniqueId()) != null)
                                 {
                                     bf.getPlayer(player.getUniqueId()).setClipSize(maxClipSize);

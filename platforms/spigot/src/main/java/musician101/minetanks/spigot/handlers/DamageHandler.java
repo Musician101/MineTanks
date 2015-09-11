@@ -3,7 +3,7 @@ package musician101.minetanks.spigot.handlers;
 import java.util.UUID;
 
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.events.PlayerTankDeathEvent;
 import musician101.minetanks.spigot.scoreboards.MTScoreboard;
 import musician101.minetanks.spigot.tank.TankTypes;
@@ -32,7 +32,7 @@ public class DamageHandler
 		
 		return 0;
 	}
-	public void meleeHitEnemy(Battlefield field, UUID rammed, UUID rammer, int damage)
+	public void meleeHitEnemy(BattleField field, UUID rammed, UUID rammer, int damage)
 	{	
 		double rammerDmg = damage * getModifier(field.getPlayer(rammed).getTank().getType());
 		double rammedDmg = damage * getModifier(field.getPlayer(rammer).getTank().getType());
@@ -43,7 +43,7 @@ public class DamageHandler
 			playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
 	}
 	
-	public void playerHitEnemy(Battlefield field, UUID dmgd, UUID dmgr, int damage)
+	public void playerHitEnemy(BattleField field, UUID dmgd, UUID dmgr, int damage)
 	{
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
@@ -51,7 +51,7 @@ public class DamageHandler
 			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(dmgd), Bukkit.getPlayer(dmgr)));
 	}
 	
-	public void gravityHit(Battlefield field, UUID player, int damage)
+	public void gravityHit(BattleField field, UUID player, int damage)
 	{
 		double dmg = damage * 5;
 		MTScoreboard sb = field.getScoreboard();
@@ -60,7 +60,7 @@ public class DamageHandler
 			Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(player), null));
 	}
 	
-	public void meleeHitFriendly(Battlefield field, UUID rammed, UUID rammer, int damage)
+	public void meleeHitFriendly(BattleField field, UUID rammed, UUID rammer, int damage)
 	{
 		double rammerDmg = damage * 20;
 		double rammedDmg = damage * 15;
@@ -71,7 +71,7 @@ public class DamageHandler
 			playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
 	}
 	
-	public void playerHitFriendly(Battlefield field, UUID dmgd, UUID dmgr, int damage)
+	public void playerHitFriendly(BattleField field, UUID dmgd, UUID dmgr, int damage)
 	{
 		MTScoreboard sb = field.getScoreboard();
 		sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));

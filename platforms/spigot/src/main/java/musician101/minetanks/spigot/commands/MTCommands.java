@@ -2,7 +2,7 @@ package musician101.minetanks.spigot.commands;
 
 import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.Battlefield;
+import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.util.Cuboid;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,7 +45,7 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				Battlefield field = null;
+				BattleField field = null;
 				for (String name : plugin.getFieldStorage().getFields().keySet())
 					if (name.equalsIgnoreCase(args[1]))
 						field = plugin.getFieldStorage().getField(name);
@@ -83,7 +83,7 @@ public class MTCommands implements CommandExecutor
 				
 				for (String name : plugin.getFieldStorage().getFields().keySet())
 				{
-					Battlefield field = plugin.getFieldStorage().getField(name); 
+					BattleField field = plugin.getFieldStorage().getField(name);
 					if (field.getPlayer(player.getUniqueId()) != null)
 					{
 						if (field.removePlayer(player))
@@ -106,7 +106,7 @@ public class MTCommands implements CommandExecutor
 					return false;
 				}
 				
-				Battlefield field = null;
+				BattleField field = null;
 				for (String name : plugin.getFieldStorage().getFields().keySet())
 					if (name.equalsIgnoreCase(args[1]))
 						field = plugin.getFieldStorage().getField(args[1]);
@@ -148,7 +148,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("cuboid"))
 			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
+				BattleField field = plugin.getFieldStorage().getEdit();
 				if (args.length == 2)
 				{
 					int radius = 0;
@@ -191,7 +191,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("edit")  && args.length == 2)
 			{
-				Battlefield field = null;
+				BattleField field = null;
 				for (String name : plugin.getFieldStorage().getFields().keySet())
 					if (name.equalsIgnoreCase(args[1]))
 						field = plugin.getFieldStorage().getField(name);
@@ -214,7 +214,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("enable"))
 			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
+				BattleField field = plugin.getFieldStorage().getEdit();
 				if (field.isEnabled())
 				{
 					field.setEnabled(false);
@@ -230,7 +230,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("forceend") && args.length == 2)
 			{
-				Battlefield field = null;
+				BattleField field = null;
 				for (String name : plugin.getFieldStorage().getFields().keySet())
 					if (args[1].equalsIgnoreCase(name))
 						field = plugin.getFieldStorage().getField(name);
@@ -261,7 +261,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("greenSpawn"))
 			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
+				BattleField field = plugin.getFieldStorage().getEdit();
 				if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains no cuboid or the cuboid in another world.");
@@ -275,7 +275,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("redSpawn"))
 			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
+				BattleField field = plugin.getFieldStorage().getEdit();
 				if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains no cuboid or the cuboid in another world.");
@@ -289,7 +289,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("spectators"))
 			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
+				BattleField field = plugin.getFieldStorage().getEdit();
 				if (field.getCuboid() == null || !player.getWorld().getName().equals(field.getCuboid().getWorld().getName()))
 				{
 					player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The battlefield contains no cuboid or the cuboid in another world.");
@@ -303,7 +303,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("status"))
 			{
-				Battlefield field = plugin.getFieldStorage().getEdit();
+				BattleField field = plugin.getFieldStorage().getEdit();
 				if (field.isReady())
 				{
 					player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " " + field.getName() + " is ready for battle.");
@@ -321,7 +321,7 @@ public class MTCommands implements CommandExecutor
 			
 			if (args[0].equalsIgnoreCase("remove") && args.length == 2)
 			{
-				Battlefield field = null;
+				BattleField field = null;
 				for (String name : plugin.getFieldStorage().getFields().keySet())
 					if (name.equalsIgnoreCase(args[1]))
 						field = plugin.getFieldStorage().getField(name);
