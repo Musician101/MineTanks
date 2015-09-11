@@ -1,23 +1,14 @@
 package musician101.minetanks.spigot.battlefield;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
-import musician101.minetanks.spigot.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.spigot.handlers.ReloadHandler;
 import musician101.minetanks.spigot.scoreboards.MTScoreboard;
+import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.Tanks;
 import musician101.minetanks.spigot.util.Cuboid;
 import musician101.minetanks.spigot.util.MTUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,12 +21,16 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 public class Battlefield
 {
 	private MineTanks plugin;
 	private String name;
 	private Location greenSpawn, redSpawn, spectators;
-	private Map<UUID, PlayerTank> players = new HashMap<UUID, PlayerTank>();
+	private Map<UUID, PlayerTank> players = new HashMap<>();
 	private boolean enabled;
 	private int unassigned = 0;
 	private MTScoreboard sb;
@@ -365,7 +360,7 @@ public class Battlefield
 		for (UUID uuid : players)
 		{
 			final PlayerTank pt = getPlayer(uuid);
-			final Tanks tank = pt.getTank();
+			final Tank tank = pt.getTank();
 			final Player player = Bukkit.getPlayer(uuid);
 			if (pt.getTeam() != MTTeam.SPECTATOR)
 			{
@@ -386,7 +381,7 @@ public class Battlefield
 						player.getInventory().setArmorContents(tank.getArmor());
 					}
 				}.runTaskLater(plugin, 1L);
-				new ReloadHandler(plugin, player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
+				new ReloadHandler(plugin, player, tank.getCannon()).isReloading();
 			}
 			else
 			{

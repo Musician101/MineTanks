@@ -14,6 +14,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 
@@ -59,5 +61,61 @@ public class Tank extends AbstractTank
         inv.setItem(0, cannon.getIcon());
         inv.addItem(new ItemStack(Material.ARROW, cannon.getAmmoCount()));
         return inv;
+    }
+
+    public Cannon getCannon()
+    {
+        return (Cannon) cannon;
+    }
+
+    public ItemStack[] getArmor()
+    {
+        return wornArmor;
+    }
+
+    public Inventory getWeapons()
+    {
+        return weapons;
+    }
+
+    public PotionEffect getSpeedEffect()
+    {
+        int amplifier = 0;
+        PotionEffectType effect;
+        if (getSpeed() < 6)
+        {
+            effect = PotionEffectType.SLOW;
+            if (getSpeed() == 1)
+                amplifier = 5;
+            else if (getSpeed() == 2)
+                amplifier = 4;
+            else if (getSpeed() == 3)
+                amplifier = 3;
+            else if (getSpeed() == 4)
+                amplifier = 2;
+            else if (getSpeed() == 5)
+                amplifier = 1;
+        }
+        else
+        {
+            effect = PotionEffectType.SPEED;
+            if (getSpeed() == 6)
+                amplifier = 1;
+            else if (getSpeed() == 7)
+                amplifier = 2;
+            else if (getSpeed() == 8)
+                amplifier = 3;
+            else if (getSpeed() == 9)
+                amplifier = 4;
+            else if (getSpeed() == 10)
+                amplifier = 5;
+        }
+
+        return new PotionEffect(effect, amplifier, Integer.MAX_VALUE, false);
+    }
+
+    public TankType getType()
+    {
+        return (TankType) type;
     }
 }

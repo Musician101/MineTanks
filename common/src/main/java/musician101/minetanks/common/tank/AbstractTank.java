@@ -8,11 +8,11 @@ import musician101.minetanks.common.tank.modules.AbstractCannon;
 
 public abstract class AbstractTank extends Info
 {
-    AbstractCannon cannon;
-    AbstractEngine engine;
-    AbstractRadio radio;
-    AbstractTracks tracks;
-    AbstractTankType type;
+    protected AbstractCannon cannon;
+    protected AbstractEngine engine;
+    protected AbstractRadio radio;
+    protected AbstractTracks tracks;
+    protected AbstractTankType type;
 	int health;
 	int speed;
     String[] description;
@@ -38,5 +38,10 @@ public abstract class AbstractTank extends Info
     public int getSpeed()
     {
         return speed;
+    }
+
+    public String[] getDescription()
+    {
+        return description;
     }
 }

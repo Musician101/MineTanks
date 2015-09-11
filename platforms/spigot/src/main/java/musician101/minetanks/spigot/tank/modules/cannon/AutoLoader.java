@@ -22,6 +22,16 @@ public class AutoLoader extends Cannon implements HasIcon
         parseCannon();
     }
 
+    public double getCycleTime()
+    {
+        return cycleTime;
+    }
+
+    public int getClipSize()
+    {
+        return clipSize;
+    }
+
     @Override
     public ItemStack getIcon()
     {

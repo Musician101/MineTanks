@@ -1,14 +1,9 @@
 package musician101.minetanks.spigot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.Battlefield;
-import musician101.minetanks.spigot.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.spigot.util.Cuboid;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,6 +11,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class MTCommands implements CommandExecutor
 {
@@ -169,9 +168,9 @@ public class MTCommands implements CommandExecutor
 				}
 				else if (args.length == 4)
 				{
-					int xRadius = 0;
-					int yRadius = 0;
-					int zRadius = 0;
+					int xRadius;
+					int yRadius;
+					int zRadius;
 					try
 					{
 						xRadius = Integer.valueOf(args[1]);

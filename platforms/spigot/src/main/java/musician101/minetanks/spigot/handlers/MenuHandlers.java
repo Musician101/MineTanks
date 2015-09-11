@@ -1,7 +1,7 @@
 package musician101.minetanks.spigot.handlers;
 
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.tank.Tanks;
+import musician101.minetanks.spigot.tank.*;
 import musician101.minetanks.spigot.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.spigot.util.IconMenu.OptionClickEventHandler;
 import musician101.minetanks.spigot.util.MTUtils;
@@ -23,11 +23,12 @@ public class MenuHandlers
 		@Override
 		public void onOptionClick(OptionClickEvent event)
 		{
-			int slot = event.getPosition();
+			String optionName = event.getName();
+			event.getName();
 			Player player = event.getPlayer();
-			Tanks tank = null;
-			for (Tanks iTank : Tanks.values())
-				if (slot == iTank.getId())
+			Tank tank = null;
+			for (Tank iTank : Tanks.tankList)
+				if (optionName == iTank.getName())
 					tank = iTank;
 			
 			for (String name : plugin.getFieldStorage().getFields().keySet())

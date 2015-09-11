@@ -2,11 +2,14 @@ package musician101.minetanks.spigot.util;
 
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.handlers.MenuHandlers.TankSelectionHandler;
+import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.Tanks;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.Field;
 
 public class Menus
 {
@@ -17,8 +20,11 @@ public class Menus
 	{
 		this.plugin = plugin;
 		this.tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
-		for (final Tanks tank : Tanks.values())
-			tankSelection.setOption(tank.getId(), new ItemStack(Material.MINECART, 1), "§a" + tank.getName(), tank.getDescription());
+
+        //TODO need to implement a page system for the inevitable
+        int slot = 0;
+		for (final Tank tank : Tanks.tankList)
+            tankSelection.setOption(slot++, new ItemStack(Material.MINECART, 1), "\u00A7a" + tank.getName(), tank.getDescription());
 	}
 	
 	public void openTankMenu(Player player)

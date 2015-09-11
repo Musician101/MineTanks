@@ -1,12 +1,12 @@
 package musician101.minetanks.spigot.tank;
 
-import musician101.minetanks.common.tank.Armor;
-import musician101.minetanks.spigot.tank.modules.Engine;
-import musician101.minetanks.spigot.tank.modules.Radio;
-import musician101.minetanks.spigot.tank.modules.cannon.AutoLoader;
-import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
-import musician101.minetanks.spigot.tank.modules.tracks.Tracks;
-import musician101.minetanks.spigot.tank.modules.turret.Turrets;
+import musician101.minetanks.common.tank.*;
+import musician101.minetanks.spigot.tank.modules.*;
+import musician101.minetanks.spigot.tank.modules.cannon.*;
+import musician101.minetanks.spigot.tank.modules.tracks.*;
+import musician101.minetanks.spigot.tank.modules.turret.*;
+
+import java.util.*;
 
 public class Tanks
 {
@@ -83,4 +83,64 @@ public class Tanks
     public static final Tank OBJECT_268 = new Tank("Object 268", TankTypes.TD, 1950, new Armor(187, 100, 50), 48, new Cannon("152 mm M64", 35, 15.82), new Engine("V-16FN", TankTypes.TD), new Radio("R-113M", TankTypes.TD), Tracks.OBJECT_268, Turrets.NO_TURRET_TD, "Type: TD", "Good damage per minute.", "Good top speed.");
 	/** Russian Arty */
     public static final Tank OBJECT_261 = new Tank("Object 261", TankTypes.ARTY, 510, new Armor(75, 50, 30), 50, new Cannon("180 mm B-1-P", 18, 33.56), new Engine("M-50T", TankTypes.ARTY), new Radio("10RK-26", TankTypes.ARTY), Tracks.OBJECT_261, Turrets.NO_TURRET_ARTY, "Type: SPG", "Fairly mobile.");
+
+    public static final List<Tank> tankList = Arrays.asList(
+            /** China Lights */
+            WZ_132,
+            /** China Mediums */
+            _121,
+            /** China Heavies */
+            _113,
+            /** France Lights */
+            AMX_13_90,
+            /** French Mediums */
+            BAT_CHAT_25_T, AMX_30_B,
+            /** French Heavies */
+            AMX_50_B,
+            /** French TDs */
+            AMX_50_FOCH_155,
+            /** French Arty */
+            BAT_CHAT_155_58,
+            /** German Lights */
+            SPAHPANZER_RU_251,
+            /** German Mediums */
+            E_50_M, LEOPARD_1,
+            /** German Heavies */
+            E_100, MAUS, VK_7201,
+            /** German TDs */
+            JAGDPANZER_E_100, WAFFENTRAGER_E_100,
+            /** German Arty */
+            GW_E_100,
+            /** Japanese Mediums */
+            STB_1,
+            /** Japanese Heavies */
+            TYPE_5_HEAVY,
+            /** British Mediums */
+            FV4202,
+            /** British Heavies */
+            FV215B,
+            /** British TDs */
+            FV215B_183, FV4005_STAGE_II,
+            /** British Arty */
+            CONQUEROR_GC,
+            /** American Lights */
+            T49,
+            /** American Mediums */
+            M48A1_PATTON, M60,
+            /** American Heavies */
+            T110E5, T57_HT,
+            /** American TDs */
+            T110E3, T110E4,
+            /** American Arty */
+            T92,
+            /** Russian Lights */
+            T_54_LTWT,
+            /** Russian Mediums */
+            OBJECT_140, OBJECT_430, OBJECT_907, T_62A,
+            /** Russian Heavies */
+            IS_4, IS_7, OBJECT_260,
+            /** Russian TDs */
+            OBJECT_263, OBJECT_268,
+            /** Russian Arty */
+            OBJECT_261);
 }

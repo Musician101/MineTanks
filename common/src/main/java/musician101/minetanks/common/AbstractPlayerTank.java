@@ -7,6 +7,7 @@ import java.util.UUID;
 public abstract class AbstractPlayerTank
 {
 	boolean isReady = false;
+    protected int clipSize = 1;
 	MTTeam team;
     protected AbstractTank tank;
     UUID player;
@@ -21,11 +22,18 @@ public abstract class AbstractPlayerTank
 	{
 		return team;
 	}
-	
-	public void setTank(AbstractTank tank)
-	{
-		this.tank = tank;
-	}
+
+	public abstract void setTank(AbstractTank tank);
+
+    public int getClipSize()
+    {
+        return clipSize;
+    }
+
+    public void setClipSize(int clipSize)
+    {
+        this.clipSize = clipSize;
+    }
 	
 	public void setTeam(MTTeam team)
 	{
