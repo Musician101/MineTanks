@@ -45,6 +45,11 @@ public class MineTanks extends JavaPlugin
         return fieldStorage;
     }
 
+    public InventoryStorage getInventoryStorage()
+    {
+        return inventoryStorage;
+    }
+
     public Menus getMenuHandler()
     {
         return menus;

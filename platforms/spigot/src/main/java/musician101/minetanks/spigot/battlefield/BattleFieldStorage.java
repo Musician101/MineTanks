@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.battlefield;
 
+import musician101.minetanks.common.AbstractStorage;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.util.Cuboid;
 import org.bukkit.Bukkit;
@@ -11,17 +12,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BattleFieldStorage
+public class BattleFieldStorage extends AbstractStorage
 {
     MineTanks plugin;
-    Map<String, BattleField> fields = new HashMap<String, BattleField>();
+    Map<String, BattleField> fields = new HashMap<>();
     BattleField edit;
-    File storageDir;
 
     public BattleFieldStorage(MineTanks plugin)
     {
+        super(new File(plugin.getDataFolder(), "battlefields"));
         this.plugin = plugin;
-        this.storageDir = new File(plugin.getDataFolder(), "battlefields");
         loadFromFiles();
     }
 
@@ -33,7 +33,7 @@ public class BattleFieldStorage
     public boolean createField(String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
     {
         for (String field : fields.keySet())
-            if (getField(field).equals(name))
+            if (field.equals(name))
                 return false;
 
         BattleField field = new BattleField(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators);
@@ -48,7 +48,7 @@ public class BattleFieldStorage
             return false;
 
         fields.remove(field);
-        return new File(storageDir, field + ".yml").delete();
+        return new File(getStorageDir(), field + ".yml").delete();
     }
 
     public BattleField getField(String name)
@@ -66,8 +66,8 @@ public class BattleFieldStorage
 
     public void loadFromFiles()
     {
-        storageDir.mkdirs();
-        for (File file : storageDir.listFiles())
+        getStorageDir().mkdirs();
+        for (File file : getStorageDir().listFiles())
         {
             if (file.getName().endsWith(".yml"))
             {
@@ -100,7 +100,7 @@ public class BattleFieldStorage
     public void saveToFiles()
     {
         for (String name : fields.keySet())
-            fields.get(name).saveToFile(storageDir);
+            fields.get(name).saveToFile(getStorageDir());
     }
 
     public BattleField getEdit()

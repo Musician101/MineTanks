@@ -180,7 +180,7 @@ public class MTListener implements Listener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        File file = new File(plugin.getDataFolder() + File.separator + "InventoryStorage", player.getUniqueId().toString() + ".yml");
+        File file = plugin.getInventoryStorage().getFile(player);
         if (!file.exists())
             return;
 

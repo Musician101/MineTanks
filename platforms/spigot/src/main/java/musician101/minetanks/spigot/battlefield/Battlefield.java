@@ -14,9 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -110,77 +108,9 @@ public class BattleField
 
     public boolean addPlayer(Player player, MTTeam team)
     {
-        File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
-        try
-        {
-            file.createNewFile();
-        }
-        catch (IOException e)
-        {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
+        if (!plugin.getInventoryStorage().saveInventory(player))
             return false;
-        }
 
-        YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-        Inventory inv = player.getInventory();
-        for (int slot = 0; slot < inv.getSize(); slot++)
-            yml.set("inventory." + slot, inv.getItem(slot));
-
-        for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
-            yml.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
-
-        List<Map<String, Object>> effects = new ArrayList<Map<String, Object>>();
-        for (PotionEffect effect : player.getActivePotionEffects())
-        {
-            Map<String, Object> pe = new HashMap<String, Object>();
-            pe.put("ambient", effect.isAmbient());
-            pe.put("type", effect.getType().toString());
-            pe.put("duration", effect.getDuration());
-            pe.put("amplifier", effect.getAmplifier());
-            effects.add(pe);
-            player.removePotionEffect(effect.getType());
-        }
-
-        yml.set("effects", effects);
-
-        Location loc = player.getLocation();
-        Map<String, Object> pl = new HashMap<String, Object>();
-        pl.put("world", loc.getWorld().getName());
-        pl.put("x", loc.getX());
-        pl.put("y", loc.getY());
-        pl.put("z", loc.getZ());
-        pl.put("yaw", loc.getYaw());
-        pl.put("pitch", loc.getPitch());
-        yml.set("location", pl);
-        yml.set("xp", player.getExp());
-
-        try
-        {
-            yml.save(file);
-        }
-        catch (IOException e)
-        {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
-            for (Map<String, Object> effect : effects)
-            {
-                PotionEffectType type = PotionEffectType.getByName(effect.get("type").toString());
-                boolean ambient = Boolean.valueOf(effect.get("ambient").toString());
-                int duration = Integer.valueOf(effect.get("duration").toString());
-                int amplifier = Integer.valueOf(effect.get("amplifier").toString());
-                player.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
-            }
-
-            file.delete();
-            return false;
-        }
-
-        player.setExp(0F);
-        player.setLevel(0);
-        player.getInventory().clear();
-        player.getInventory().setHelmet(null);
-        player.getInventory().setChestplate(null);
-        player.getInventory().setLeggings(null);
-        player.getInventory().setBoots(null);
         if (team == MTTeam.SPECTATOR)
         {
             player.teleport(spectators);
@@ -196,27 +126,14 @@ public class BattleField
         return true;
     }
 
+    //TODO need to rework this method
     public boolean removePlayer(Player player)
     {
         PlayerTank pt = getPlayer(player.getUniqueId());
         if (pt == null)
             return false;
 
-        File file = new File(plugin.getDataFolder() + File.separator + "inventorystorage", player.getUniqueId().toString() + ".yml");
-        if (file.exists())
-        {
-            YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-            player.getInventory().clear();
-            for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-                player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
-
-            ItemStack[] armor = new ItemStack[4];
-            for (int slot = 0; slot < armor.length; slot++)
-                armor[slot] = yml.getItemStack("armor." + slot);
-
-            player.getInventory().setArmorContents(armor);
-            file.delete();
-        }
+        plugin.getInventoryStorage().returnInventory(player);
 
         if (sb.isOnGreen(player) || sb.isOnRed(player))
             sb.playerDeath(player);
