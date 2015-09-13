@@ -1,23 +1,23 @@
 package musician101.minetanks.spigot.battlefield.player;
 
 import musician101.minetanks.common.AbstractPlayerTank;
-import musician101.minetanks.common.tank.*;
+import musician101.minetanks.common.tank.AbstractTank;
 import musician101.minetanks.spigot.tank.Tank;
-import musician101.minetanks.spigot.tank.modules.cannon.*;
+import musician101.minetanks.spigot.tank.modules.cannon.AutoLoader;
 
 import java.util.UUID;
 
 public class PlayerTank extends AbstractPlayerTank
 {
-	public PlayerTank(UUID player, MTTeam team)
-	{
+    public PlayerTank(UUID player, MTTeam team)
+    {
         super(player, team);
-	}
+    }
 
-	public Tank getTank()
-	{
-		return (Tank) tank;
-	}
+    public Tank getTank()
+    {
+        return (Tank) tank;
+    }
 
     @Override
     public void setTank(AbstractTank tank)

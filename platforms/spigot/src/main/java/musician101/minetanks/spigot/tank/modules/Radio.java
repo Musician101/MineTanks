@@ -1,17 +1,16 @@
 package musician101.minetanks.spigot.tank.modules;
 
-import java.util.Arrays;
-
 import musician101.minetanks.common.tank.modules.AbstractRadio;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
-
 import musician101.minetanks.spigot.util.HasIcon;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
 
 public class Radio extends AbstractRadio implements HasIcon
 {
@@ -30,11 +29,16 @@ public class Radio extends AbstractRadio implements HasIcon
     private void parseRadio(TankType type)
     {
         Material material = Material.AIR;
-        if (type == TankTypes.LIGHT) material = Material.LEATHER_CHESTPLATE;
-        else if (type == TankTypes.MEDIUM) material = Material.IRON_CHESTPLATE;
-        else if (type == TankTypes.HEAVY) material = Material.DIAMOND_CHESTPLATE;
-        else if (type == TankTypes.TD) material = Material.CHAINMAIL_CHESTPLATE;
-        else if (type == TankTypes.ARTY) material = Material.GOLD_CHESTPLATE;
+        if (type == TankTypes.LIGHT)
+            material = Material.LEATHER_CHESTPLATE;
+        else if (type == TankTypes.MEDIUM)
+            material = Material.IRON_CHESTPLATE;
+        else if (type == TankTypes.HEAVY)
+            material = Material.DIAMOND_CHESTPLATE;
+        else if (type == TankTypes.TD)
+            material = Material.CHAINMAIL_CHESTPLATE;
+        else if (type == TankTypes.ARTY)
+            material = Material.GOLD_CHESTPLATE;
 
         radio = new ItemStack(material);
         ItemMeta meta = getIcon().getItemMeta();

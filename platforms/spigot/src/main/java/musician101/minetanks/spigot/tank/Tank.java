@@ -4,9 +4,9 @@ import musician101.minetanks.common.tank.AbstractTank;
 import musician101.minetanks.common.tank.Armor;
 import musician101.minetanks.spigot.tank.modules.Engine;
 import musician101.minetanks.spigot.tank.modules.Radio;
+import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
 import musician101.minetanks.spigot.tank.modules.tracks.Trackz;
 import musician101.minetanks.spigot.tank.modules.turret.Turret;
-import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -33,10 +33,7 @@ public class Tank extends AbstractTank
 
     private ItemStack[] parseArmor(double armor, int speed, Engine engine, Radio radio, Trackz tracks, Turret turret)
     {
-        return new ItemStack[]{parseArmorValue(tracks.getIcon(), armor),
-            parseArmorValue(parseSpeedValue(engine.getIcon(), speed), armor),
-            parseArmorValue(radio.getIcon(), armor),
-            parseArmorValue(turret.getIcon(), (turret.getArmor().getArmorValue() != 0 ? turret.getArmor().getArmorValue() : armor))};
+        return new ItemStack[]{parseArmorValue(tracks.getIcon(), armor), parseArmorValue(parseSpeedValue(engine.getIcon(), speed), armor), parseArmorValue(radio.getIcon(), armor), parseArmorValue(turret.getIcon(), (turret.getArmor().getArmorValue() != 0 ? turret.getArmor().getArmorValue() : armor))};
     }
 
     private ItemStack parseArmorValue(ItemStack item, double armor)
@@ -95,8 +92,7 @@ public class Tank extends AbstractTank
                 amplifier = 2;
             else if (getSpeed() == 5)
                 amplifier = 1;
-        }
-        else
+        } else
         {
             effect = PotionEffectType.SPEED;
             if (getSpeed() == 6)
