@@ -1,7 +1,8 @@
-package musician101.minetanks.spigot.commands;
+package musician101.minetanks.spigot.commands.edit;
 
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
+import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -9,11 +10,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class RedSpawnCommand extends AbstractSpigotCommand
+public class SpectatorsCommand extends AbstractSpigotCommand
 {
-    public RedSpawnCommand(MineTanks plugin)
+    public SpectatorsCommand(MineTanks plugin)
     {
-        super(plugin, "redspawn", "Set the red team's spawn point of the currently selected battlefield.", Arrays.asList("/mt", "redspawn", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.edit", true);
+        super(plugin, "spectators", "Set the spectators' spawn point of the currently selected battlefield.", Arrays.asList("/mt", "spectators", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.edit", true);
     }
 
     @Override
@@ -37,8 +38,8 @@ public class RedSpawnCommand extends AbstractSpigotCommand
             return false;
         }
 
-        field.setRedSpawn(loc);
-        player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Red Spawn point set.");
+        field.setSpectators(loc);
+        player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn point set.");
         return true;
     }
 }

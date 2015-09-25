@@ -1,7 +1,8 @@
-package musician101.minetanks.spigot.commands;
+package musician101.minetanks.spigot.commands.edit;
 
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
+import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

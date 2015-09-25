@@ -1,6 +1,18 @@
 package musician101.minetanks.spigot.commands;
 
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.commands.edit.CreateCommand;
+import musician101.minetanks.spigot.commands.edit.CuboidCommand;
+import musician101.minetanks.spigot.commands.edit.EnableCommand;
+import musician101.minetanks.spigot.commands.edit.ForceEndCommand;
+import musician101.minetanks.spigot.commands.edit.GreenSpawnCommand;
+import musician101.minetanks.spigot.commands.edit.RedSpawnCommand;
+import musician101.minetanks.spigot.commands.edit.RemoveCommand;
+import musician101.minetanks.spigot.commands.edit.SpectatorsCommand;
+import musician101.minetanks.spigot.commands.edit.StatusCommand;
+import musician101.minetanks.spigot.commands.participate.JoinCommand;
+import musician101.minetanks.spigot.commands.participate.LeaveCommand;
+import musician101.minetanks.spigot.commands.participate.SpectateCommand;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
