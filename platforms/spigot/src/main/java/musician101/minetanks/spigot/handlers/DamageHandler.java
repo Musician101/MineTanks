@@ -1,9 +1,9 @@
 package musician101.minetanks.spigot.handlers;
 
-import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.events.PlayerTankDeathEvent;
 import musician101.minetanks.spigot.scoreboards.MTScoreboard;
+import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
 import org.bukkit.Bukkit;
 
@@ -11,14 +11,12 @@ import java.util.UUID;
 
 public class DamageHandler
 {
-    MineTanks plugin;
-
-    public DamageHandler(MineTanks plugin)
+    public DamageHandler()
     {
-        this.plugin = plugin;
+
     }
 
-    private int getModifier(TankTypes type)
+    private int getModifier(TankType type)
     {
         if (type == TankTypes.LIGHT)
             return 1;
@@ -43,12 +41,12 @@ public class DamageHandler
             playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
     }
 
-    public void playerHitEnemy(BattleField field, UUID dmgd, UUID dmgr, int damage)
+    public void playerHitEnemy(BattleField field, UUID damaged, UUID damager, int damage)
     {
         MTScoreboard sb = field.getScoreboard();
-        sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
-        if (sb.getPlayerHealth(dmgd) <= 0)
-            Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(dmgd), Bukkit.getPlayer(dmgr)));
+        sb.setPlayerHealth(damaged, sb.getPlayerHealth(damaged) - (damage * 2) * 20);
+        if (sb.getPlayerHealth(damaged) <= 0)
+            Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(damaged), Bukkit.getPlayer(damager)));
     }
 
     public void gravityHit(BattleField field, UUID player, int damage)
@@ -71,11 +69,11 @@ public class DamageHandler
             playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
     }
 
-    public void playerHitFriendly(BattleField field, UUID dmgd, UUID dmgr, int damage)
+    public void playerHitFriendly(BattleField field, UUID damaged, UUID damager, int damage)
     {
         MTScoreboard sb = field.getScoreboard();
-        sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
-        if (sb.getPlayerHealth(dmgd) <= 0)
-            Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(dmgd), Bukkit.getPlayer(dmgr)));
+        sb.setPlayerHealth(damaged, sb.getPlayerHealth(damaged) - (damage * 2) * 20);
+        if (sb.getPlayerHealth(damaged) <= 0)
+            Bukkit.getPluginManager().callEvent(new PlayerTankDeathEvent(field.getName(), Bukkit.getPlayer(damaged), Bukkit.getPlayer(damager)));
     }
 }

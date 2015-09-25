@@ -47,7 +47,7 @@ import java.util.UUID;
 
 public class MTListener implements Listener
 {
-    MineTanks plugin;
+    private final MineTanks plugin;
 
     public MTListener(MineTanks plugin)
     {
@@ -67,25 +67,7 @@ public class MTListener implements Listener
     {
         //It's technically a sword without a blade.
         //Stick is the default item if a player hasn't chosen a tank.
-        if (material == Material.STICK)
-            return true;
-
-        if (material == Material.WOOD_SWORD)
-            return true;
-
-        if (material == Material.STONE_SWORD)
-            return true;
-
-        if (material == Material.IRON_SWORD)
-            return true;
-
-        if (material == Material.GOLD_SWORD)
-            return true;
-
-        if (material == Material.DIAMOND_SWORD)
-            return true;
-
-        return false;
+        return material == Material.STICK || material == Material.WOOD_SWORD || material == Material.STONE_SWORD || material == Material.IRON_SWORD || material == Material.GOLD_SWORD || material == Material.DIAMOND_SWORD;
     }
 
     @EventHandler
@@ -305,23 +287,23 @@ public class MTListener implements Listener
         if (!(event.getEntity() instanceof Player) && (!(event.getDamager() instanceof Arrow) || !(event.getDamager() instanceof Player || event.getCause() != DamageCause.BLOCK_EXPLOSION) || event.getCause() != DamageCause.FALL))
             return;
 
-        UUID dmgd = event.getEntity().getUniqueId();
+        UUID damaged = event.getEntity().getUniqueId();
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
             BattleField field = plugin.getFieldStorage().getField(name);
-            if (field.getPlayer(dmgd) != null)
+            if (field.getPlayer(damaged) != null)
             {
                 int damage = (int) event.getDamage() * 2;
                 if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player && field.getPlayer(((Player) ((Arrow) event.getDamager()).getShooter()).getUniqueId()) != null)
                 {
                     Arrow arrow = (Arrow) event.getDamager();
-                    UUID dmgr = ((Player) arrow.getShooter()).getUniqueId();
-                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, dmgd, dmgr, field, damage));
+                    UUID damager = ((Player) arrow.getShooter()).getUniqueId();
+                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, damaged, damager, field, damage));
                     ExplosionTracker.addArrow(arrow);
                 } else if (event.getDamager() instanceof Player && field.getPlayer(event.getDamager().getUniqueId()) != null)
                 {
-                    UUID dmgr = event.getDamager().getUniqueId();
-                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, dmgd, dmgr, field, damage));
+                    UUID damager = event.getDamager().getUniqueId();
+                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, damaged, damager, field, damage));
                 } else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
                 {
                     Arrow arrow = null;
@@ -329,11 +311,11 @@ public class MTListener implements Listener
                         if (event.getDamager().getUniqueId() == a.getUniqueId())
                             arrow = a;
 
-                    UUID dmgr = ((Arrow) arrow.getShooter()).getUniqueId();
-                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, dmgd, dmgr, field, damage));
+                    UUID damager = ((Arrow) arrow.getShooter()).getUniqueId();
+                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, damaged, damager, field, damage));
                     ExplosionTracker.removeArrow(arrow);
                 } else if (event.getCause() == DamageCause.FALL)
-                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, dmgd, field, damage));
+                    Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, damaged, field, damage));
 
                 event.setCancelled(true);
                 return;

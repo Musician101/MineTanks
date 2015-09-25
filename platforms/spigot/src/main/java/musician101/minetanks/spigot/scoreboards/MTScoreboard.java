@@ -14,13 +14,13 @@ import java.util.UUID;
 
 public class MTScoreboard
 {
-    Scoreboard board;
-    Team green;
-    Team red;
-    Objective health;
-    Objective teamCount;
-    Score greenScore;
-    Score redScore;
+    private final Scoreboard board;
+    private final Team green;
+    private final Team red;
+    private final Objective health;
+    private final Objective teamCount;
+    private final Score greenScore;
+    private final Score redScore;
 
     public MTScoreboard()
     {

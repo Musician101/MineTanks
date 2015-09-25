@@ -37,7 +37,7 @@ public class SpectatorsCommand extends AbstractSpigotCommand
             return false;
         }
 
-        field.setRedSpawn(loc);
+        field.setSpectators(loc);
         player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn point set.");
         return true;
     }

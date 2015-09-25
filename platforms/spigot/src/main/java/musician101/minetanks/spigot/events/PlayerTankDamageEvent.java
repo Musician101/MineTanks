@@ -9,21 +9,21 @@ import java.util.UUID;
 public class PlayerTankDamageEvent extends Event
 {
     private static final HandlerList handlers = new HandlerList();
-    int damage;
-    PlayerTankDamageCause cause;
-    UUID dmgd;
-    UUID dmgr;
-    String field;
+    private final int damage;
+    private final PlayerTankDamageCause cause;
+    private final UUID damaged;
+    private final UUID damager;
+    private final String field;
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, BattleField field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, BattleField field, int damage)
     {
-        this(cause, dmgd, null, field, damage);
+        this(cause, damaged, null, field, damage);
     }
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, UUID damager, BattleField field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, UUID damager, BattleField field, int damage)
     {
-        this.dmgd = dmgd;
-        this.dmgr = damager;
+        this.damaged = damaged;
+        this.damager = damager;
         this.field = field.getName();
         this.damage = damage;
         this.cause = cause;
@@ -36,12 +36,12 @@ public class PlayerTankDamageEvent extends Event
 
     public UUID getDamagedPlayer()
     {
-        return dmgd;
+        return damaged;
     }
 
     public UUID getDamager()
     {
-        return dmgr;
+        return damager;
     }
 
     public String getField()
@@ -70,6 +70,6 @@ public class PlayerTankDamageEvent extends Event
         FALL,
         PENETRATION,
         RAM,
-        SPLASH;
+        SPLASH
     }
 }

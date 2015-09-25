@@ -7,9 +7,9 @@ import org.bukkit.event.HandlerList;
 public class PlayerTankDeathEvent extends Event
 {
     private static final HandlerList handlers = new HandlerList();
-    String field;
-    Player killed;
-    Player killer;
+    private final String field;
+    private final Player killed;
+    private final Player killer;
 
     public PlayerTankDeathEvent(String field, Player killed, Player killer)
     {

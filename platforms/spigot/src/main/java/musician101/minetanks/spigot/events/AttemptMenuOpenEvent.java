@@ -10,10 +10,10 @@ import java.util.UUID;
 public class AttemptMenuOpenEvent extends Event
 {
     private static final HandlerList handlers = new HandlerList();
-    Material material;
-    String field;
-    PlayerTank pt;
-    UUID player;
+    private final Material material;
+    private final String field;
+    private final PlayerTank pt;
+    private final UUID player;
 
     public AttemptMenuOpenEvent(Material material, String field, PlayerTank pt, UUID player)
     {

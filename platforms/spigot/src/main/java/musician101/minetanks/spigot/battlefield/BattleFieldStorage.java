@@ -14,8 +14,8 @@ import java.util.UUID;
 
 public class BattleFieldStorage extends AbstractStorage
 {
-    MineTanks plugin;
-    Map<String, BattleField> fields = new HashMap<>();
+    private final MineTanks plugin;
+    private final Map<String, BattleField> fields = new HashMap<>();
 
     public BattleFieldStorage(MineTanks plugin)
     {
@@ -29,7 +29,7 @@ public class BattleFieldStorage extends AbstractStorage
         return createField(name, false, null, null, null, null);
     }
 
-    public boolean createField(String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+    private boolean createField(String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
     {
         for (String field : fields.keySet())
             if (field.equals(name))
@@ -63,7 +63,7 @@ public class BattleFieldStorage extends AbstractStorage
         return fields;
     }
 
-    public void loadFromFiles()
+    private void loadFromFiles()
     {
         getStorageDir().mkdirs();
         for (File file : getStorageDir().listFiles())

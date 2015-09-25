@@ -12,10 +12,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MineTanks extends JavaPlugin
 {
-    BattleFieldStorage fieldStorage;
-    InventoryStorage inventoryStorage;
-    Menus menus;
-    String prefix;
+    private BattleFieldStorage fieldStorage;
+    private InventoryStorage inventoryStorage;
+    private Menus menus;
+    private String prefix;
 
     @Override
     public void onEnable()

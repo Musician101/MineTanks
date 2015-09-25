@@ -1,6 +1,5 @@
 package musician101.minetanks.spigot.commands;
 
-import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.Bukkit;
@@ -35,9 +34,7 @@ public class ForceEndCommand extends AbstractSpigotCommand
 
         BattleField field = plugin.getFieldStorage().getField(args[0]);
         List<UUID> uuids = new ArrayList<>();
-        field.getPlayers().keySet().forEach(uuid -> {
-            uuids.add(uuid);
-        });
+        field.getPlayers().keySet().forEach(uuids::add);
         //TODO refer to BattleField.remove()
         uuids.forEach(uuid -> {
             Player p = Bukkit.getPlayer(uuid);

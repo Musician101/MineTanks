@@ -14,9 +14,12 @@ import java.util.Arrays;
 
 public class ReloadHandler
 {
-    MineTanks plugin;
-    Player player;
-    int reloadTime, cycleTime, clipSize, maxClipSize;
+    private final MineTanks plugin;
+    private final Player player;
+    private final int reloadTime;
+    private int cycleTime;
+    private final int clipSize;
+    private final int maxClipSize;
 
     public ReloadHandler(MineTanks plugin, Player player, Cannon cannon)
     {

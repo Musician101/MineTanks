@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class MTUtils
 {
@@ -20,7 +20,7 @@ public class MTUtils
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§a" + displayName);
         if (!description.equals(""))
-            meta.setLore(Arrays.asList(description));
+            meta.setLore(Collections.singletonList(description));
 
         item.setItemMeta(meta);
         return item;
@@ -29,7 +29,7 @@ public class MTUtils
     public static int getMenuSize()
     {
         int rows = 0;
-        while (rows * 9 < Tanks.values().length)
+        while (rows * 9 < Tanks.tankList.size())
             rows++;
 
         return rows * 9;

@@ -21,8 +21,8 @@ import java.util.Arrays;
 
 public class Tank extends AbstractTank
 {
-    ItemStack[] wornArmor;
-    Inventory weapons;
+    private final ItemStack[] wornArmor;
+    private final Inventory weapons;
 
     public Tank(String name, TankType type, int health, Armor armor, int speed, Cannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
     {

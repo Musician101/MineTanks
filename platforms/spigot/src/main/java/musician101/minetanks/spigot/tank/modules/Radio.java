@@ -10,7 +10,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class Radio extends AbstractRadio implements HasIcon
 {
@@ -44,7 +44,7 @@ public class Radio extends AbstractRadio implements HasIcon
         ItemMeta meta = getIcon().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Arrays.asList("Your Radio"));
+        meta.setLore(Collections.singletonList("Your Radio"));
         getIcon().setItemMeta(meta);
     }
 }

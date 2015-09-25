@@ -96,7 +96,7 @@ public class Cuboid implements Iterable<Block>, ConfigurationSerializable
 
     public List<Block> getBlocks()
     {
-        List<Block> blockList = new ArrayList<Block>();
+        List<Block> blockList = new ArrayList<>();
         World cuboidWorld = this.getWorld();
         for (int x = this.x1; x <= this.x2; x++)
         {
@@ -122,7 +122,7 @@ public class Cuboid implements Iterable<Block>, ConfigurationSerializable
     @Override
     public Map<String, Object> serialize()
     {
-        Map<String, Object> serializedCuboid = new HashMap<String, Object>();
+        Map<String, Object> serializedCuboid = new HashMap<>();
         serializedCuboid.put("World", this.worldName);
         serializedCuboid.put("X1", this.x1);
         serializedCuboid.put("Y1", this.y1);

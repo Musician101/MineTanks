@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,13 +28,13 @@ import java.util.UUID;
 
 public class BattleField
 {
-    private MineTanks plugin;
-    private String name;
+    private final MineTanks plugin;
+    private final String name;
     private Location greenSpawn, redSpawn, spectators;
-    private Map<UUID, PlayerTank> players = new HashMap<>();
+    private final Map<UUID, PlayerTank> players = new HashMap<>();
     private boolean enabled;
     private int unassigned = 0;
-    private MTScoreboard sb;
+    private final MTScoreboard sb;
     private boolean inProgress = false;
     private Cuboid cuboid;
 
@@ -58,7 +57,7 @@ public class BattleField
 
     public PlayerTank getPlayer(UUID player)
     {
-        return players.get(player);
+        return players.containsKey(player) ? players.get(player) : null;
     }
 
     public String getName()
@@ -157,22 +156,8 @@ public class BattleField
 
     public boolean isReady()
     {
-        if (cuboid == null)
-            return false;
+        return cuboid != null && greenSpawn != null && redSpawn != null && spectators != null && enabled;
 
-        if (greenSpawn == null)
-            return false;
-
-        if (redSpawn == null)
-            return false;
-
-        if (spectators == null)
-            return false;
-
-        if (!enabled)
-            return false;
-
-        return true;
     }
 
     public void saveToFile(File battlefields)
@@ -234,7 +219,7 @@ public class BattleField
 
     public void startMatch()
     {
-        List<UUID> players = new ArrayList<UUID>();
+        List<UUID> players = new ArrayList<>();
         for (UUID player : this.players.keySet())
         {
             if (!getPlayer(player).isReady())

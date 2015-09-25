@@ -1,6 +1,7 @@
 package musician101.minetanks.spigot.handlers;
 
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.Tanks;
 import musician101.minetanks.spigot.util.IconMenu.OptionClickEvent;
@@ -13,7 +14,7 @@ public class MenuHandlers
 {
     public static class TankSelectionHandler implements OptionClickEventHandler
     {
-        MineTanks plugin;
+        final MineTanks plugin;
 
         public TankSelectionHandler(MineTanks plugin)
         {
@@ -28,17 +29,21 @@ public class MenuHandlers
             Player player = event.getPlayer();
             Tank tank = null;
             for (Tank iTank : Tanks.tankList)
-                if (optionName == iTank.getName())
+                if (optionName.equals(iTank.getName()))
                     tank = iTank;
 
             for (String name : plugin.getFieldStorage().getFields().keySet())
             {
-                plugin.getFieldStorage().getField(name).getPlayer(player.getUniqueId()).setTank(tank);
-                player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), "Open Hangar.", "Tank: " + tank.getName()));
-                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have chosen the " + tank.getName() + ".");
-                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
-                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " When you are ready, simply right click the 'Ready' item.");
-                return;
+                PlayerTank pt = plugin.getFieldStorage().getField(name).getPlayer(player.getUniqueId());
+                if (pt != null)
+                {
+                    pt.setTank(tank);
+                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), "Open Hangar.", "Tank: " + tank.getName()));
+                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have chosen the " + tank.getName() + ".");
+                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
+                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " When you are ready, simply right click the 'Ready' item.");
+                    return;
+                }
             }
 
             player.sendMessage(ChatColor.RED + plugin.getPrefix() + "Please click a valid tank.");

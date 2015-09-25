@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ExplosionTracker
 {
-    static List<Arrow> tracker = new ArrayList<Arrow>();
+    private static final List<Arrow> tracker = new ArrayList<>();
 
     public static void addArrow(Arrow arrow)
     {

@@ -12,9 +12,9 @@ import java.util.List;
 
 public abstract class AbstractSpigotCommand extends AbstractCommand
 {
-    List<AbstractSpigotCommand> subCommands;
-    protected MineTanks plugin;
-    String permission;
+    final List<AbstractSpigotCommand> subCommands;
+    protected final MineTanks plugin;
+    final String permission;
 
     protected AbstractSpigotCommand(MineTanks plugin, String name, String desc, List<String> usage, int minArgs, String permission, boolean isPlayerOnly)
     {

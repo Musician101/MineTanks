@@ -11,8 +11,8 @@ import java.util.Arrays;
 
 public class AutoLoader extends Cannon implements HasIcon
 {
-    double cycleTime;
-    int clipSize;
+    private final double cycleTime;
+    private final int clipSize;
 
     public AutoLoader(String name, int ammoCount, double reloadTime, double cycleTime, int clipSize)
     {

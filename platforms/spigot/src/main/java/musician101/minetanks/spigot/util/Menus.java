@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class Menus
 {
-    MineTanks plugin;
-    IconMenu tankSelection;
+    private final MineTanks plugin;
+    private final IconMenu tankSelection;
 
     public Menus(MineTanks plugin)
     {

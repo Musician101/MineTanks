@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class BattlefieldListener implements Listener
 {
-    MineTanks plugin;
+    private final MineTanks plugin;
 
     public BattlefieldListener(MineTanks plugin)
     {
@@ -56,7 +56,6 @@ public class BattlefieldListener implements Listener
         }
 
         plugin.getMenuHandler().openTankMenu(player);
-        return;
     }
 
     @EventHandler
@@ -66,11 +65,13 @@ public class BattlefieldListener implements Listener
         Player killed = event.getKilled();
         Player killer = event.getKiller();
         MTScoreboard sb = field.getScoreboard();
-        String dmgdMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
-        String dmgrMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
-        for (Player player : Bukkit.getOnlinePlayers())
+        String damagedMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
+        String damagerMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
+        Bukkit.getOnlinePlayers().forEach(player ->
+        {
             if (field.getPlayer(player.getUniqueId()) != null)
-                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + dmgdMsg + ChatColor.RESET + " was killed by " + dmgrMsg + ChatColor.RESET + ".");
+                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
+        });
 
         killed.getInventory().clear();
         killed.getInventory().setHelmet(null);
@@ -86,37 +87,37 @@ public class BattlefieldListener implements Listener
     {
         DamageHandler dh = new DamageHandler(plugin);
         BattleField field = plugin.getFieldStorage().getField(event.getField());
-        UUID dmgd = event.getDamagedPlayer();
+        UUID damaged = event.getDamagedPlayer();
         if (event.getCause() == PlayerTankDamageCause.FALL)
-            dh.gravityHit(field, dmgd, event.getDamage());
+            dh.gravityHit(field, damaged, event.getDamage());
 
-        UUID dmgr = event.getDamager();
+        UUID damager = event.getDamager();
         int damage = event.getDamage();
         MTScoreboard sb = field.getScoreboard();
-        if (sb.getPlayerHealth(dmgd) <= 0 || sb.getPlayerHealth(dmgr) <= 0)
+        if (sb.getPlayerHealth(damaged) <= 0 || sb.getPlayerHealth(damager) <= 0)
             return;
 
-        if ((sb.isOnGreen(Bukkit.getPlayer(dmgr)) && sb.isOnGreen(Bukkit.getPlayer(dmgd))) || (sb.isOnRed(Bukkit.getPlayer(dmgr)) && sb.isOnRed(Bukkit.getPlayer(dmgd))))
+        if ((sb.isOnGreen(Bukkit.getPlayer(damager)) && sb.isOnGreen(Bukkit.getPlayer(damaged))) || (sb.isOnRed(Bukkit.getPlayer(damager)) && sb.isOnRed(Bukkit.getPlayer(damaged))))
         {
             if (event.getCause() == PlayerTankDamageCause.RAM)
-                dh.meleeHitFriendly(field, dmgr, dmgd, damage);
+                dh.meleeHitFriendly(field, damager, damaged, damage);
 
             if (event.getCause() == PlayerTankDamageCause.SPLASH)
-                dh.playerHitFriendly(field, dmgd, dmgr, damage);
+                dh.playerHitFriendly(field, damaged, damager, damage);
 
             if (event.getCause() == PlayerTankDamageCause.PENETRATION)
-                dh.playerHitFriendly(field, dmgd, dmgr, damage);
+                dh.playerHitFriendly(field, damaged, damager, damage);
 
             return;
         }
 
         if (event.getCause() == PlayerTankDamageCause.RAM)
-            dh.meleeHitEnemy(field, dmgd, dmgr, damage);
+            dh.meleeHitEnemy(field, damaged, damager, damage);
 
         if (event.getCause() == PlayerTankDamageCause.SPLASH)
-            dh.playerHitEnemy(field, dmgd, dmgr, damage);
+            dh.playerHitEnemy(field, damaged, damager, damage);
 
         if (event.getCause() == PlayerTankDamageCause.PENETRATION)
-            dh.playerHitEnemy(field, dmgd, dmgr, damage);
+            dh.playerHitEnemy(field, damaged, damager, damage);
     }
 }

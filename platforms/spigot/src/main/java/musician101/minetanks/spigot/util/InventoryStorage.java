@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class InventoryStorage extends AbstractStorage
 {
-    MineTanks plugin;
+    private final MineTanks plugin;
 
     public InventoryStorage(MineTanks plugin)
     {

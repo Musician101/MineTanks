@@ -11,7 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class Turret extends AbstractTurret implements HasIcon
 {
@@ -45,7 +45,7 @@ public class Turret extends AbstractTurret implements HasIcon
         ItemMeta meta = getIcon().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Arrays.asList("Your Turret"));
+        meta.setLore(Collections.singletonList("Your Turret"));
         getIcon().setItemMeta(meta);
     }
 }

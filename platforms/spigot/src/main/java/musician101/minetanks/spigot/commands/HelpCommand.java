@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class HelpCommand extends AbstractSpigotCommand
 {
-    AbstractSpigotCommand mainCommand;
+    private final AbstractSpigotCommand mainCommand;
 
     public HelpCommand(MineTanks plugin, AbstractSpigotCommand mainCommand)
     {

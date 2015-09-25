@@ -55,7 +55,7 @@ public class IconMenu implements Listener
         player.openInventory(inventory);
     }
 
-    public void destroy()
+    private void destroy()
     {
         HandlerList.unregisterAll(this);
         handler = null;
@@ -96,7 +96,7 @@ public class IconMenu implements Listener
 
     public interface OptionClickEventHandler
     {
-        public void onOptionClick(OptionClickEvent event);
+        void onOptionClick(OptionClickEvent event);
     }
 
     public class OptionClickEvent
