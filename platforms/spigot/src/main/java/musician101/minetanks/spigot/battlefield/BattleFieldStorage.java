@@ -16,7 +16,6 @@ public class BattleFieldStorage extends AbstractStorage
 {
     MineTanks plugin;
     Map<String, BattleField> fields = new HashMap<>();
-    BattleField edit;
 
     public BattleFieldStorage(MineTanks plugin)
     {
@@ -38,7 +37,6 @@ public class BattleFieldStorage extends AbstractStorage
 
         BattleField field = new BattleField(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators);
         fields.put(name, field);
-        edit = field;
         return true;
     }
 
@@ -53,10 +51,11 @@ public class BattleFieldStorage extends AbstractStorage
 
     public BattleField getField(String name)
     {
-        if (!fields.containsKey(name))
-            return null;
+        for (String field : fields.keySet())
+            if (field.equalsIgnoreCase(name))
+                return fields.get(name);
 
-        return fields.get(name);
+        return null;
     }
 
     public Map<String, BattleField> getFields()
@@ -103,32 +102,13 @@ public class BattleFieldStorage extends AbstractStorage
             fields.get(name).saveToFile(getStorageDir());
     }
 
-    public BattleField getEdit()
-    {
-        return edit;
-    }
-
-    public boolean setEdit(String name)
-    {
-        for (String field : getFields().keySet())
-        {
-            if (name.equalsIgnoreCase(field))
-            {
-                edit = getField(field);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public boolean canPlayerExit(UUID player)
     {
         for (String name : fields.keySet())
         {
             BattleField field = getField(name);
             if (field.getPlayers().containsKey(player))
-                return field.getPlayer(player).getTeam().canExit();
+                return field.canPlayerExit(player);
         }
 
         return false;

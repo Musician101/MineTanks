@@ -126,7 +126,7 @@ public class BattleField
         return true;
     }
 
-    //TODO need to rework this method
+    //TODO strip players of potion effects and items in case the match was forcibly ended
     public boolean removePlayer(Player player)
     {
         PlayerTank pt = getPlayer(player.getUniqueId());
@@ -229,11 +229,7 @@ public class BattleField
 
     public boolean canPlayerExit(UUID player)
     {
-        PlayerTank pt = getPlayer(player);
-        if (pt != null)
-            return pt.getTeam().canExit();
-
-        return false;
+        return getPlayer(player).getTeam().canExit();
     }
 
     public void startMatch()

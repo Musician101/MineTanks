@@ -156,4 +156,9 @@ public class Cuboid implements Iterable<Block>, ConfigurationSerializable
             throw new IllegalArgumentException("The radius cannot be negative!");
         return xRadius > 0 || yRadius > 0 || zRadius > 0 ? new Cuboid(location.clone().subtract(xRadius, yRadius, zRadius), location.clone().add(xRadius, yRadius, zRadius)) : new Cuboid(location);
     }
+
+    public boolean isInCuboid(Location location)
+    {
+        return location.getWorld().getName().equals(worldName) && location.getX() > x1 && location.getX() < x2 && location.getZ() > z1 && location.getZ() < z2;
+    }
 }
