@@ -59,6 +59,24 @@ public class Cuboid implements Iterable<Block>, ConfigurationSerializable
         this.z2 = serializedCuboid.containsKey("Z2") ? (Integer) serializedCuboid.get("Z2") : 0;
     }
 
+    public static Cuboid deserialize(Map<String, Object> serializedCuboid)
+    {
+        return new Cuboid(serializedCuboid);
+    }
+
+    public static Cuboid createFromLocationRadius(Location location, double radius)
+    {
+        return createFromLocationRadius(location, radius, radius, radius);
+    }
+
+    public static Cuboid createFromLocationRadius(Location location, double xRadius, double yRadius, double zRadius)
+    {
+        Validate.notNull(location);
+        if (xRadius < 0 || yRadius < 0 || zRadius < 0)
+            throw new IllegalArgumentException("The radius cannot be negative!");
+        return xRadius > 0 || yRadius > 0 || zRadius > 0 ? new Cuboid(location.clone().subtract(xRadius, yRadius, zRadius), location.clone().add(xRadius, yRadius, zRadius)) : new Cuboid(location);
+    }
+
     public int getMinX()
     {
         return x1;
@@ -137,24 +155,6 @@ public class Cuboid implements Iterable<Block>, ConfigurationSerializable
     public ListIterator<Block> iterator()
     {
         return this.getBlocks().listIterator();
-    }
-
-    public static Cuboid deserialize(Map<String, Object> serializedCuboid)
-    {
-        return new Cuboid(serializedCuboid);
-    }
-
-    public static Cuboid createFromLocationRadius(Location location, double radius)
-    {
-        return createFromLocationRadius(location, radius, radius, radius);
-    }
-
-    public static Cuboid createFromLocationRadius(Location location, double xRadius, double yRadius, double zRadius)
-    {
-        Validate.notNull(location);
-        if (xRadius < 0 || yRadius < 0 || zRadius < 0)
-            throw new IllegalArgumentException("The radius cannot be negative!");
-        return xRadius > 0 || yRadius > 0 || zRadius > 0 ? new Cuboid(location.clone().subtract(xRadius, yRadius, zRadius), location.clone().add(xRadius, yRadius, zRadius)) : new Cuboid(location);
     }
 
     public boolean isInCuboid(Location location)

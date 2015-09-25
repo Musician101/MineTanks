@@ -53,12 +53,10 @@ public class InventoryStorage extends AbstractStorage
 
             player.getInventory().setArmorContents(armor);
             for (Map pe : yml.getMapList("effects"))
-                player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(pe.get("type").toString().toUpperCase()),
-                        Integer.parseInt(pe.get("duration").toString()), Integer.parseInt(pe.get("amplifier").toString()), true), true);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(pe.get("type").toString().toUpperCase()), Integer.parseInt(pe.get("duration").toString()), Integer.parseInt(pe.get("amplifier").toString()), true), true);
 
             ConfigurationSection locCS = yml.getConfigurationSection("location");
-            player.teleport(new Location(Bukkit.getWorld(locCS.getString("world")), locCS.getDouble("x"), locCS.getDouble("y"),
-                    locCS.getDouble("z"), Float.parseFloat(locCS.getString("yaw")), Float.parseFloat(locCS.getString("pitch"))));
+            player.teleport(new Location(Bukkit.getWorld(locCS.getString("world")), locCS.getDouble("x"), locCS.getDouble("y"), locCS.getDouble("z"), Float.parseFloat(locCS.getString("yaw")), Float.parseFloat(locCS.getString("pitch"))));
 
             player.setExp(Float.parseFloat(yml.getString("xp")));
             file.delete();

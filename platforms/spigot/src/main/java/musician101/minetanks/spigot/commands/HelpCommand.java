@@ -27,8 +27,7 @@ public class HelpCommand extends AbstractSpigotCommand
         {
             sender.sendMessage(ChatColor.GREEN + "[] = optional, <> = mandatory");
             sender.sendMessage(mainCommand.getCommandHelpInfo());
-            mainCommand.getSubCommands().forEach(command ->
-            {
+            mainCommand.getSubCommands().forEach(command -> {
                 if (sender.hasPermission(command.getPermission()))
                     sender.sendMessage(command.getCommandHelpInfo());
             });

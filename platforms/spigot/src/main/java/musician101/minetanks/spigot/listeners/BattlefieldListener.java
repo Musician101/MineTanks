@@ -67,8 +67,7 @@ public class BattlefieldListener implements Listener
         MTScoreboard sb = field.getScoreboard();
         String damagedMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
         String damagerMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
-        Bukkit.getOnlinePlayers().forEach(player ->
-        {
+        Bukkit.getOnlinePlayers().forEach(player -> {
             if (field.getPlayer(player.getUniqueId()) != null)
                 player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
         });

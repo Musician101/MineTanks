@@ -94,6 +94,15 @@ public class IconMenu implements Listener
         }
     }
 
+    private ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore)
+    {
+        ItemMeta im = item.getItemMeta();
+        im.setDisplayName(name);
+        im.setLore(Arrays.asList(lore));
+        item.setItemMeta(im);
+        return item;
+    }
+
     public interface OptionClickEventHandler
     {
         void onOptionClick(OptionClickEvent event);
@@ -150,15 +159,6 @@ public class IconMenu implements Listener
         {
             this.destroy = destroy;
         }
-    }
-
-    private ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore)
-    {
-        ItemMeta im = item.getItemMeta();
-        im.setDisplayName(name);
-        im.setLore(Arrays.asList(lore));
-        item.setItemMeta(im);
-        return item;
     }
 
 }

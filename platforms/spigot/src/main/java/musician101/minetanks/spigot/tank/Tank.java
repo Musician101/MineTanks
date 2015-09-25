@@ -92,7 +92,8 @@ public class Tank extends AbstractTank
                 amplifier = 2;
             else if (getSpeed() == 5)
                 amplifier = 1;
-        } else
+        }
+        else
         {
             effect = PotionEffectType.SPEED;
             if (getSpeed() == 6)

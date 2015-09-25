@@ -23,6 +23,11 @@ public class AttemptMenuOpenEvent extends Event
         this.player = player;
     }
 
+    public static HandlerList getHandlerList()
+    {
+        return handlers;
+    }
+
     public Material getMaterial()
     {
         return material;
@@ -45,11 +50,6 @@ public class AttemptMenuOpenEvent extends Event
 
     @Override
     public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList()
     {
         return handlers;
     }

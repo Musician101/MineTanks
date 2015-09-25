@@ -29,6 +29,11 @@ public class PlayerTankDamageEvent extends Event
         this.cause = cause;
     }
 
+    public static HandlerList getHandlerList()
+    {
+        return handlers;
+    }
+
     public PlayerTankDamageCause getCause()
     {
         return cause;
@@ -56,11 +61,6 @@ public class PlayerTankDamageEvent extends Event
 
     @Override
     public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList()
     {
         return handlers;
     }

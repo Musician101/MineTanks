@@ -18,6 +18,11 @@ public class PlayerTankDeathEvent extends Event
         this.killer = killer;
     }
 
+    public static HandlerList getHandlerList()
+    {
+        return handlers;
+    }
+
     public String getField()
     {
         return field;
@@ -35,11 +40,6 @@ public class PlayerTankDeathEvent extends Event
 
     @Override
     public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList()
     {
         return handlers;
     }

@@ -17,9 +17,9 @@ public class ReloadHandler
     private final MineTanks plugin;
     private final Player player;
     private final int reloadTime;
-    private int cycleTime;
     private final int clipSize;
     private final int maxClipSize;
+    private int cycleTime;
 
     public ReloadHandler(MineTanks plugin, Player player, Cannon cannon)
     {
@@ -32,7 +32,8 @@ public class ReloadHandler
             this.cycleTime = (int) Math.round(al.getCycleTime());
             this.clipSize = al.getClipSize();
             this.maxClipSize = al.getClipSize();
-        } else
+        }
+        else
         {
             this.clipSize = 1;
             this.maxClipSize = 1;

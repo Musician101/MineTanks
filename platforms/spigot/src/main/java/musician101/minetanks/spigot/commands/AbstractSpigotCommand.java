@@ -12,8 +12,8 @@ import java.util.List;
 
 public abstract class AbstractSpigotCommand extends AbstractCommand
 {
-    final List<AbstractSpigotCommand> subCommands;
     protected final MineTanks plugin;
+    final List<AbstractSpigotCommand> subCommands;
     final String permission;
 
     protected AbstractSpigotCommand(MineTanks plugin, String name, String desc, List<String> usage, int minArgs, String permission, boolean isPlayerOnly)
@@ -27,6 +27,18 @@ public abstract class AbstractSpigotCommand extends AbstractCommand
         this.plugin = plugin;
         this.permission = permission;
         this.subCommands = subCommands;
+    }
+
+    private static String parseUsage(List<String> usageList)
+    {
+        String usage = ChatColor.GRAY + usageList.get(0);
+        if (usageList.size() > 1)
+            usage = usage + " " + ChatColor.RESET + usageList.get(1);
+
+        if (usageList.size() > 2)
+            usage = usage + " " + ChatColor.GREEN + usageList.get(2);
+
+        return usage;
     }
 
     public String getPermission()
@@ -65,7 +77,9 @@ public abstract class AbstractSpigotCommand extends AbstractCommand
         return true;
     }
 
-    /** Plugin specific method */
+    /**
+     * Plugin specific method
+     */
     protected boolean doesFieldExist(CommandSender sender, String name)
     {
         if (plugin.getFieldStorage().getField(name) != null)
@@ -82,18 +96,6 @@ public abstract class AbstractSpigotCommand extends AbstractCommand
 
         sender.sendMessage(message);
         return false;
-    }
-
-    private static String parseUsage(List<String> usageList)
-    {
-        String usage = ChatColor.GRAY + usageList.get(0);
-        if (usageList.size() > 1)
-            usage = usage + " " + ChatColor.RESET + usageList.get(1);
-
-        if (usageList.size() > 2)
-            usage = usage + " " + ChatColor.GREEN + usageList.get(2);
-
-        return usage;
     }
 
     protected String[] moveArguments(String[] args)

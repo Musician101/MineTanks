@@ -300,11 +300,13 @@ public class MTListener implements Listener
                     UUID damager = ((Player) arrow.getShooter()).getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, damaged, damager, field, damage));
                     ExplosionTracker.addArrow(arrow);
-                } else if (event.getDamager() instanceof Player && field.getPlayer(event.getDamager().getUniqueId()) != null)
+                }
+                else if (event.getDamager() instanceof Player && field.getPlayer(event.getDamager().getUniqueId()) != null)
                 {
                     UUID damager = event.getDamager().getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, damaged, damager, field, damage));
-                } else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
+                }
+                else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
                 {
                     Arrow arrow = null;
                     for (Arrow a : ExplosionTracker.getTracker())
@@ -314,7 +316,8 @@ public class MTListener implements Listener
                     UUID damager = ((Arrow) arrow.getShooter()).getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, damaged, damager, field, damage));
                     ExplosionTracker.removeArrow(arrow);
-                } else if (event.getCause() == DamageCause.FALL)
+                }
+                else if (event.getCause() == DamageCause.FALL)
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, damaged, field, damage));
 
                 event.setCancelled(true);

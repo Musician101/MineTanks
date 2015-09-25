@@ -28,14 +28,7 @@ public class StatusCommand extends AbstractSpigotCommand
             return false;
 
         BattleField field = plugin.getFieldStorage().getField(args[0]);
-        sender.sendMessage(new String[]{
-                ChatColor.GREEN + plugin.getPrefix() + " Status of " + field.getName(),
-                ChatColor.GREEN + plugin.getPrefix() + " Enabled: " + field.isEnabled(),
-                ChatColor.GREEN + plugin.getPrefix() + " Cuboid: " + (field.getCuboid() == null ? "Not Set" : "Set"),
-                ChatColor.GREEN + plugin.getPrefix() + " Green Spawn: " + (field.getGreenSpawn() == null ? "Not Set" : "Set"),
-                ChatColor.GREEN + plugin.getPrefix() + " Red Spawn: " + (field.getRedSpawn() == null ? "Not Set" : "Set"),
-                ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn: " + (field.getSpectators() == null ? "Not Set" : "Set")
-        });
+        sender.sendMessage(new String[]{ChatColor.GREEN + plugin.getPrefix() + " Status of " + field.getName(), ChatColor.GREEN + plugin.getPrefix() + " Enabled: " + field.isEnabled(), ChatColor.GREEN + plugin.getPrefix() + " Cuboid: " + (field.getCuboid() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Green Spawn: " + (field.getGreenSpawn() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Red Spawn: " + (field.getRedSpawn() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn: " + (field.getSpectators() == null ? "Not Set" : "Set")});
 
         return true;
     }

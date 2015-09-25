@@ -30,11 +30,11 @@ public class BattleField
 {
     private final MineTanks plugin;
     private final String name;
-    private Location greenSpawn, redSpawn, spectators;
     private final Map<UUID, PlayerTank> players = new HashMap<>();
+    private final MTScoreboard sb;
+    private Location greenSpawn, redSpawn, spectators;
     private boolean enabled;
     private int unassigned = 0;
-    private final MTScoreboard sb;
     private boolean inProgress = false;
     private Cuboid cuboid;
 
@@ -114,7 +114,8 @@ public class BattleField
         {
             player.teleport(spectators);
             player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You are now spectating in " + name + ".");
-        } else
+        }
+        else
         {
             player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
             player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
@@ -240,13 +241,15 @@ public class BattleField
             {
                 pt.setTeam(MTTeam.SPECTATOR);
                 unassigned--;
-            } else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
+            }
+            else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
                 sb.addGreenPlayer(Bukkit.getPlayer(uuid));
                 Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
                 unassigned--;
-            } else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
+            }
+            else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
                 sb.addRedPlayer(Bukkit.getPlayer(uuid));
@@ -281,7 +284,8 @@ public class BattleField
                     }
                 }.runTaskLater(plugin, 1L);
                 new ReloadHandler(plugin, player, tank.getCannon()).isReloading();
-            } else
+            }
+            else
             {
                 pt.setTank(null);
                 player.getInventory().clear();
