@@ -36,6 +36,7 @@ public class MineTanks extends JavaPlugin
     @Override
     public void onDisable()
     {
+        fieldStorage.getFields().keySet().forEach(field -> fieldStorage.getField(field).endMatch(true));
         fieldStorage.saveToFiles();
         getLogger().info("Pack it up, boys. We're heading home.");
     }

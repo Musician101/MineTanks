@@ -65,5 +65,7 @@ public abstract class AbstractBattleField
 
     public abstract void endMatch();
 
+    public abstract void endMatch(boolean forced);
+
     public abstract void playerKilled(UUID player);
 }

@@ -34,7 +34,7 @@ public class BattleField extends AbstractBattleField
     private Location spectators;
     private final MineTanks plugin;
     private final MTScoreboard sb;
-    
+
     public BattleField(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
     {
         super(name, enabled);
@@ -114,7 +114,6 @@ public class BattleField extends AbstractBattleField
         return true;
     }
 
-    //TODO strip players of potion effects and items in case the match was forcibly ended
     @Override
     public boolean removePlayer(UUID playerId)
     {
@@ -280,10 +279,16 @@ public class BattleField extends AbstractBattleField
     @Override
     public void endMatch()
     {
+        endMatch(false);
+    }
+
+    @Override
+    public void endMatch(boolean forced)
+    {
         if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress)
             return;
 
-        if (sb.getGreenTeamSize() == 0 || sb.getRedTeamSize() == 0)
+        if (forced || sb.getGreenTeamSize() == 0 || sb.getRedTeamSize() == 0)
         {
             inProgress = false;
             for (UUID uuid : getPlayers().keySet())
@@ -301,7 +306,9 @@ public class BattleField extends AbstractBattleField
                 pt.setTeam(MTTeam.SPECTATOR);
                 pt.setTank(null);
                 sb.playerDeath(player);
-                if (sb.getGreenTeamSize() == 0)
+                if (forced)
+                    player.sendMessage(ChatColor.RED + plugin.getPrefix() + " The match was forcibly ended by an admin.");
+                else if (sb.getGreenTeamSize() == 0)
                     player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
                 else if (sb.getRedTeamSize() == 0)
                     player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
