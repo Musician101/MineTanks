@@ -1,5 +1,6 @@
-package musician101.minetanks.common;
+package musician101.minetanks.common.battlefield;
 
+import musician101.minetanks.common.AbstractPlayerTank;
 import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 
 import java.io.File;

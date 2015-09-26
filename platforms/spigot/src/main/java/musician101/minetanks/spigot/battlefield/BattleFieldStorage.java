@@ -1,6 +1,6 @@
 package musician101.minetanks.spigot.battlefield;
 
-import musician101.minetanks.common.AbstractStorage;
+import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.util.Cuboid;
 import org.bukkit.Bukkit;
@@ -8,14 +8,11 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-public class BattleFieldStorage extends AbstractStorage
+public class BattleFieldStorage extends AbstractBattleFieldStorage
 {
     private final MineTanks plugin;
-    private final Map<String, BattleField> fields = new HashMap<>();
 
     public BattleFieldStorage(MineTanks plugin)
     {
@@ -24,6 +21,7 @@ public class BattleFieldStorage extends AbstractStorage
         loadFromFiles();
     }
 
+    @Override
     public boolean createField(String name)
     {
         return createField(name, false, null, null, null, null);
@@ -31,39 +29,36 @@ public class BattleFieldStorage extends AbstractStorage
 
     private boolean createField(String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
     {
-        for (String field : fields.keySet())
+        for (String field : getFields().keySet())
             if (field.equals(name))
                 return false;
 
         BattleField field = new BattleField(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators);
-        fields.put(name, field);
+        getFields().put(name, field);
         return true;
     }
 
+    @Override
     public boolean removeField(String field)
     {
-        if (!fields.containsKey(field))
+        if (!getFields().containsKey(field))
             return false;
 
-        fields.remove(field);
+        getFields().remove(field);
         return new File(getStorageDir(), field + ".yml").delete();
     }
 
     public BattleField getField(String name)
     {
-        for (String field : fields.keySet())
+        for (String field : getFields().keySet())
             if (field.equalsIgnoreCase(name))
-                return fields.get(name);
+                return (BattleField) getFields().get(name);
 
         return null;
     }
 
-    public Map<String, BattleField> getFields()
-    {
-        return fields;
-    }
-
-    private void loadFromFiles()
+    @Override
+    public void loadFromFiles()
     {
         getStorageDir().mkdirs();
         for (File file : getStorageDir().listFiles())
@@ -96,15 +91,17 @@ public class BattleFieldStorage extends AbstractStorage
         }
     }
 
+    @Override
     public void saveToFiles()
     {
-        for (String name : fields.keySet())
-            fields.get(name).saveToFile(getStorageDir());
+        for (String name : getFields().keySet())
+            getFields().get(name).saveToFile(getStorageDir());
     }
 
+    @Override
     public boolean canPlayerExit(UUID player)
     {
-        for (String name : fields.keySet())
+        for (String name : getFields().keySet())
         {
             BattleField field = getField(name);
             if (field.getPlayers().containsKey(player))
