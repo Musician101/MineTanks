@@ -10,12 +10,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class Menus
 {
-    private final MineTanks plugin;
     private final IconMenu tankSelection;
 
     public Menus(MineTanks plugin)
     {
-        this.plugin = plugin;
         this.tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
 
         //TODO need to implement a page system for the inevitable
