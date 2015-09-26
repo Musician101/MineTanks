@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.battlefield;
 
+import musician101.minetanks.common.AbstractBattleField;
 import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
@@ -21,28 +22,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-public class BattleField
+public class BattleField extends AbstractBattleField
 {
-    private final MineTanks plugin;
-    private final String name;
-    private final Map<UUID, PlayerTank> players = new HashMap<>();
-    private final MTScoreboard sb;
-    private Location greenSpawn, redSpawn, spectators;
-    private boolean enabled;
-    private int unassigned = 0;
     private boolean inProgress = false;
     private Cuboid cuboid;
-
+    private Location greenSpawn;
+    private Location redSpawn;
+    private Location spectators;
+    private final MineTanks plugin;
+    private final MTScoreboard sb;
+    
     public BattleField(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
     {
+        super(name, enabled);
         this.plugin = plugin;
-        this.name = name;
-        this.enabled = enabled;
         this.cuboid = cuboid;
         this.greenSpawn = greenSpawn;
         this.redSpawn = redSpawn;
@@ -50,19 +46,9 @@ public class BattleField
         this.sb = new MTScoreboard();
     }
 
-    public Map<UUID, PlayerTank> getPlayers()
-    {
-        return players;
-    }
-
     public PlayerTank getPlayer(UUID player)
     {
-        return players.containsKey(player) ? players.get(player) : null;
-    }
-
-    public String getName()
-    {
-        return name;
+        return getPlayers().containsKey(player) ? (PlayerTank) getPlayers().get(player) : null;
     }
 
     public Cuboid getCuboid()
@@ -105,15 +91,17 @@ public class BattleField
         spectators = loc;
     }
 
-    public boolean addPlayer(Player player, MTTeam team)
+    @Override
+    public boolean addPlayer(UUID playerId, MTTeam team)
     {
+        Player player = Bukkit.getPlayer(playerId);
         if (!plugin.getInventoryStorage().saveInventory(player))
             return false;
 
         if (team == MTTeam.SPECTATOR)
         {
             player.teleport(spectators);
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You are now spectating in " + name + ".");
+            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You are now spectating in " + getName() + ".");
         }
         else
         {
@@ -122,13 +110,15 @@ public class BattleField
             unassigned++;
         }
 
-        players.put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
+        getPlayers().put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
         return true;
     }
 
     //TODO strip players of potion effects and items in case the match was forcibly ended
-    public boolean removePlayer(Player player)
+    @Override
+    public boolean removePlayer(UUID playerId)
     {
+        Player player = Bukkit.getPlayer(playerId);
         PlayerTank pt = getPlayer(player.getUniqueId());
         if (pt == null)
             return false;
@@ -138,32 +128,24 @@ public class BattleField
         if (sb.isOnGreen(player) || sb.isOnRed(player))
             sb.playerDeath(player);
 
-        players.remove(player.getUniqueId());
+        getPlayers().remove(player.getUniqueId());
         if (unassigned > 0)
             unassigned--;
 
         return true;
     }
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-    }
-
+    @Override
     public boolean isReady()
     {
-        return cuboid != null && greenSpawn != null && redSpawn != null && spectators != null && enabled;
+        return cuboid != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
 
     }
 
+    @Override
     public void saveToFile(File battlefields)
     {
-        File file = new File(battlefields, this.name + ".yml");
+        File file = new File(battlefields, getName() + ".yml");
         try
         {
             file.createNewFile();
@@ -202,7 +184,7 @@ public class BattleField
             field.set("spectators.z", spectators.getZ());
         }
 
-        field.set("enabled", enabled);
+        field.set("enabled", isEnabled());
         try
         {
             field.save(file);
@@ -213,15 +195,17 @@ public class BattleField
         }
     }
 
+    @Override
     public boolean canPlayerExit(UUID player)
     {
         return getPlayer(player).getTeam().canExit();
     }
 
+    @Override
     public void startMatch()
     {
         List<UUID> players = new ArrayList<>();
-        for (UUID player : this.players.keySet())
+        for (UUID player : getPlayers().keySet())
         {
             if (!getPlayer(player).isReady())
                 return;
@@ -293,6 +277,7 @@ public class BattleField
         }
     }
 
+    @Override
     public void endMatch()
     {
         if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress)
@@ -301,7 +286,7 @@ public class BattleField
         if (sb.getGreenTeamSize() == 0 || sb.getRedTeamSize() == 0)
         {
             inProgress = false;
-            for (UUID uuid : players.keySet())
+            for (UUID uuid : getPlayers().keySet())
             {
                 Player player = Bukkit.getPlayer(uuid);
                 player.teleport(spectators);
@@ -324,16 +309,7 @@ public class BattleField
         }
     }
 
-    public boolean inProgress()
-    {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress)
-    {
-        this.inProgress = inProgress;
-    }
-
+    @Override
     public void playerKilled(UUID player)
     {
         getPlayer(player).killed();

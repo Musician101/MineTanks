@@ -49,7 +49,7 @@ public class JoinCommand extends AbstractSpigotCommand
             return false;
         }
 
-        field.addPlayer(player, MTTeam.UNASSIGNED);
+        field.addPlayer(player.getUniqueId(), MTTeam.UNASSIGNED);
         plugin.getMenuHandler().openTankMenu(player);
         return true;
     }

@@ -40,7 +40,7 @@ public class SpectateCommand extends AbstractSpigotCommand
             return false;
         }
 
-        field.addPlayer(player, MTTeam.SPECTATOR);
+        field.addPlayer(player.getUniqueId(), MTTeam.SPECTATOR);
         return true;
     }
 }
