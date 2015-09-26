@@ -45,6 +45,7 @@ public class ForceEndCommand extends AbstractSpigotCommand
             field.removePlayer(p);
         });
 
+        field.setInProgress(false);
         sender.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Match terminated.");
         return true;
     }
