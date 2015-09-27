@@ -2,7 +2,7 @@ package musician101.minetanks.spigot.battlefield;
 
 import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.util.Cuboid;
+import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,13 +27,13 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
         return createField(name, false, null, null, null, null);
     }
 
-    private boolean createField(String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+    private boolean createField(String name, boolean enabled, SpigotRegion spigotRegion, Location greenSpawn, Location redSpawn, Location spectators)
     {
         for (String field : getFields().keySet())
             if (field.equals(name))
                 return false;
 
-        BattleField field = new BattleField(plugin, name, enabled, cuboid, greenSpawn, redSpawn, spectators);
+        BattleField field = new BattleField(plugin, name, enabled, spigotRegion, greenSpawn, redSpawn, spectators);
         getFields().put(name, field);
         return true;
     }
@@ -68,13 +68,13 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
                 YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
                 String name = file.getName().replace(".yml", "");
                 boolean enabled = field.getBoolean("enabled");
-                Cuboid cuboid = null;
+                SpigotRegion spigotRegion = null;
                 Location greenSpawn = null;
                 Location redSpawn = null;
                 Location spectators = null;
 
-                if (field.isSet("cuboid"))
-                    cuboid = Cuboid.deserialize(field.getConfigurationSection("cuboid").getValues(false));
+                if (field.isSet("region"))
+                    spigotRegion = new SpigotRegion(field.getConfigurationSection("region").getValues(false));
 
                 if (field.isSet("greenSpawn.x"))
                     greenSpawn = new Location(Bukkit.getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
@@ -85,7 +85,7 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
                 if (field.isSet("spectators.x"))
                     spectators = new Location(Bukkit.getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
 
-                if (!createField(name, enabled, cuboid, greenSpawn, redSpawn, spectators))
+                if (!createField(name, enabled, spigotRegion, greenSpawn, redSpawn, spectators))
                     plugin.getLogger().warning("Failed to load " + file.getName());
             }
         }

@@ -2,7 +2,7 @@ package musician101.minetanks.spigot.commands;
 
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.commands.edit.CreateCommand;
-import musician101.minetanks.spigot.commands.edit.CuboidCommand;
+import musician101.minetanks.spigot.commands.edit.RegionCommand;
 import musician101.minetanks.spigot.commands.edit.EnableCommand;
 import musician101.minetanks.spigot.commands.edit.ForceEndCommand;
 import musician101.minetanks.spigot.commands.edit.GreenSpawnCommand;
@@ -22,7 +22,7 @@ public class MTCommands extends AbstractSpigotCommand
 {
     public MTCommands(MineTanks plugin)
     {
-        super(plugin, "minetanks", "Minecraft PvP plugin influenced by Wargaming's World of Tanks.", Collections.singletonList("/minetanks"), 0, "minetanks", false, Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new CuboidCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
+        super(plugin, "minetanks", "Minecraft PvP plugin influenced by Wargaming's World of Tanks.", Collections.singletonList("/minetanks"), 0, "minetanks", false, Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
     }
 
     @Override

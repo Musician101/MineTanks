@@ -7,7 +7,7 @@ import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.handlers.ReloadHandler;
 import musician101.minetanks.spigot.scoreboards.MTScoreboard;
 import musician101.minetanks.spigot.tank.Tank;
-import musician101.minetanks.spigot.util.Cuboid;
+import musician101.minetanks.spigot.util.SpigotRegion;
 import musician101.minetanks.spigot.util.MTUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,18 +28,18 @@ import java.util.UUID;
 public class BattleField extends AbstractBattleField
 {
     private boolean inProgress = false;
-    private Cuboid cuboid;
+    private SpigotRegion spigotRegion;
     private Location greenSpawn;
     private Location redSpawn;
     private Location spectators;
     private final MineTanks plugin;
     private final MTScoreboard sb;
 
-    public BattleField(MineTanks plugin, String name, boolean enabled, Cuboid cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+    public BattleField(MineTanks plugin, String name, boolean enabled, SpigotRegion spigotRegion, Location greenSpawn, Location redSpawn, Location spectators)
     {
         super(name, enabled);
         this.plugin = plugin;
-        this.cuboid = cuboid;
+        this.spigotRegion = spigotRegion;
         this.greenSpawn = greenSpawn;
         this.redSpawn = redSpawn;
         this.spectators = spectators;
@@ -51,14 +51,14 @@ public class BattleField extends AbstractBattleField
         return getPlayers().containsKey(player) ? (PlayerTank) getPlayers().get(player) : null;
     }
 
-    public Cuboid getCuboid()
+    public SpigotRegion getSpigotRegion()
     {
-        return cuboid;
+        return spigotRegion;
     }
 
-    public void setCuboid(Cuboid cuboid)
+    public void setSpigotRegion(SpigotRegion spigotRegion)
     {
-        this.cuboid = cuboid;
+        this.spigotRegion = spigotRegion;
     }
 
     public Location getGreenSpawn()
@@ -137,7 +137,7 @@ public class BattleField extends AbstractBattleField
     @Override
     public boolean isReady()
     {
-        return cuboid != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
+        return spigotRegion != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
 
     }
 
@@ -156,8 +156,8 @@ public class BattleField extends AbstractBattleField
         }
 
         YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
-        if (cuboid != null)
-            field.set("cuboid", cuboid.serialize());
+        if (spigotRegion != null)
+            field.set("region", spigotRegion.serialize());
 
         if (greenSpawn != null)
         {

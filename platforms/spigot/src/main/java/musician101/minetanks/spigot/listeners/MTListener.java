@@ -82,12 +82,12 @@ public class MTListener implements Listener
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
-            double minX = field.getCuboid().getMinX();
-            double maxX = field.getCuboid().getMaxX();
-            double minY = field.getCuboid().getMinY();
-            double maxY = field.getCuboid().getMaxY();
-            double minZ = field.getCuboid().getMinZ();
-            double maxZ = field.getCuboid().getMaxZ();
+            double minX = field.getSpigotRegion().getMinX();
+            double maxX = field.getSpigotRegion().getMaxX();
+            double minY = field.getSpigotRegion().getMinY();
+            double maxY = field.getSpigotRegion().getMaxY();
+            double minZ = field.getSpigotRegion().getMinZ();
+            double maxZ = field.getSpigotRegion().getMaxZ();
             if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
             {
                 if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
@@ -111,12 +111,12 @@ public class MTListener implements Listener
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
-            double minX = field.getCuboid().getMinX();
-            double maxX = field.getCuboid().getMaxX();
-            double minY = field.getCuboid().getMinY();
-            double maxY = field.getCuboid().getMaxY();
-            double minZ = field.getCuboid().getMinZ();
-            double maxZ = field.getCuboid().getMaxZ();
+            double minX = field.getSpigotRegion().getMinX();
+            double maxX = field.getSpigotRegion().getMaxX();
+            double minY = field.getSpigotRegion().getMinY();
+            double maxY = field.getSpigotRegion().getMaxY();
+            double minZ = field.getSpigotRegion().getMinZ();
+            double maxZ = field.getSpigotRegion().getMaxZ();
             if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
             {
                 if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
@@ -187,7 +187,7 @@ public class MTListener implements Listener
         {
             if (plugin.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
             {
-                plugin.getFieldStorage().getField(name).removePlayer(event.getPlayer());
+                plugin.getFieldStorage().getField(name).removePlayer(event.getPlayer().getUniqueId());
                 return;
             }
         }
@@ -206,10 +206,10 @@ public class MTListener implements Listener
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
-                double minX = field.getCuboid().getMinX();
-                double maxX = field.getCuboid().getMaxX();
-                double minZ = field.getCuboid().getMinZ();
-                double maxZ = field.getCuboid().getMaxZ();
+                double minX = field.getSpigotRegion().getMinX();
+                double maxX = field.getSpigotRegion().getMaxX();
+                double minZ = field.getSpigotRegion().getMinZ();
+                double maxZ = field.getSpigotRegion().getMaxZ();
                 double x = player.getLocation().getX();
                 double z = player.getLocation().getZ();
                 double correction = 2.0;
@@ -362,13 +362,10 @@ public class MTListener implements Listener
         {
             for (String name : plugin.getFieldStorage().getFields().keySet())
             {
-                for (Block b : plugin.getFieldStorage().getField(name).getCuboid().getBlocks())
+                if (plugin.getFieldStorage().getField(name).getSpigotRegion().isInRegion(block.getLocation()))
                 {
-                    if (block.getLocation() == b.getLocation())
-                    {
-                        event.blockList().clear();
-                        return;
-                    }
+                    event.blockList().clear();
+                    return;
                 }
             }
         }

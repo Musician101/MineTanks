@@ -3,18 +3,18 @@ package musician101.minetanks.spigot.commands.edit;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
-import musician101.minetanks.spigot.util.Cuboid;
+import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class CuboidCommand extends AbstractSpigotCommand
+public class RegionCommand extends AbstractSpigotCommand
 {
-    public CuboidCommand(MineTanks plugin)
+    public RegionCommand(MineTanks plugin)
     {
-        super(plugin, "cuboid", "Set the cuboid region of the currently selected battlefield.", Arrays.asList("/mt", "cuboid", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">", "<" + ChatColor.ITALIC + "radius | xradius yradius zradius" + ChatColor.RESET + ">"), 2, "minetanks.edit", true);
+        super(plugin, "region", "Set the region region of the currently selected battlefield.", Arrays.asList("/mt", "region", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">", "<" + ChatColor.ITALIC + "radius | xradius yradius zradius" + ChatColor.RESET + ">"), 2, "minetanks.edit", true);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class CuboidCommand extends AbstractSpigotCommand
                 return false;
             }
 
-            field.setCuboid(Cuboid.createFromLocationRadius(player.getLocation(), radius));
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Cuboid set.");
+            field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), radius));
+            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Region set.");
             return true;
         }
         else if (args.length >= 4)
@@ -59,8 +59,8 @@ public class CuboidCommand extends AbstractSpigotCommand
                 return false;
             }
 
-            field.setCuboid(Cuboid.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Cuboid set.");
+            field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
+            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Region set.");
             return true;
         }
 

@@ -32,7 +32,7 @@ public class SpectatorsCommand extends AbstractSpigotCommand
         Player player = (Player) sender;
         BattleField field = plugin.getFieldStorage().getField(args[0]);
         Location loc = player.getLocation();
-        if (field.getCuboid() == null || !field.getCuboid().isInCuboid(loc))
+        if (field.getSpigotRegion() == null || !field.getSpigotRegion().isInRegion(loc))
         {
             player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The location is not inside the field's region.");
             return false;
