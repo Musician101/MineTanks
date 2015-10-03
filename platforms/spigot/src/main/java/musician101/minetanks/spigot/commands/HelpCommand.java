@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.commands;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
 import musician101.minetanks.spigot.MineTanks;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,10 +10,12 @@ import java.util.Arrays;
 public class HelpCommand extends AbstractSpigotCommand
 {
     private final AbstractSpigotCommand mainCommand;
+    MineTanks plugin;
 
     public HelpCommand(MineTanks plugin, AbstractSpigotCommand mainCommand)
     {
-        super(plugin, "help", "Display help info for " + mainCommand.getUsage(), Arrays.asList(mainCommand.getUsage(), "help"), 1, "minetanks.help", false);
+        super("help", "Display help info for " + mainCommand.getUsage(), Arrays.asList(mainCommand.getUsage(), "help"), 1, "", false, "", "");
+        this.plugin = plugin;
         this.mainCommand = mainCommand;
     }
 
@@ -27,7 +30,8 @@ public class HelpCommand extends AbstractSpigotCommand
         {
             sender.sendMessage(ChatColor.GREEN + "[] = optional, <> = mandatory");
             sender.sendMessage(mainCommand.getCommandHelpInfo());
-            mainCommand.getSubCommands().forEach(command -> {
+            mainCommand.getSubCommands().forEach(command ->
+            {
                 if (sender.hasPermission(command.getPermission()))
                     sender.sendMessage(command.getCommandHelpInfo());
             });

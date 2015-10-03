@@ -1,8 +1,8 @@
 package musician101.minetanks.spigot.commands.edit;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
-import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -12,9 +12,12 @@ import java.util.Arrays;
 
 public class RegionCommand extends AbstractSpigotCommand
 {
+    MineTanks plugin;
+
     public RegionCommand(MineTanks plugin)
     {
-        super(plugin, "region", "Set the region region of the currently selected battlefield.", Arrays.asList("/mt", "region", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">", "<" + ChatColor.ITALIC + "radius | xradius yradius zradius" + ChatColor.RESET + ">"), 2, "minetanks.edit", true);
+        super("region", "Set the region region of the currently selected battlefield.", Arrays.asList("/mt", "region", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">", "<" + ChatColor.ITALIC + "radius | xradius yradius zradius" + ChatColor.RESET + ">"), 2, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        this.plugin = plugin;
     }
 
     @Override
@@ -25,6 +28,12 @@ public class RegionCommand extends AbstractSpigotCommand
 
         Player player = (Player) sender;
         BattleField field = plugin.getFieldStorage().getField(args[0]);
+        if (field == null)
+        {
+            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+            return false;
+        }
+
         if (args.length >= 2 && args.length < 4)
         {
             int radius;

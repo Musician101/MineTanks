@@ -9,7 +9,7 @@ import musician101.minetanks.spigot.util.Menus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-
+//TODO need messages class
 public class MineTanks extends JavaPlugin
 {
     private BattleFieldStorage fieldStorage;

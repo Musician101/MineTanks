@@ -1,8 +1,8 @@
 package musician101.minetanks.spigot.commands.participate;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
-import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,9 +11,12 @@ import java.util.Arrays;
 
 public class LeaveCommand extends AbstractSpigotCommand
 {
+    MineTanks plugin;
+
     public LeaveCommand(MineTanks plugin)
     {
-        super(plugin, "leave", "Leave the battlefield you are currently in.", Arrays.asList("/mt", "leave"), 0, "minetanks.participate", true);
+        super("leave", "Leave the battlefield you are currently in.", Arrays.asList("/mt", "leave"), 0, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        this.plugin = plugin;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class LeaveCommand extends AbstractSpigotCommand
             if (field.getPlayer(player.getUniqueId()) != null)
             {
                 player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have left the battlefield.");
-                field.removePlayer(player);
+                field.removePlayer(player.getUniqueId());
                 return true;
             }
         }

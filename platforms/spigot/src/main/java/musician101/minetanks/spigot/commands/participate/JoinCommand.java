@@ -1,9 +1,9 @@
 package musician101.minetanks.spigot.commands.participate;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
 import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
-import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,9 +12,12 @@ import java.util.Arrays;
 
 public class JoinCommand extends AbstractSpigotCommand
 {
+    MineTanks plugin;
+
     public JoinCommand(MineTanks plugin)
     {
-        super(plugin, "join", "Enter the selected battlefield.", Arrays.asList("/mt", "join", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.participate", true);
+        super("join", "Enter the selected battlefield.", Arrays.asList("/mt", "join", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        this.plugin = plugin;
     }
 
     @Override
@@ -27,10 +30,13 @@ public class JoinCommand extends AbstractSpigotCommand
         if (minArgsMet(player, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
             return false;
 
-        if (doesFieldExist(sender, args[0]))
-            return false;
-
         BattleField field = plugin.getFieldStorage().getField(args[0]);
+        if (field == null)
+        {
+            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+            return false;
+        }
+
         if (!field.isEnabled())
         {
             player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, this field is currently disabled.");

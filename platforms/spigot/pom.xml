@@ -55,6 +55,14 @@
                                     <include>musician101.minetanks:common</include>
                                 </includes>
                             </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>musician101:common</artifact>
+                                    <includes>
+                                        <include>musician101/common/java/minecraft/spigot/AbstractSpigotCommand.java</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

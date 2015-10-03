@@ -1,9 +1,9 @@
 package musician101.minetanks.spigot.commands.participate;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
 import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
-import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,9 +12,12 @@ import java.util.Arrays;
 
 public class SpectateCommand extends AbstractSpigotCommand
 {
+    MineTanks plugin;
+
     public SpectateCommand(MineTanks plugin)
     {
-        super(plugin, "spectate", "Spectate the selected battlefield.", Arrays.asList("/mt", "spectate", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.participate", true);
+        super("spectate", "Spectate the selected battlefield.", Arrays.asList("/mt", "spectate", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        this.plugin = plugin;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package musician101.minetanks.spigot.commands.edit;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
 import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.commands.AbstractSpigotCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,9 +10,12 @@ import java.util.Arrays;
 
 public class CreateCommand extends AbstractSpigotCommand
 {
+    MineTanks plugin;
+
     public CreateCommand(MineTanks plugin)
     {
-        super(plugin, "create", "Create a new battlefield.", Arrays.asList("/mt", "create", "<" + ChatColor.ITALIC + "name" + ChatColor.RESET + ">"), 1, "minetanks.edit", true);
+        super("create", "Create a new battlefield.", Arrays.asList("/mt", "create", "<" + ChatColor.ITALIC + "name" + ChatColor.RESET + ">"), 1, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        this.plugin = plugin;
     }
 
     @Override
