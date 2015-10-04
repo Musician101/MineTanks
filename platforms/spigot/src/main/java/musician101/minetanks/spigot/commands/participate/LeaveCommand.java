@@ -1,6 +1,7 @@
 package musician101.minetanks.spigot.commands.participate;
 
-import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.CommandArgument;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.ChatColor;
@@ -15,7 +16,7 @@ public class LeaveCommand extends AbstractSpigotCommand
 
     public LeaveCommand(MineTanks plugin)
     {
-        super("leave", "Leave the battlefield you are currently in.", Arrays.asList("/mt", "leave"), 0, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super("leave", "Leave the battlefield you are currently in.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("leave")), 0, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
         this.plugin = plugin;
     }
 

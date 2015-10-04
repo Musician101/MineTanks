@@ -1,6 +1,8 @@
 package musician101.minetanks.spigot.commands.edit;
 
-import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.CommandArgument;
+import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.ChatColor;
@@ -14,7 +16,7 @@ public class RemoveCommand extends AbstractSpigotCommand
 
     public RemoveCommand(MineTanks plugin)
     {
-        super("remove", "Remove the specified field.", Arrays.asList("/mt", "remove", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super("remove", "Remove the specified field.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("remove"), new CommandArgument("field", Syntax.REQUIRED, Syntax.REPLACE)), 1, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
         this.plugin = plugin;
     }
 

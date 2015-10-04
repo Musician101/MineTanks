@@ -1,6 +1,8 @@
 package musician101.minetanks.spigot.commands.edit;
 
-import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.CommandArgument;
+import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.ChatColor;
@@ -14,7 +16,7 @@ public class EnableCommand extends AbstractSpigotCommand
 
     public EnableCommand(MineTanks plugin)
     {
-        super("enable", "Set the battlefield that you wish to edit.", Arrays.asList("/mt", "enable", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 2, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super("enable", "Set the battlefield that you wish to edit.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("enable"), new CommandArgument("field", Syntax.REQUIRED, Syntax.REPLACE)), 2, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
         this.plugin = plugin;
     }
 

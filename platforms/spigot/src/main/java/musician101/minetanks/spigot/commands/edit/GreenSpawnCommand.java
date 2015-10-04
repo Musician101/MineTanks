@@ -1,6 +1,8 @@
 package musician101.minetanks.spigot.commands.edit;
 
-import musician101.common.java.minecraft.spigot.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
+import musician101.common.java.minecraft.spigot.command.CommandArgument;
+import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.ChatColor;
@@ -16,7 +18,7 @@ public class GreenSpawnCommand extends AbstractSpigotCommand
 
     public GreenSpawnCommand(MineTanks plugin)
     {
-        super("greenspawn", "Set the green team's spawn point of the currently selected battlefield.", Arrays.asList("/mt", "greenspawn", "<" + ChatColor.ITALIC + "field" + ChatColor.RESET + ">"), 1, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super("greenspawn", "Set the green team's spawn point of the currently selected battlefield.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("greenspawn"), new CommandArgument("field", Syntax.REQUIRED, Syntax.REPLACE)), 1, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
         this.plugin = plugin;
     }
 
