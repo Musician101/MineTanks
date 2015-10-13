@@ -1,7 +1,7 @@
 package musician101.minetanks.common.battlefield;
 
-import musician101.minetanks.common.AbstractPlayerTank;
-import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
+import musician101.minetanks.common.battlefield.player.AbstractPlayerTank;
+import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 
 import java.io.File;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public abstract class AbstractBattleField
 {
     boolean enabled;
     boolean inProgress = false;
-    Map<UUID, AbstractPlayerTank> players = new HashMap<>();
+    protected Map<UUID, AbstractPlayerTank> players = new HashMap<>();
     protected int unassigned = 0;
     String name;
 

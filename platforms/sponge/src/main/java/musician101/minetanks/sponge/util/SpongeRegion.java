@@ -1,7 +1,8 @@
 package musician101.minetanks.sponge.util;
 
+import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
 import musician101.minetanks.common.util.AbstractRegion;
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import org.json.simple.JSONObject;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -29,21 +30,21 @@ public class SpongeRegion extends AbstractRegion
         this.worldName = ((World) location.getExtent()).getName();
     }
 
-    public SpongeRegion(JSONObject json)
+    public SpongeRegion(SpongeJSONConfig json)
     {
-        super((Integer) json.getOrDefault("minX", 0),
-                (Integer) json.getOrDefault("minY", 0),
-                (Integer) json.getOrDefault("minZ", 0),
-                (Integer) json.getOrDefault("maxX", 0),
-                (Integer) json.getOrDefault("maxY", 0),
-                (Integer) json.getOrDefault("maxZ", 0));
+        super(json.getInteger("minX", 0),
+                json.getInteger("minY", 0),
+                json.getInteger("minZ", 0),
+                json.getInteger("maxX", 0),
+                json.getInteger("maxY", 0),
+                json.getInteger("maxZ", 0));
 
         this.worldName = json.containsKey("World") ? (String) json.get("World") : "";
     }
 
     public World getWorld()
     {
-        return MineTanks.getGame().getServer().getWorld(worldName).get();
+        return SpongeMineTanks.getGame().getServer().getWorld(worldName).get();
     }
 
     @Override

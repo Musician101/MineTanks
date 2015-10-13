@@ -1,8 +1,8 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.battlefield.Battlefield;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -19,10 +19,10 @@ public class Leave extends SubCommand
     public void execute(CommandSource source, List<String> args) throws Exception
     {
         Player player = (Player) source;
-        if (!player.hasPermission(getPermission()) || !MineTanks.getFieldStorage().canPlayerExit(player.getUniqueId()))
+        if (!player.hasPermission(getPermission()) || !SpongeMineTanks.getFieldStorage().canPlayerExit(player.getUniqueId()))
             throw new NoPermissionException(Messages.NO_PERMISSION);
 
-        Battlefield field = MineTanks.getFieldStorage().getPlayerField(player.getUniqueId());
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getPlayerField(player.getUniqueId());
         if (field != null)
         {
             field.removePlayer(player);

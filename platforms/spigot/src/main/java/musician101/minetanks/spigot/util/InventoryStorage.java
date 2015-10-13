@@ -1,6 +1,6 @@
 package musician101.minetanks.spigot.util;
 
-import musician101.minetanks.common.AbstractStorage;
+import musician101.minetanks.common.util.AbstractStorage;
 import musician101.minetanks.spigot.MineTanks;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

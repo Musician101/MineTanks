@@ -1,10 +1,10 @@
-package musician101.minetanks.common;
+package musician101.minetanks.common.util;
 
 import java.io.File;
 
 public abstract class AbstractStorage
 {
-    File storageDir;
+    private File storageDir;
 
     protected AbstractStorage(File storageDir)
     {

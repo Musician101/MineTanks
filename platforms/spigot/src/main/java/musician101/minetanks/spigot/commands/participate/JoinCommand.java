@@ -3,7 +3,7 @@ package musician101.minetanks.spigot.commands.participate;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.CommandArgument;
 import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
-import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
+import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.ChatColor;

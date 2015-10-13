@@ -1,9 +1,9 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.exception.FieldDoesNotExistException;
 import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.battlefield.Battlefield;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -23,7 +23,7 @@ public class RedSpawn extends SubCommand
         if (!player.hasPermission(getPermission()))
             throw new NoPermissionException(Messages.NO_PERMISSION);
 
-        Battlefield field = MineTanks.getFieldStorage().getEdit();
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getEdit();
         if (field == null)
             throw new FieldDoesNotExistException(Messages.NEGATIVE_PREFIX + "Error: No fields have been created.");
 

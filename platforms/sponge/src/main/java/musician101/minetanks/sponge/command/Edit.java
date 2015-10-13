@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.exception.FieldDoesNotExistException;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import org.spongepowered.api.entity.player.Player;
@@ -27,7 +27,7 @@ public class Edit extends SubCommand
         if (args.size() < 1)
             throw new NotEnoughArgumentsException(Messages.NEGATIVE_PREFIX + "Error: Field not specified.");
 
-        if (!MineTanks.getFieldStorage().setEdit(args.get(0)))
+        if (!SpongeMineTanks.getFieldStorage().setEdit(args.get(0)))
             throw new FieldDoesNotExistException(Messages.FIELD_DNE);
 
         player.sendMessage(Messages.POSITIVE_PREFIX + args.get(0) + " is now being edited.");

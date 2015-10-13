@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge;
 
-import musician101.minetanks.sponge.battlefield.BattleFieldStorage;
+import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
 import musician101.minetanks.sponge.command.MTCommandExecutor;
 import musician101.minetanks.sponge.handler.TankSelectionHandler;
 import musician101.minetanks.sponge.lib.Reference;
@@ -10,13 +10,13 @@ import musician101.minetanks.sponge.tank.Tanks;
 import musician101.minetanks.sponge.util.IconMenu;
 import musician101.minetanks.sponge.util.MTUtils;
 import musician101.minetanks.sponge.util.Menus;
+import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.ServerStartedEvent;
-import org.spongepowered.api.event.state.ServerStoppingEvent;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -26,17 +26,11 @@ import java.io.File;
 import java.util.Arrays;
 
 @Plugin(id = Reference.ID, name = Reference.NAME, version = Reference.VERSION)
-public class MineTanks
+public class SpongeMineTanks
 {
-    private static BattleFieldStorage fieldStorage;
-    private static InventoryStorage inventoryStorage;
+    private static SpongeBattleFieldStorage fieldStorage;
+    private static SpongeInventoryStorage inventoryStorage;
     private Menus menus;
-    //TODO move to battlefieldstorage or battlfield class
-    @Deprecated
-    public static File battlefields;
-    //TODO move to battlefieldstorage or battlefield class
-    @Deprecated
-    public static File inventoryStorage;
     static Game game;
     static IconMenu tankSelection;
     static Logger logger;
@@ -44,21 +38,17 @@ public class MineTanks
     @ConfigDir(sharedRoot = false)
     File configDir = new File(Reference.NAME);
 
-    @Subscribe
-    public void onServerStart(ServerStartedEvent event)
+    @Listener
+    public void onServerStart(GameStartedServerEvent event)
     {
         game = event.getGame();
         logger = LoggerFactory.getLogger(Reference.NAME);
         prefix = "[" + Reference.NAME + "]";
 
-        //TODO move file objects to BattleFieldStorage
-        battlefields = new File(configDir, "battlefields");
-        battlefields.mkdirs();
-        inventoryStorage = new File(configDir, "inventorystorage");
-        inventoryStorage.mkdirs();
-
-        fieldStorage = new BattleFieldStorage();
+        fieldStorage = new SpongeBattleFieldStorage(configDir);
         fieldStorage.loadFromFiles();
+
+        inventoryStorage = new SpongeInventoryStorage(configDir);
 
         initMenu();
 
@@ -71,14 +61,14 @@ public class MineTanks
         logger.info("Movin' on out. Shuck 'em up!");
     }
 
-    @Subscribe
-    public void onServerStop(ServerStoppingEvent event)
+    @Listener
+    public void onServerStop(GameStoppingServerEvent event)
     {
         fieldStorage.saveToFiles();
         logger.info("Pack it up, boys. We're heading home.");
     }
 
-    public static BattleFieldStorage getFieldStorage()
+    public static SpongeBattleFieldStorage getFieldStorage()
     {
         return fieldStorage;
     }
@@ -86,6 +76,11 @@ public class MineTanks
     public static Game getGame()
     {
         return game;
+    }
+
+    public static SpongeInventoryStorage getInventoryStorage()
+    {
+        return inventoryStorage;
     }
 
     public static Logger getLogger()

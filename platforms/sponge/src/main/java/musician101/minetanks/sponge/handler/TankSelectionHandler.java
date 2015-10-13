@@ -1,8 +1,8 @@
 package musician101.minetanks.sponge.handler;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.battlefield.Battlefield;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import musician101.minetanks.sponge.tank.Tanks;
 import musician101.minetanks.sponge.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.sponge.util.IconMenu.OptionClickEventHandler;
@@ -26,7 +26,7 @@ public class TankSelectionHandler implements OptionClickEventHandler
         if (tank == null)
             return;
 
-        Battlefield field = MineTanks.getFieldStorage().getPlayerField(player.getUniqueId());
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getPlayerField(player.getUniqueId());
         field.getPlayer(player.getUniqueId()).setTank(tank);
         player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getItem(), "Open Hangar", Arrays.asList("Tank: " + tank.getName())));
         player.sendMessage(Messages.POSITIVE_PREFIX + "You have chosen the " + tank.getName() + ".");

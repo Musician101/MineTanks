@@ -1,6 +1,6 @@
 package musician101.minetanks.common.battlefield;
 
-import musician101.minetanks.common.AbstractStorage;
+import musician101.minetanks.common.util.AbstractStorage;
 
 import java.io.File;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public abstract class AbstractBattleFieldStorage extends AbstractStorage
 {
-    Map<String, AbstractBattleField> fields = new HashMap<>();
+    protected Map<String, AbstractBattleField> fields = new HashMap<>();
 
     public AbstractBattleFieldStorage(File file)
     {

@@ -1,15 +1,15 @@
 package musician101.minetanks.sponge.listener;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.event.AttemptMenuOpenEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.sponge.handler.ExplosionTracker;
 import musician101.minetanks.sponge.handler.ReloadHandler;
 import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.battlefield.Battlefield;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank.MTTeam;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank.MTTeam;
 import musician101.minetanks.sponge.tank.Tanks;
 import musician101.minetanks.sponge.tank.module.Cannon.CannonTypes;
 import musician101.minetanks.sponge.util.MTUtils;
@@ -41,8 +41,8 @@ public class MTListener
 {
     private boolean isInField(UUID playerId)
     {
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
-            if (MineTanks.getFieldStorage().getField(name).getPlayer(playerId) != null)
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
+            if (SpongeMineTanks.getFieldStorage().getField(name).getPlayer(playerId) != null)
                 return true;
 
         return false;
@@ -80,9 +80,9 @@ public class MTListener
         if (event.isCancelled())
             return;
 
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = MineTanks.getFieldStorage().getField(name);
+            SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
@@ -109,9 +109,9 @@ public class MTListener
         if (event.isCancelled())
             return;
 
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = MineTanks.getFieldStorage().getField(name);
+            SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
@@ -146,14 +146,14 @@ public class MTListener
         if (!isSword(type) && type != ItemTypes.CLOCK)
             return;
 
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = MineTanks.getFieldStorage().getField(name);
+            SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
             if (field.inProgress())
                 return;
 
             if (field.getPlayer(event.getPlayer().getUniqueId()) != null)
-                MineTanks.getGame().getEventManager().post(new AttemptMenuOpenEvent(type, field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
+                SpongeMineTanks.getGame().getEventManager().post(new AttemptMenuOpenEvent(type, field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
         }
     }
 
@@ -167,7 +167,7 @@ public class MTListener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
+        File file = new File(SpongeMineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
         if (!file.exists())
             return;
 
@@ -190,11 +190,11 @@ public class MTListener
     @Subscribe
     public void onPlayerDisconnect(PlayerQuitEvent event)
     {
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            if (MineTanks.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
+            if (SpongeMineTanks.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
             {
-                MineTanks.getFieldStorage().getField(name).removePlayer(event.getPlayer());
+                SpongeMineTanks.getFieldStorage().getField(name).removePlayer(event.getPlayer());
                 return;
             }
         }
@@ -204,12 +204,12 @@ public class MTListener
     public void onPlayerMove(PlayerMoveEvent event)
     {
         Player player = event.getPlayer();
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = MineTanks.getFieldStorage().getField(name);
+            SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
             if (field.getPlayer(player.getUniqueId()) != null)
             {
-                PlayerTank pt = field.getPlayer(player.getUniqueId());
+                SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
@@ -255,12 +255,12 @@ public class MTListener
             return;
 
         Player player = (Player) event.getEntity();
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = MineTanks.getFieldStorage().getField(name);
+            SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
             if (field.getPlayer(player.getUniqueId()) != null)
             {
-                PlayerTank pt = field.getPlayer(player.getUniqueId());
+                SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
@@ -301,9 +301,9 @@ public class MTListener
             return;
 
         UUID dmgd = event.getEntity().getUniqueId();
-        for (String name : MineTanks.getFieldStorage().getFields().keySet())
+        for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            Battlefield field = MineTanks.getFieldStorage().getField(name);
+            SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
             if (field.getPlayer(dmgd) != null)
             {
                 int damage = (int) event.getDamage() * 2;
@@ -311,12 +311,12 @@ public class MTListener
                 {
                     Arrow arrow = (Arrow) event.getDamager();
                     UUID dmgr = ((Player) arrow.getShooter()).getUniqueId();
-                    MineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, dmgd, dmgr, field, damage));
+                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, dmgd, dmgr, field, damage));
                     ExplosionTracker.addArrow(arrow);
                 } else if (event.getDamager() instanceof Player && field.getPlayer(event.getDamager().getUniqueId()) != null)
                 {
                     UUID dmgr = event.getDamager().getUniqueId();
-                    MineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, dmgd, dmgr, field, damage));
+                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, dmgd, dmgr, field, damage));
                 } else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
                 {
                     Arrow arrow = null;
@@ -325,10 +325,10 @@ public class MTListener
                             arrow = a;
 
                     UUID dmgr = ((Arrow) arrow.getShooter()).getUniqueId();
-                    MineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, dmgd, dmgr, field, damage));
+                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, dmgd, dmgr, field, damage));
                     ExplosionTracker.removeArrow(arrow);
                 } else if (event.getCause() == DamageCause.FALL)
-                    MineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, dmgd, field, damage));
+                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, dmgd, field, damage));
 
                 event.setCancelled(true);
                 return;
@@ -341,7 +341,7 @@ public class MTListener
     public void onArrowHitBlock(final ProjectileHitEvent event)
     {
         //TODO convert to Sponge Task
-        MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getPluginContainer(), new Runnable()
+        SpongeMineTanks.getGame().getScheduler().runTaskAfter(SpongeMineTanks.getPluginContainer(), new Runnable()
                 {
                     @Override
                     public void run()
@@ -373,9 +373,9 @@ public class MTListener
 
         for (BlockLoc block : event.blockList())
         {
-            for (String name : MineTanks.getFieldStorage().getFields().keySet())
+            for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
             {
-                for (BlockLoc b : MineTanks.getFieldStorage().getField(name).getRegion().getBlocks())
+                for (BlockLoc b : SpongeMineTanks.getFieldStorage().getField(name).getRegion().getBlocks())
                 {
                     if (block.getLocation() == b.getLocation())
                     {

@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.util;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import org.json.simple.JSONObject;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -36,7 +36,7 @@ public class JSONConfig extends JSONObject
             return null;
 
 
-        ItemStackBuilder isb = MineTanks.getGame().getRegistry().getItemBuilder();
+        ItemStackBuilder isb = SpongeMineTanks.getGame().getRegistry().getItemBuilder();
         isb.withItemType(getItemType("type"));
         isb.withDamage(getInt("damage"));
         isb.withQuantity(getInt("quantity"));
@@ -47,6 +47,6 @@ public class JSONConfig extends JSONObject
 
     public ItemType getItemType(String key)
     {
-        return containsKey(key) ? MineTanks.getGame().getRegistry().getItem(get(key).toString()).get() : null;
+        return containsKey(key) ? SpongeMineTanks.getGame().getRegistry().getItem(get(key).toString()).get() : null;
     }
 }

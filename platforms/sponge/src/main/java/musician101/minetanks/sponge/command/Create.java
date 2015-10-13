@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.exception.FieldAlreadyExistsException;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import org.spongepowered.api.entity.player.Player;
@@ -26,10 +26,10 @@ public class Create extends SubCommand
         if (args.size() < 1)
             throw new NotEnoughArgumentsException(Messages.NEGATIVE_PREFIX + "Error: Field not specified.");
 
-        if (!MineTanks.getFieldStorage().createField(args.get(0)))
+        if (!SpongeMineTanks.getFieldStorage().createField(args.get(0)))
             throw new FieldAlreadyExistsException(String.format(Messages.FIELD_ALREADY_EXISTS, args.get(0)));
 
-        MineTanks.getFieldStorage().createField(args.get(0));
+        SpongeMineTanks.getFieldStorage().createField(args.get(0));
         player.sendMessage(new String[]{Messages.POSITIVE_PREFIX + args.get(0) + " successfully created", Messages.POSITIVE_PREFIX + "Check the status of the battlefield by using /mt status."});
     }
 }

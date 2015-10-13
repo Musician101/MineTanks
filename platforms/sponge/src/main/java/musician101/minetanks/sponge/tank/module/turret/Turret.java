@@ -1,6 +1,7 @@
-package musician101.minetanks.sponge.tank.module;
+package musician101.minetanks.sponge.tank.module.turret;
 
-import musician101.minetanks.common.tank.modules.AbstractRadio;
+import musician101.minetanks.common.tank.Armor;
+import musician101.minetanks.common.tank.modules.AbstractTurret;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
 import musician101.minetanks.spigot.util.HasIcon;
@@ -12,39 +13,39 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 
-public class Radio extends AbstractRadio implements HasIcon
+public class Turret extends AbstractTurret implements HasIcon
 {
-    public Radio(String name, TankType type)
+    public Turret(String name, TankType type, Armor armor)
     {
-        super(name);
-        parseRadio(type);
+        super(name, armor);
+        parseHelmet(type);
     }
 
     @Override
     public ItemStack getIcon()
     {
-        return (ItemStack) radio;
+        return (ItemStack) turret;
     }
 
-    private void parseRadio(TankType type)
+    private void parseHelmet(TankType type)
     {
         Material material = Material.AIR;
         if (type == TankTypes.LIGHT)
-            material = Material.LEATHER_CHESTPLATE;
+            material = Material.LEATHER_HELMET;
         else if (type == TankTypes.MEDIUM)
-            material = Material.IRON_CHESTPLATE;
+            material = Material.IRON_HELMET;
         else if (type == TankTypes.HEAVY)
-            material = Material.DIAMOND_CHESTPLATE;
+            material = Material.DIAMOND_HELMET;
         else if (type == TankTypes.TD)
-            material = Material.CHAINMAIL_CHESTPLATE;
+            material = Material.CHAINMAIL_HELMET;
         else if (type == TankTypes.ARTY)
-            material = Material.GOLD_CHESTPLATE;
+            material = Material.GOLD_HELMET;
 
-        radio = new ItemStack(material);
+        turret = new ItemStack(material);
         ItemMeta meta = getIcon().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Collections.singletonList("Your Radio"));
+        meta.setLore(Collections.singletonList("Your Turret"));
         getIcon().setItemMeta(meta);
     }
 }

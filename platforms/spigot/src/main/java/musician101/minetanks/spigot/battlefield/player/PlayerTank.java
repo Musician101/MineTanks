@@ -1,6 +1,6 @@
 package musician101.minetanks.spigot.battlefield.player;
 
-import musician101.minetanks.common.AbstractPlayerTank;
+import musician101.minetanks.common.battlefield.player.AbstractPlayerTank;
 import musician101.minetanks.common.tank.AbstractTank;
 import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.modules.cannon.AutoLoader;

@@ -1,25 +1,21 @@
-package musician101.minetanks.sponge.battlefield.player;
+package musician101.minetanks.common.battlefield.player;
 
-import musician101.minetanks.sponge.tank.Tanks;
+import musician101.minetanks.common.tank.AbstractTank;
 
 import java.util.UUID;
 
-public class PlayerTank
+public abstract class AbstractPlayerTank
 {
-    private Tanks tank;
-    private boolean isReady;
-    private MTTeam team;
-    private int clipSize = 0;
+    boolean isReady = false;
+    protected int clipSize = 1;
+    MTTeam team;
+    protected AbstractTank tank;
+    UUID player;
 
-    public PlayerTank(UUID player, MTTeam team)
+    protected AbstractPlayerTank(UUID player, MTTeam team)
     {
+        this.player = player;
         this.team = team;
-        this.isReady = false;
-    }
-
-    public Tanks getTank()
-    {
-        return tank;
     }
 
     public MTTeam getTeam()
@@ -27,19 +23,19 @@ public class PlayerTank
         return team;
     }
 
-    public void setTank(Tanks tank)
+    public void setTank(AbstractTank tank)
     {
         this.tank = tank;
-    }
-
-    public void setClipSize(int size)
-    {
-        this.clipSize = size;
     }
 
     public int getClipSize()
     {
         return clipSize;
+    }
+
+    public void setClipSize(int clipSize)
+    {
+        this.clipSize = clipSize;
     }
 
     public void setTeam(MTTeam team)
@@ -69,14 +65,14 @@ public class PlayerTank
         SPECTATOR(),
         UNASSIGNED();
 
-        private boolean canExit;
+        boolean canExit;
 
-        private MTTeam()
+        MTTeam()
         {
             this(true);
         }
 
-        private MTTeam(boolean canExit)
+        MTTeam(boolean canExit)
         {
             this.canExit = canExit;
         }

@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.listener;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.event.AttemptMenuOpenEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
@@ -8,8 +8,8 @@ import musician101.minetanks.sponge.event.PlayerTankDeathEvent;
 import musician101.minetanks.sponge.handler.DamageHandler;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
-import musician101.minetanks.sponge.battlefield.Battlefield;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.util.MTUtils;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -25,9 +25,9 @@ public class BattlefieldListener
     @Subscribe
     public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
     {
-        Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
-        Player player = MineTanks.getGame().getServer().get().getPlayer(event.getPlayer()).get();
-        PlayerTank pt = event.getPlayerTank();
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
+        Player player = SpongeMineTanks.getGame().getServer().get().getPlayer(event.getPlayer()).get();
+        SpongePlayerTank pt = event.getPlayerTank();
         if (event.getItemType() == ItemTypes.CLOCK)
         {
             if (pt.isReady())
@@ -49,22 +49,22 @@ public class BattlefieldListener
             return;
         }
 
-        MineTanks.openTankMenu(player);
+        SpongeMineTanks.openTankMenu(player);
         return;
     }
 
     @Subscribe
     public void onPlayerDeath(PlayerTankDeathEvent event)
     {
-        Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
         Player killed = event.getKilled();
         Player killer = event.getKiller();
         MTScoreboard sb = field.getScoreboard();
         String dmgdMsg = (sb.isOnGreen(killed) ? TextColors.GREEN + killed.getName() : TextColors.RED + killed.getName());
         String dmgrMsg = (sb.isOnGreen(killer) ? TextColors.GREEN + killer.getName() : TextColors.RED + killer.getName());
-        for (Player player : MineTanks.getGame().getServer().get().getOnlinePlayers())
+        for (Player player : SpongeMineTanks.getGame().getServer().get().getOnlinePlayers())
             if (field.getPlayer(player.getUniqueId()) != null)
-                player.sendMessage(TextColors.GREEN + MineTanks.getPrefix() + TextColors.RESET + " " + dmgdMsg + TextColors.RESET + " was killed by " + dmgrMsg + TextColors.RESET + ".");
+                player.sendMessage(TextColors.GREEN + SpongeMineTanks.getPrefix() + TextColors.RESET + " " + dmgdMsg + TextColors.RESET + " was killed by " + dmgrMsg + TextColors.RESET + ".");
 
         killed.getInventory().clear();
         killed.getInventory().setHelmet(null);
@@ -79,7 +79,7 @@ public class BattlefieldListener
     public void onPlayerDamageEvent(PlayerTankDamageEvent event)
     {
         DamageHandler dh = new DamageHandler();
-        Battlefield field = MineTanks.getFieldStorage().getField(event.getField());
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
         UUID dmgd = event.getDamagedPlayer();
         if (event.getCause() == PlayerTankDamageCause.FALL)
             dh.gravityHit(field, dmgd, event.getDamage());
@@ -90,7 +90,7 @@ public class BattlefieldListener
         if (sb.getPlayerHealth(dmgd) <= 0 || sb.getPlayerHealth(dmgr) <= 0)
             return;
 
-        if ((sb.isOnGreen(MineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnGreen(MineTanks.getGame().getServer().get().getPlayer(dmgd).get())) || (sb.isOnRed(MineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnRed(MineTanks.getGame().getServer().get().getPlayer(dmgd).get())))
+        if ((sb.isOnGreen(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnGreen(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgd).get())) || (sb.isOnRed(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnRed(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgd).get())))
         {
             if (event.getCause() == PlayerTankDamageCause.RAM)
                 dh.meleeHitFriendly(field, dmgr, dmgd, damage);

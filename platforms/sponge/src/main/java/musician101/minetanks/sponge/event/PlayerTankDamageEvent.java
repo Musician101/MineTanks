@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.event;
 
-import musician101.minetanks.sponge.battlefield.Battlefield;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.callback.CallbackList;
 
@@ -14,12 +14,12 @@ public class PlayerTankDamageEvent implements Event
     UUID dmgr;
     String field;
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, Battlefield field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, SpongeBattleField field, int damage)
     {
         this(cause, dmgd, null, field, damage);
     }
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, UUID damager, Battlefield field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, UUID damager, SpongeBattleField field, int damage)
     {
         this.dmgd = dmgd;
         this.dmgr = damager;

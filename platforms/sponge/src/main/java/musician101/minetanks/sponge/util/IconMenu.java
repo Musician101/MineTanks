@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.util;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.lib.Reference;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemType;
@@ -72,7 +72,7 @@ public class IconMenu
                 if (e.willClose())
                 {
                     final Player p = (Player) event.getWhoClicked();
-                    MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getGame().getPluginManager().getPlugin(Reference.ID).get(), new Runnable()
+                    SpongeMineTanks.getGame().getScheduler().runTaskAfter(SpongeMineTanks.getGame().getPluginManager().getPlugin(Reference.ID).get(), new Runnable()
                     {
                         public void run()
                         {
@@ -148,7 +148,7 @@ public class IconMenu
     //Original arguments were ItemStack item, String name, String[] lore
     private ItemStack setItemNameAndLore(ItemType type, String name, List<String> lore)
     {
-        ItemStackBuilder isb = MineTanks.getGame().getRegistry().getItemBuilder();
+        ItemStackBuilder isb = SpongeMineTanks.getGame().getRegistry().getItemBuilder();
         isb.withItemType(ItemTypes.MINECART);
 
         //TODO no item meta data support

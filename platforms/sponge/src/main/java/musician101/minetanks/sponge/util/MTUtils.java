@@ -1,14 +1,11 @@
 package musician101.minetanks.sponge.util;
 
 import com.flowpowered.math.vector.Vector3d;
-import musician101.minetanks.sponge.MineTanks;
+import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.tank.Tanks;
-import musician101.minetanks.sponge.tank.module.Cannon;
 import musician101.minetanks.sponge.tank.module.Engine;
 import musician101.minetanks.sponge.tank.module.Radio;
-import musician101.minetanks.sponge.tank.module.Tracks;
-import musician101.minetanks.sponge.tank.module.Turrets;
-import org.json.simple.JSONObject;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
@@ -97,7 +94,7 @@ public class MTUtils
     @SuppressWarnings("serial")
     public static ItemStack createCustomItem(ItemType type, int damage, int quantity, String displayName, List<String> description)
     {
-        ItemStackBuilder isb = MineTanks.getGame().getRegistry().getItemBuilder();
+        ItemStackBuilder isb = SpongeMineTanks.getGame().getRegistry().getItemBuilder();
         isb.withItemType(type);
         isb.withDamage(damage);
         isb.withQuantity(quantity);
@@ -121,11 +118,10 @@ public class MTUtils
         return rows * 9;
     }
 
-    public static Location deserializeLocation(JSONObject locJSON)
+    public static Location<World> deserializeLocation(SpongeJSONConfig locJSON)
     {
-        Vector3d position = new Vector3d(Integer.valueOf(locJSON.get("x").toString()), Integer.valueOf(locJSON.get("y").toString()), Integer.valueOf(locJSON.get("z").toString()));
-        World world = MineTanks.getGame().getServer().get().getWorld(locJSON.get("world").toString()).get();
-        return new Location(world, position);
+        World world = SpongeMineTanks.getGame().getServer().getWorld(locJSON.get("world").toString()).get();
+        return new Location<>(world, locJSON.getInteger("x", 0), locJSON.getInteger("y", 0), locJSON.getInteger("z", 0));
     }
 
     public static Location addPosition(Location loc, double x, double y, double z)

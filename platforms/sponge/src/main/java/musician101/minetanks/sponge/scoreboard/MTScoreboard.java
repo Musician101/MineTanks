@@ -1,10 +1,25 @@
 package musician101.minetanks.sponge.scoreboard;
 
-import org.spongepowered.api.entity.player.Player;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.scoreboard.Score;
+import org.spongepowered.api.scoreboard.Scoreboard;
+import org.spongepowered.api.scoreboard.ScoreboardBuilder;
+import org.spongepowered.api.scoreboard.Team;
+import org.spongepowered.api.scoreboard.critieria.Criteria;
+import org.spongepowered.api.scoreboard.displayslot.DisplaySlot;
+import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
+import org.spongepowered.api.scoreboard.objective.Objective;
+import org.spongepowered.api.scoreboard.objective.ObjectiveBuilder;
+import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayModes;
+import org.spongepowered.api.text.TextBuilder;
+import org.spongepowered.api.text.Texts;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
-//TODO no Scoreboard api
 public class MTScoreboard
 {
     Scoreboard board;
@@ -15,10 +30,17 @@ public class MTScoreboard
     Score greenScore;
     Score redScore;
 
+    //TODO scoreboard api incomplete?
     public MTScoreboard()
     {
-        ScoreboardManager sbm = Bukkit.getScoreboardManager();
-        board = sbm.getNewScoreboard();
+        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
+        ScoreboardBuilder sbb = gr.createScoreboardBuilder();
+
+        health = gr.createObjectiveBuilder().criterion(Criteria.HEALTH).name("health").displayName(Texts.of("Health")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
+        teamCount = gr.createObjectiveBuilder().criterion(Criteria.DUMMY).name("team_count").displayName(Texts.of("Team Count")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
+
+        sbb.objectives(Arrays.asList(health, teamCount));
+
         green = board.registerNewTeam("green");
         green.setDisplayName("Green Team");
         green.setPrefix(ChatColor.GREEN + "");

@@ -1,10 +1,10 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.exception.FieldDoesNotExistException;
 import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.battlefield.Battlefield;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank.MTTeam;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank.MTTeam;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -27,7 +27,7 @@ public class Join extends SubCommand
         if (args.size() < 1)
             throw new NotEnoughArgumentsException(Messages.NEGATIVE_PREFIX + "Error: Field not specified.");
 
-        Battlefield field = MineTanks.getFieldStorage().getField(args.get(0));
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args.get(0));
         if (field == null)
             throw new FieldDoesNotExistException(Messages.FIELD_DNE);
 
@@ -44,6 +44,6 @@ public class Join extends SubCommand
         }
 
         field.addPlayer(player, MTTeam.UNASSIGNED);
-        MineTanks.openTankMenu(player);
+        SpongeMineTanks.openTankMenu(player);
     }
 }

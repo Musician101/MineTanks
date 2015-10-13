@@ -1,8 +1,8 @@
 package musician101.minetanks.sponge.handler;
 
-import musician101.minetanks.sponge.MineTanks;
-import musician101.minetanks.sponge.battlefield.Battlefield;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.tank.module.Cannon.CannonTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -40,7 +40,7 @@ public class ReloadHandler
         player.setLevel(time);
         try
         {
-            MineTanks.getGame().getScheduler().runRepeatingTaskAfter(MineTanks.getPluginContainer(), new Runnable()
+            SpongeMineTanks.getGame().getScheduler().runRepeatingTaskAfter(SpongeMineTanks.getPluginContainer(), new Runnable()
                     {
                         @Override
                         public void run()
@@ -60,12 +60,12 @@ public class ReloadHandler
                                         }
                                     }
 
-                                    for (String name : MineTanks.getFieldStorage().getFields().keySet())
+                                    for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
                                     {
-                                        Battlefield field = MineTanks.getFieldStorage().getField(name);
+                                        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
                                         if (field.getPlayer(player.getUniqueId()) != null)
                                         {
-                                            PlayerTank pt = field.getPlayer(player.getUniqueId());
+                                            SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
                                             pt.setClipSize(pt.getTank().getClipSize());
                                         }
                                     }

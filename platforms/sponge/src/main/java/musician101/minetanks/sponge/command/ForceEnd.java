@@ -1,9 +1,9 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.exception.FieldDoesNotExistException;
 import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.battlefield.Battlefield;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -28,7 +28,7 @@ public class ForceEnd extends SubCommand
         if (args.size() < 1)
             throw new NotEnoughArgumentsException(Messages.NEGATIVE_PREFIX + "Error: Field not specified.");
 
-        Battlefield field = MineTanks.getFieldStorage().getField(args.get(0));
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args.get(0));
         if (field == null)
             throw new FieldDoesNotExistException(Messages.FIELD_DNE);
 
@@ -38,7 +38,7 @@ public class ForceEnd extends SubCommand
 
         for (UUID uuid : uuids)
         {
-            Player p = MineTanks.getGame().getServer().get().getPlayer(uuid).get();
+            Player p = SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get();
             p.sendMessage(Messages.NEGATIVE_PREFIX + "An admin has forcibly terminated the match.");
             field.removePlayer(p);
         }

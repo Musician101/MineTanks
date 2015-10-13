@@ -1,85 +1,64 @@
 package musician101.minetanks.sponge.battlefield;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
+import musician101.minetanks.common.battlefield.AbstractBattleField;
+import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.handler.ReloadHandler;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank;
-import musician101.minetanks.sponge.battlefield.player.PlayerTank.MTTeam;
 import musician101.minetanks.sponge.tank.Tanks;
-import musician101.minetanks.sponge.util.JSONConfig;
 import musician101.minetanks.sponge.util.MTUtils;
-import musician101.minetanks.sponge.util.PotionEffectsEnum;
 import musician101.minetanks.sponge.util.SpongeRegion;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.potion.PotionEffect;
-import org.spongepowered.api.potion.PotionEffectBuilder;
-import org.spongepowered.api.potion.PotionEffectTypes;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-public class Battlefield
+public class SpongeBattleField extends AbstractBattleField
 {
-    private String name;
-    private Location greenSpawn, redSpawn, spectators;
-    private Map<UUID, PlayerTank> players = new HashMap<UUID, PlayerTank>();
-    private boolean enabled;
-    private int unassigned = 0;
+    private Location<World> greenSpawn;
+    private Location<World> redSpawn;
+    private Location<World> spectators;
     private MTScoreboard sb;
-    private boolean inProgress = false;
-    private SpongeRegion cuboid;
+    private SpongeRegion region;
 
-    public Battlefield(String name, boolean enabled, SpongeRegion cuboid, Location greenSpawn, Location redSpawn, Location spectators)
+    public SpongeBattleField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators)
     {
-        this.name = name;
-        this.enabled = enabled;
-        this.cuboid = cuboid;
+        super(name, enabled);
+        this.region = region;
         this.greenSpawn = greenSpawn;
         this.redSpawn = redSpawn;
         this.spectators = spectators;
         this.sb = new MTScoreboard();
     }
 
-    public Map<UUID, PlayerTank> getPlayers()
+    public SpongePlayerTank getPlayer(UUID player)
     {
-        return players;
-    }
-
-    public PlayerTank getPlayer(UUID player)
-    {
-        return players.get(player);
-    }
-
-    public String getName()
-    {
-        return name;
+        return (SpongePlayerTank) getPlayers().get(player);
     }
 
     public SpongeRegion getRegion()
     {
-        return cuboid;
+        return region;
     }
 
     public void setRegion(SpongeRegion region)
     {
-        this.cuboid = region;
+        this.region = region;
     }
 
     public Location getGreenSpawn()
@@ -87,7 +66,7 @@ public class Battlefield
         return greenSpawn;
     }
 
-    public void setGreenSpawn(Location loc)
+    public void setGreenSpawn(Location<World> loc)
     {
         greenSpawn = loc;
     }
@@ -97,7 +76,7 @@ public class Battlefield
         return redSpawn;
     }
 
-    public void setRedSpawn(Location loc)
+    public void setRedSpawn(Location<World> loc)
     {
         redSpawn = loc;
     }
@@ -107,143 +86,51 @@ public class Battlefield
         return spectators;
     }
 
-    public void setSpectators(Location loc)
+    public void setSpectators(Location<World> loc)
     {
         spectators = loc;
     }
 
-    @SuppressWarnings("unchecked")
-    public boolean addPlayer(Player player, MTTeam team)
+    @Override
+    public boolean addPlayer(UUID playerId, MTTeam team)
     {
-        @SuppressWarnings("deprecation") File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".json");
-        try
-        {
-            file.createNewFile();
-        }
-        catch (IOException e)
-        {
-            player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
+        if (!SpongeMineTanks.getInventoryStorage().save(playerId))
             return false;
-        }
 
-        JSONConfig playerJSON = new JSONConfig();
-        //TODO Invnetory API is in the works still
-        Inventory inv = player.getInventory();
-        for (int slot = 0; slot < inv.getSize(); slot++)
-            playerJSON.set("inventory." + slot, inv.getItem(slot));
-
-        for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
-            playerJSON.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
-
-        List<Map<String, Object>> effects = new ArrayList<Map<String, Object>>();
-        for (PotionEffect effect : player.getPotionEffects())
-        {
-            Map<String, Object> pe = new HashMap<String, Object>();
-            pe.put("ambient", effect.isAmbient());
-            pe.put("type", effect.getType().toString());
-            pe.put("duration", effect.getDuration());
-            pe.put("amplifier", effect.getAmplifier());
-            effects.add(pe);
-            player.removePotionEffect(effect.getType());
-        }
-
-        playerJSON.put("effects", effects);
-        Location loc = player.getLocation();
-        Map<String, Object> pl = new HashMap<String, Object>();
-        pl.put("world", player.getWorld().getName());
-        pl.put("x", loc.getPosition().getX());
-        pl.put("y", loc.getPosition().getY());
-        pl.put("z", loc.getPosition().getZ());
-        pl.put("yaw", player.getRotation().getX());
-        pl.put("pitch", player.getRotation().getY());
-        playerJSON.put("location", pl);
-        //TODO Player experience API status is unknown
-        playerJSON.put("xp", player.getExp());
-
-        try
-        {
-            FileWriter fw = new FileWriter(file);
-            fw.write(playerJSON.toJSONString());
-            fw.close();
-        }
-        catch (IOException e)
-        {
-            player.sendMessage(Messages.NEGATIVE_PREFIX + "Error: An internal error has prevented you from joining the game.");
-            for (Map<String, Object> effect : effects)
-            {
-                PotionEffectBuilder peb = MineTanks.getGame().getRegistry().getPotionEffectBuilder();
-                peb.potionType(PotionEffectsEnum.valueOf(effect.get("type").toString()).getPotionEffectType());
-                peb.ambience(Boolean.valueOf(effect.get("ambient").toString()));
-                peb.amplifier(Integer.valueOf(effect.get("amplifier").toString()));
-                peb.duration(Integer.valueOf(effect.get("duration").toString()));
-                player.addPotionEffect(peb.build(), true);
-            }
-
-            file.delete();
-            return false;
-        }
-        //TODO experience handling has not been implemented
-        player.setExp(0F);
-        player.setLevel(0);
-        player.getInventory().clear();
-        player.getInventory().setHelmet(null);
-        player.getInventory().setChestplate(null);
-        player.getInventory().setLeggings(null);
-        player.getInventory().setBoots(null);
+        Player player = SpongeMineTanks.getGame().getServer().getPlayer(playerId).get();
         if (team == MTTeam.SPECTATOR)
         {
-            player.teleport(spectators);
-            player.sendMessage(Messages.POSITIVE_PREFIX + "You are now spectating in " + name + ".");
-        } else
+            player.setLocation(spectators);
+            player.sendMessage(Texts.of(Messages.POSITIVE_PREFIX + "You are now spectating in " + getName() + "."));
+        }
+        else
         {
-            player.getInventory().setItem(0, MTUtils.createCustomItem(ItemTypes.STICK, "Open Hangar", Arrays.asList("Tank: None")));
-            player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", Arrays.asList("You are currently not ready.")));
+            player.getInventory().set(MTUtils.createCustomItem(ItemTypes.STICK, "Open Hangar", Arrays.asList("Tank: None")));
+            player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", Arrays.asList("You are currently not ready.")));
             unassigned++;
         }
 
-        players.put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
+        players.put(playerId, new SpongePlayerTank(playerId, team));
         return true;
     }
 
-    public boolean removePlayer(Player player)
+    @Override
+    public boolean removePlayer(UUID playerId)
     {
-        PlayerTank pt = getPlayer(player.getUniqueId());
+        Game game = SpongeMineTanks.getGame();
+        Player player = game.getServer().getPlayer(playerId).get();
+        SpongePlayerTank pt = getPlayer(playerId);
         if (pt == null)
             return false;
 
-        player.removePotionEffect(PotionEffectTypes.SLOWNESS);
-        player.removePotionEffect(PotionEffectTypes.SPEED);
+        player.setRawData(game.getRegistry().getManipulatorRegistry().getBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
+        player.getInventory().clear();
+        player.setHelmet(null);
+        player.setChestplate(null);
+        player.setLeggings(null);
+        player.setBoots(null);
 
-        File file = new File(MineTanks.inventoryStorage, player.getUniqueId().toString() + ".yml");
-        if (file.exists())
-        {
-            JSONParser parser = new JSONParser();
-            //TODO need to create custom JSONObject class so that it's a lot more user friendly
-            JSONObject playerJSON = (JSONObject) parser.parse(new FileReader(file));
-            player.getInventory().clear();
-            for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-                player.getInventory().setItem(slot, playerJSON.getItemStack("inventory." + slot));
-
-            ItemStack[] armor = new ItemStack[4];
-            for (int slot = 0; slot < armor.length; slot++)
-                armor[slot] = playerJSON.getItemStack("armor." + slot);
-
-            player.getInventory().setArmorContents(armor);
-
-            JSONArray effects = (JSONArray) playerJSON.get("effects");
-            for (Object effectObj : effects)
-            {
-                JSONObject effect = (JSONObject) effectObj;
-                PotionEffectBuilder peb = MineTanks.getGame().getRegistry().getPotionEffectBuilder();
-                peb.potionType(PotionEffectsEnum.valueOf(effect.get("type").toString()).getPotionEffectType());
-                peb.ambience(Boolean.valueOf(effect.get("ambient").toString()));
-                peb.amplifier(Integer.valueOf(effect.get("amplifier").toString()));
-                peb.duration(Integer.valueOf(effect.get("duration").toString()));
-                player.addPotionEffect(peb.build(), true);
-            }
-
-            file.delete();
-        }
+        SpongeMineTanks.getInventoryStorage().load(player.getUniqueId());
 
         if (sb.isOnGreen(player) || sb.isOnRed(player))
             sb.playerDeath(player);
@@ -255,19 +142,10 @@ public class Battlefield
         return true;
     }
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-    }
-
+    @Override
     public boolean isReady()
     {
-        if (cuboid == null)
+        if (region == null)
             return false;
 
         if (greenSpawn == null)
@@ -279,55 +157,55 @@ public class Battlefield
         if (spectators == null)
             return false;
 
-        if (!enabled)
+        if (!isEnabled())
             return false;
 
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    public void saveToFile()
+    @Override
+    public void saveToFile(File storageDir)
     {
-        File file = new File(MineTanks.battlefields, this.name + ".json");
+        File file = new File(storageDir, getName() + ".json");
         try
         {
             file.createNewFile();
         }
         catch (IOException e)
         {
-            MineTanks.getLogger().warn("Error: Failed to create file: " + file.getName());
+            SpongeMineTanks.getLogger().warn("Error: Failed to create file: " + file.getName());
             return;
         }
 
-        JSONObject field = new JSONObject();
-        if (cuboid != null)
-            field.put("cuboid", cuboid.serialize());
+        SpongeJSONConfig field = new SpongeJSONConfig();
+        if (region != null)
+            field.set("region", region.serialize());
 
         if (greenSpawn != null)
         {
-            field.put("greenSpawn.world", ((World) greenSpawn.getExtent()).getName());
-            field.put("greenSpawn.x", greenSpawn.getPosition().getX());
-            field.put("greenSpawn.y", greenSpawn.getPosition().getY());
-            field.put("greenSpawn.z", greenSpawn.getPosition().getZ());
+            field.set("greenSpawn.world", ((World) greenSpawn.getExtent()).getName());
+            field.set("greenSpawn.x", greenSpawn.getPosition().getX());
+            field.set("greenSpawn.y", greenSpawn.getPosition().getY());
+            field.set("greenSpawn.z", greenSpawn.getPosition().getZ());
         }
 
         if (redSpawn != null)
         {
-            field.put("redSpawn.world", ((World) redSpawn.getExtent()).getName());
-            field.put("redSpawn.x", redSpawn.getPosition().getX());
-            field.put("redSpawn.y", redSpawn.getPosition().getY());
-            field.put("redSpawn.z", redSpawn.getPosition().getZ());
+            field.set("redSpawn.world", ((World) redSpawn.getExtent()).getName());
+            field.set("redSpawn.x", redSpawn.getPosition().getX());
+            field.set("redSpawn.y", redSpawn.getPosition().getY());
+            field.set("redSpawn.z", redSpawn.getPosition().getZ());
         }
 
         if (spectators != null)
         {
-            field.put("spectators.world", ((World) spectators.getExtent()).getName());
-            field.put("spectators.x", spectators.getPosition().getX());
-            field.put("spectators.y", spectators.getPosition().getY());
-            field.put("spectators.z", spectators.getPosition().getZ());
+            field.set("spectators.world", ((World) spectators.getExtent()).getName());
+            field.set("spectators.x", spectators.getPosition().getX());
+            field.set("spectators.y", spectators.getPosition().getY());
+            field.set("spectators.z", spectators.getPosition().getZ());
         }
 
-        field.put("enabled", enabled);
+        field.set("enabled", isEnabled());
         try
         {
             FileWriter fw = new FileWriter(file);
@@ -336,22 +214,24 @@ public class Battlefield
         }
         catch (IOException e)
         {
-            MineTanks.getLogger().warn("Error: Could not save " + file.getName());
+            SpongeMineTanks.getLogger().warn("Error: Could not save " + file.getName());
         }
     }
 
+    @Override
     public boolean canPlayerExit(UUID player)
     {
-        PlayerTank pt = getPlayer(player);
+        SpongePlayerTank pt = getPlayer(player);
         if (pt != null)
             return pt.getTeam().canExit();
 
         return false;
     }
 
+    @Override
     public void startMatch()
     {
-        List<UUID> players = new ArrayList<UUID>();
+        List<UUID> players = new ArrayList<>();
         for (UUID player : this.players.keySet())
         {
             if (!getPlayer(player).isReady())
@@ -364,7 +244,7 @@ public class Battlefield
 
         for (UUID uuid : players)
         {
-            PlayerTank pt = getPlayer(uuid);
+            SpongePlayerTank pt = getPlayer(uuid);
             if (sb.getGreenTeamSize() == 0 && sb.getRedTeamSize() == 0 && unassigned < 2)
                 return;
 
@@ -372,39 +252,41 @@ public class Battlefield
             {
                 pt.setTeam(MTTeam.SPECTATOR);
                 unassigned--;
-            } else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
+            }
+            else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
                 //TODO Waiting too see how scoreboards are implemented before I change this.
                 sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
-                MineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
+                SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
                 unassigned--;
-            } else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
+            }
+            else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
                 sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
-                MineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
+                SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
                 unassigned--;
             }
         }
 
-        inProgress = true;
+        setInProgress(true);
         for (UUID uuid : players)
         {
-            final PlayerTank pt = getPlayer(uuid);
+            final SpongePlayerTank pt = getPlayer(uuid);
             final Tanks tank = pt.getTank();
-            final Player player = MineTanks.getGame().getServer().get().getPlayer(uuid).get();
+            final Player player = SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get();
             if (pt.getTeam() != MTTeam.SPECTATOR)
             {
                 if (sb.isOnGreen(player))
-                    player.teleport(greenSpawn);
+                    player.setLocation(greenSpawn);
 
                 if (sb.isOnRed(player))
-                    player.teleport(redSpawn);
+                    player.setLocation(redSpawn);
 
                 player.setScoreboard(sb.getScoreboard());
                 sb.setPlayerHealth(uuid, tank.getHealth());
-                MineTanks.getGame().getScheduler().runTaskAfter(MineTanks.getPluginContainer(), new Runnable()
+                SpongeMineTanks.getGame().getScheduler().runTaskAfter(SpongeMineTanks.getPluginContainer(), new Runnable()
                         {
                             @Override
                             public void run()
@@ -414,7 +296,8 @@ public class Battlefield
                             }
                         }, 1L);
                 new ReloadHandler(player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
-            } else
+            }
+            else
             {
                 pt.setTank(null);
                 player.getInventory().clear();
@@ -422,52 +305,53 @@ public class Battlefield
         }
     }
 
+    @Override
     public void endMatch()
     {
-        if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress)
+        endMatch(false);
+    }
+
+    @Override
+    public void endMatch(boolean forced)
+    {
+        if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress())
             return;
 
         if (sb.getGreenTeamSize() == 0 || sb.getRedTeamSize() == 0)
         {
-            inProgress = false;
+            setInProgress(false);
             for (UUID uuid : players.keySet())
             {
-                Player player = MineTanks.getGame().getServer().get().getPlayer(uuid).get();
-                player.teleport(spectators);
-                player.getInventory().setHelmet(null);
-                player.getInventory().setChestplate(null);
-                player.getInventory().setLeggings(null);
-                player.getInventory().setBoots(null);
+                Game game = SpongeMineTanks.getGame();
+                Player player = game.getServer().getPlayer(uuid).get();
+                player.setLocation(spectators);
+                player.setHelmet(null);
+                player.setChestplate(null);
+                player.setLeggings(null);
+                player.setBoots(null);
                 player.getInventory().clear();
-                player.removePotionEffect(PotionEffectTypes.SLOWNESS);
-                player.removePotionEffect(PotionEffectTypes.SPEED);
-                PlayerTank pt = getPlayer(uuid);
+                player.setRawData(game.getRegistry().getManipulatorRegistry().getBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
+
+                SpongePlayerTank pt = getPlayer(uuid);
                 pt.setTeam(MTTeam.SPECTATOR);
                 pt.setTank(null);
                 sb.playerDeath(player);
-                if (sb.getGreenTeamSize() == 0)
-                    player.sendMessage(Messages.NEGATIVE_PREFIX + "Red team wins!");
+                if (forced)
+                    player.sendMessage(Texts.of(SpongeMineTanks.getPrefix() + "The match has been forcibly ended by an admin."));
+                else if (sb.getGreenTeamSize() == 0)
+                    player.sendMessage(Texts.of(Messages.NEGATIVE_PREFIX + "Red team wins!"));
                 else if (sb.getRedTeamSize() == 0)
-                    player.sendMessage(Messages.POSITIVE_PREFIX + "Green team wins!");
+                    player.sendMessage(Texts.of(Messages.POSITIVE_PREFIX + "Green team wins!"));
             }
         }
     }
 
-    public boolean inProgress()
-    {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress)
-    {
-        this.inProgress = inProgress;
-    }
-
+    @Override
     public void playerKilled(UUID player)
     {
         getPlayer(player).killed();
-        sb.playerDeath(MineTanks.getGame().getServer().get().getPlayer(player).get());
-        MineTanks.getGame().getServer().get().getPlayer(player).get().teleport(spectators);
+        sb.playerDeath(SpongeMineTanks.getGame().getServer().getPlayer(player).get());
+        SpongeMineTanks.getGame().getServer().getPlayer(player).get().setLocation(spectators);
     }
 
     public MTScoreboard getScoreboard()

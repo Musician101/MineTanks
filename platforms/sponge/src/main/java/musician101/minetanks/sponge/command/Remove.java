@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.command;
 
-import musician101.minetanks.sponge.MineTanks;
+import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.exception.FieldDoesNotExistException;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import org.spongepowered.api.entity.player.Player;
@@ -23,7 +23,7 @@ public class Remove extends SubCommand
         if (!player.hasPermission(getPermission()))
             throw new NoPermissionException(Messages.NO_PERMISSION);
 
-        if (!MineTanks.getFieldStorage().removeField(args.get(0)))
+        if (!SpongeMineTanks.getFieldStorage().removeField(args.get(0)))
             throw new FieldDoesNotExistException(Messages.FIELD_DNE);
 
         player.sendMessage(Messages.POSITIVE_PREFIX + args.get(0) + " has been deleted.");

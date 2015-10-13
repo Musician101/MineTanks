@@ -1,7 +1,7 @@
 package musician101.minetanks.spigot.battlefield;
 
 import musician101.minetanks.common.battlefield.AbstractBattleField;
-import musician101.minetanks.common.AbstractPlayerTank.MTTeam;
+import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.handlers.ReloadHandler;
