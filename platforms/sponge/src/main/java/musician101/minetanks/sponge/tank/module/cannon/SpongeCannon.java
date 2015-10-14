@@ -34,19 +34,21 @@ public class SpongeCannon extends AbstractCannon implements ItemRepresentation
     {
         GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
         DataManipulatorRegistry dmr = gr.getManipulatorRegistry();
-        DisplayNameData name = dmr.getBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
-        EnchantmentData enchantments = dmr.getBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
-        LoreData lore = dmr.getBuilder(CatalogItemData.LORE_DATA).get().create();
-        ItemStackBuilder isb = gr.createItemBuilder();
 
+        DisplayNameData name = dmr.getBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
         name.set(gr.createValueBuilder().createValue(Keys.DISPLAY_NAME, Texts.builder(getName()).color(TextColors.GREEN).build()));
+
+        EnchantmentData enchantments = dmr.getBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
         enchantments.set(gr.createValueBuilder().createListValue(Keys.ITEM_ENCHANTMENTS, Arrays.asList(new ItemEnchantment(Enchantments.UNBREAKING, 10), new ItemEnchantment(Enchantments.INFINITY, 1))));
+
+        LoreData lore = dmr.getBuilder(CatalogItemData.LORE_DATA).get().create();
         lore.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, new ListUtil<Text>(Texts.of("Your Cannon"), Texts.of("Reload Time: " + getReloadTime()))));
 
+        ItemStackBuilder isb = gr.createItemBuilder();
         isb.itemType(ItemTypes.BOW);
         isb.itemData(name);
         isb.itemData(enchantments);
-
+        isb.itemData(lore);
         return isb.build();
     }
 }

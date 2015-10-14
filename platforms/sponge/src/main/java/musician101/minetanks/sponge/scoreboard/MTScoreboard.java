@@ -1,60 +1,46 @@
 package musician101.minetanks.sponge.scoreboard;
 
+import musician101.minetanks.common.util.IMTScoreboard;
 import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.util.MTUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.scoreboard.Score;
 import org.spongepowered.api.scoreboard.Scoreboard;
-import org.spongepowered.api.scoreboard.ScoreboardBuilder;
 import org.spongepowered.api.scoreboard.Team;
 import org.spongepowered.api.scoreboard.critieria.Criteria;
-import org.spongepowered.api.scoreboard.displayslot.DisplaySlot;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
-import org.spongepowered.api.scoreboard.objective.ObjectiveBuilder;
 import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayModes;
-import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class MTScoreboard
+public class MTScoreboard implements IMTScoreboard
 {
     Scoreboard board;
-    Team green;
-    Team red;
-    Objective health;
-    Objective teamCount;
-    Score greenScore;
-    Score redScore;
 
-    //TODO scoreboard api incomplete?
     public MTScoreboard()
     {
         GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
-        ScoreboardBuilder sbb = gr.createScoreboardBuilder();
+        board = gr.createScoreboardBuilder().build();
 
-        health = gr.createObjectiveBuilder().criterion(Criteria.HEALTH).name("health").displayName(Texts.of("Health")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
-        teamCount = gr.createObjectiveBuilder().criterion(Criteria.DUMMY).name("team_count").displayName(Texts.of("Team Count")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
+        Objective health = gr.createObjectiveBuilder().criterion(Criteria.DUMMY).name("health").displayName(Texts.of("Health")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
+        board.addObjective(health, DisplaySlots.BELOW_NAME);
 
-        sbb.objectives(Arrays.asList(health, teamCount));
+        Objective teamCount = gr.createObjectiveBuilder().criterion(Criteria.DUMMY).name("team_count").displayName(Texts.of("Team Count")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
+        Score greenScore = teamCount.getScore(Texts.builder("Green Team").color(TextColors.GREEN).build());
+        Score redScore = teamCount.getScore(Texts.builder("Red Team").color(TextColors.RED).build());
+        teamCount.addScore(greenScore);
+        teamCount.addScore(redScore);
+        board.addObjective(teamCount, DisplaySlots.SIDEBAR);
 
-        green = board.registerNewTeam("green");
-        green.setDisplayName("Green Team");
-        green.setPrefix(ChatColor.GREEN + "");
-        red = board.registerNewTeam("red");
-        red.setDisplayName("Red Team");
-        red.setPrefix(ChatColor.RED + "");
-        teamCount = board.registerNewObjective("teamcount", "dummy");
-        teamCount.setDisplaySlot(DisplaySlot.SIDEBAR);
-        teamCount.setDisplayName("Team Count");
-        greenScore = teamCount.getScore(ChatColor.GREEN + "Green Team");
-        redScore = teamCount.getScore(ChatColor.RED + "Red Team");
-        health = board.registerNewObjective("health", "dummy");
-        health.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-        health.setDisplayName("Health");
+        Team green = gr.createTeamBuilder().color(TextColors.GREEN).displayName(Texts.of("Green Team")).name("green").build();
+        Team red = gr.createTeamBuilder().color(TextColors.RED).displayName(Texts.of("Red Team")).name("red").build();
+        board.addTeam(green);
+        board.addTeam(red);
     }
 
     public Scoreboard getScoreboard()
@@ -62,69 +48,79 @@ public class MTScoreboard
         return board;
     }
 
-    public void addGreenPlayer(OfflinePlayer offlinePlayer)
+    @Override
+    public void addGreenPlayer(UUID playerId)
     {
-        green.addPlayer(offlinePlayer);
-        greenScore.setScore(green.getSize());
+        addPlayer(playerId, "Green Name");
     }
 
-    public void addRedPlayer(OfflinePlayer offlinePlayer)
+    @Override
+    public void addRedPlayer(UUID playerId)
     {
-        red.addPlayer(offlinePlayer);
-        redScore.setScore(red.getSize());
+        addPlayer(playerId, "red");
     }
 
-    public void playerDeath(Player player)
+    private void addPlayer(UUID playerId, String teamName)
     {
-        if (green.getPlayers().contains(player))
-            greenPlayerDeath(player);
-        else if (red.getPlayers().contains(player))
-            redPlayerDeath(player);
+        board.getTeam(teamName).get().addMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
+        updateTeamSize(teamName);
     }
 
-    private void greenPlayerDeath(Player player)
+    @Override
+    public void playerDeath(UUID playerId)
     {
-        green.removePlayer(player);
-        greenScore.setScore(green.getSize());
-        player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-        player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        if (board.getTeam("green").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName())))
+        {
+            board.getTeam("green").get().removeMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
+            updateTeamSize("green");
+        }
+        else if (board.getTeam("red").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName())))
+        {
+            board.getTeam("red").get().removeMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
+            updateTeamSize("red");
+        }
+
+        MTUtils.getPlayer(playerId).setScoreboard(((World) ((List) SpongeMineTanks.getGame().getServer().getWorlds()).get(0)).getScoreboard());
     }
 
-    private void redPlayerDeath(Player player)
+    @Override
+    public boolean isOnGreen(UUID playerId)
     {
-        red.removePlayer(player);
-        redScore.setScore(red.getSize());
-        player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-        player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        return board.getTeam("green").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName()));
     }
 
-    public boolean isOnGreen(Player player)
+    @Override
+    public boolean isOnRed(UUID playerId)
     {
-        return green.getPlayers().contains(player);
+        return board.getTeam("red").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName()));
     }
 
-    public boolean isOnRed(Player player)
-    {
-        return red.getPlayers().contains(player);
-    }
-
+    @Override
     public int getGreenTeamSize()
     {
-        return green.getSize();
+        return board.getTeam("green").get().getMembers().size();
     }
 
+    @Override
     public int getRedTeamSize()
     {
-        return red.getSize();
+        return board.getTeam("red").get().getMembers().size();
     }
 
-    public void setPlayerHealth(UUID player, int hp)
+    @Override
+    public int getPlayerHealth(UUID playerId)
     {
-        health.getScore(Bukkit.getOfflinePlayer(player).getName()).setScore(hp);
+        return board.getObjective("health").get().getScore(Texts.of(MTUtils.getPlayer(playerId).getName())).getScore();
     }
 
-    public int getPlayerHealth(UUID player)
+    @Override
+    public void setPlayerHealth(UUID playerId, int hp)
     {
-        return health.getScore(Bukkit.getOfflinePlayer(player).getName()).getScore();
+        board.getObjective("health").get().getScore(Texts.of(MTUtils.getPlayer(playerId).getName())).setScore(hp);
+    }
+
+    private void updateTeamSize(String teamName)
+    {
+        board.getObjective("team_count").get().getScore(Texts.of(teamName)).setScore(board.getTeam(teamName.equalsIgnoreCase("green") ? "Green Team" : "Red Team").get().getMembers().size());
     }
 }

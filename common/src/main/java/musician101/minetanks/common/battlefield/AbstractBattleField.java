@@ -2,6 +2,7 @@ package musician101.minetanks.common.battlefield;
 
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
+import musician101.minetanks.common.util.IMTScoreboard;
 
 import java.io.File;
 import java.util.HashMap;

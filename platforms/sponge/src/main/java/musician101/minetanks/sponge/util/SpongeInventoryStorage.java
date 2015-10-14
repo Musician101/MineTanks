@@ -78,7 +78,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
     @Override
     public boolean save(UUID playerId)
     {
-        Player player = SpongeMineTanks.getGame().getServer().getPlayer(playerId).get();
+        Player player = MTUtils.getPlayer(playerId);
         Inventory inv = player.getInventory();
         SpongeJSONConfig sjc = new SpongeJSONConfig();
         List<ItemStack> items = new ArrayList<>();

@@ -97,7 +97,7 @@ public class SpongeBattleField extends AbstractBattleField
         if (!SpongeMineTanks.getInventoryStorage().save(playerId))
             return false;
 
-        Player player = SpongeMineTanks.getGame().getServer().getPlayer(playerId).get();
+        Player player = MTUtils.getPlayer(playerId);
         if (team == MTTeam.SPECTATOR)
         {
             player.setLocation(spectators);
@@ -118,7 +118,7 @@ public class SpongeBattleField extends AbstractBattleField
     public boolean removePlayer(UUID playerId)
     {
         Game game = SpongeMineTanks.getGame();
-        Player player = game.getServer().getPlayer(playerId).get();
+        Player player = MTUtils.getPlayer(playerId);
         SpongePlayerTank pt = getPlayer(playerId);
         if (pt == null)
             return false;
@@ -132,8 +132,8 @@ public class SpongeBattleField extends AbstractBattleField
 
         SpongeMineTanks.getInventoryStorage().load(player.getUniqueId());
 
-        if (sb.isOnGreen(player) || sb.isOnRed(player))
-            sb.playerDeath(player);
+        if (sb.isOnGreen(playerId) || sb.isOnRed(playerId))
+            sb.playerDeath(playerId);
 
         players.remove(player.getUniqueId());
         if (unassigned > 0)
@@ -256,9 +256,8 @@ public class SpongeBattleField extends AbstractBattleField
             else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
-                //TODO Waiting too see how scoreboards are implemented before I change this.
-                sb.addGreenPlayer(Bukkit.getOfflinePlayer(uuid));
-                SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
+                sb.addGreenPlayer(uuid);
+                MTUtils.getPlayer(uuid).setRawData(pt.getTank().getSpeedEffect());
                 unassigned--;
             }
             else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
@@ -347,11 +346,11 @@ public class SpongeBattleField extends AbstractBattleField
     }
 
     @Override
-    public void playerKilled(UUID player)
+    public void playerKilled(UUID playerId)
     {
-        getPlayer(player).killed();
-        sb.playerDeath(SpongeMineTanks.getGame().getServer().getPlayer(player).get());
-        SpongeMineTanks.getGame().getServer().getPlayer(player).get().setLocation(spectators);
+        getPlayer(playerId).killed();
+        sb.playerDeath(playerId);
+        MTUtils.getPlayer(playerId).setLocation(spectators);
     }
 
     public MTScoreboard getScoreboard()

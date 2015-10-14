@@ -1,50 +1,72 @@
 package musician101.minetanks.sponge.tank.module;
 
+import musician101.common.java.util.ListUtil;
 import musician101.minetanks.common.tank.modules.AbstractRadio;
-import musician101.minetanks.spigot.tank.TankType;
-import musician101.minetanks.spigot.tank.TankTypes;
-import musician101.minetanks.spigot.util.HasIcon;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.tank.SpongeTankType;
+import musician101.minetanks.sponge.tank.SpongeTankTypes;
+import musician101.minetanks.sponge.util.ItemRepresentation;
+import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.DataManipulatorRegistry;
+import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
+import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
+import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
+import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
+import org.spongepowered.api.data.meta.ItemEnchantment;
+import org.spongepowered.api.item.Enchantments;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackBuilder;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
 
-public class Radio extends AbstractRadio implements HasIcon
+public class Radio extends AbstractRadio implements ItemRepresentation
 {
-    public Radio(String name, TankType type)
+    SpongeTankType type;
+
+    public Radio(String name, SpongeTankType type)
     {
         super(name);
-        parseRadio(type);
+        this.type = type;
     }
 
     @Override
-    public ItemStack getIcon()
+    public ItemStack getItem()
     {
-        return (ItemStack) radio;
-    }
+        ItemType itemType = null;
+        if (type == SpongeTankTypes.LIGHT)
+            itemType = ItemTypes.LEATHER_CHESTPLATE;
+        else if (type == SpongeTankTypes.MEDIUM)
+            itemType = ItemTypes.IRON_CHESTPLATE;
+        else if (type == SpongeTankTypes.HEAVY)
+            itemType = ItemTypes.DIAMOND_CHESTPLATE;
+        else if (type == SpongeTankTypes.TD)
+            itemType = ItemTypes.CHAINMAIL_CHESTPLATE;
+        else if (type == SpongeTankTypes.ARTY)
+            itemType = ItemTypes.GOLDEN_CHESTPLATE;
 
-    private void parseRadio(TankType type)
-    {
-        Material material = Material.AIR;
-        if (type == TankTypes.LIGHT)
-            material = Material.LEATHER_CHESTPLATE;
-        else if (type == TankTypes.MEDIUM)
-            material = Material.IRON_CHESTPLATE;
-        else if (type == TankTypes.HEAVY)
-            material = Material.DIAMOND_CHESTPLATE;
-        else if (type == TankTypes.TD)
-            material = Material.CHAINMAIL_CHESTPLATE;
-        else if (type == TankTypes.ARTY)
-            material = Material.GOLD_CHESTPLATE;
+        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
+        DataManipulatorRegistry dmr = gr.getManipulatorRegistry();
 
-        radio = new ItemStack(material);
-        ItemMeta meta = getIcon().getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + getName());
-        meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Collections.singletonList("Your Radio"));
-        getIcon().setItemMeta(meta);
+        DisplayNameData name = dmr.getBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
+        name.set(gr.createValueBuilder().createValue(Keys.DISPLAY_NAME, Texts.builder(getName()).color(TextColors.GREEN).build()));
+
+        EnchantmentData enchantments = dmr.getBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
+        enchantments.set(gr.createValueBuilder().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, 10))));
+
+        LoreData lore = dmr.getBuilder(CatalogItemData.LORE_DATA).get().create();
+        lore.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, new ListUtil<Text>(Texts.of("Your Radio"))));
+
+        ItemStackBuilder isb = gr.createItemBuilder();
+        isb.itemType(itemType);
+        isb.itemData(name);
+        isb.itemData(enchantments);
+        isb.itemData(lore);
+        return isb.build();
     }
 }
