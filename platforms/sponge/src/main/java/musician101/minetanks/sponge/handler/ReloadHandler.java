@@ -1,81 +1,111 @@
 package musician101.minetanks.sponge.handler;
 
+import musician101.common.java.util.ListUtil;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
-import musician101.minetanks.sponge.tank.module.Cannon.CannonTypes;
-import org.spongepowered.api.entity.player.Player;
+import musician101.minetanks.sponge.tank.module.cannon.SpongeAutoLoader;
+import musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
+import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
+import org.spongepowered.api.data.manipulator.mutable.entity.ExperienceHolderData;
+import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
 
-import java.util.Arrays;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class ReloadHandler
 {
     Player player;
-    CannonTypes type;
-    int reloadTime, cycleTime, clipSize, maxClipSize;
+    SpongeCannon cannon;
+    int clipSize;
 
-    public ReloadHandler(Player player, CannonTypes type, int reloadTime, int cycleTime, int clipSize, int maxClipSize)
+    public ReloadHandler(Player player, SpongeCannon cannon, int clipSize)
     {
         this.player = player;
-        this.type = type;
-        this.reloadTime = reloadTime;
-        this.cycleTime = cycleTime;
+        this.cannon = cannon;
         this.clipSize = clipSize;
-        this.maxClipSize = maxClipSize;
     }
 
     public boolean isReloading()
     {
-        if (player.getLevel() > 0)
+        ExperienceHolderData expData = player.get(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get();
+        int level = expData.level().get();
+        if (level > 0)
             return true;
 
-        int time = 0;
+        int time;
         if (clipSize == 0)
-            time = reloadTime;
+            time = (int) cannon.getReloadTime();
         else
-            time = cycleTime;
+        {
+            if (cannon instanceof SpongeAutoLoader)
+                time = (int) ((SpongeAutoLoader) cannon).getCycleTime();
+            else
+                time = (int) cannon.getReloadTime();
+        }
 
-        player.setLevel(time);
+        expData.set(Keys.EXPERIENCE_LEVEL, time);
+        player.setRawData(expData.toContainer());
         try
         {
-            SpongeMineTanks.getGame().getScheduler().runRepeatingTaskAfter(SpongeMineTanks.getPluginContainer(), new Runnable()
+            TaskBuilder tb = SpongeMineTanks.getGame().getScheduler().createTaskBuilder();
+            tb.name("SpongeMineTanks-ReloadHandler-" + player.getName());
+            tb.interval(1L, TimeUnit.SECONDS);
+            tb.delay(1L);
+            tb.execute(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    ExperienceHolderData expData = player.get(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get();
+                    int level = expData.level().get();
+                    expData.set(Keys.EXPERIENCE_LEVEL, level--);
+                    player.setRawData(expData.toContainer());
+                    if (level == 0)
                     {
-                        @Override
-                        public void run()
+                        if (cannon instanceof SpongeCannon && clipSize == 0)
                         {
-                            player.setLevel(player.getLevel() - 1);
-                            if (player.getLevel() == 0)
+                            for (Inventory slot : player.getInventory().slots())
                             {
-                                if (type == CannonTypes.AUTO_LOADER && clipSize == 0)
+                                Optional<ItemStack> iso = slot.peek();
+                                if (iso.isPresent() && iso.get().getItem() == ItemTypes.BOW)
                                 {
-                                    for (ItemStack item : player.getInventory().getContents())
-                                    {
-                                        if (item != null && item.getItem() == ItemTypes.BOW)
-                                        {
-                                            ItemMeta meta = item.getItemMeta();
-                                            meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + maxClipSize + "/" + maxClipSize, "Cycle Time: " + cycleTime, "Clip Reload Time: " + reloadTime));
-                                            item.setItemMeta(meta);
-                                        }
-                                    }
+                                    SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
+                                    ItemStack item = slot.peek().get();
+                                    LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
+                                    lore.set(SpongeMineTanks.getGame().getRegistry().createValueBuilder().createListValue(Keys.ITEM_LORE, new ListUtil<Text>(Texts.of("Your Cannon"), Texts.of("Clip Size: " + autoLoader.getClipSize() + "/" + autoLoader.getClipSize()), Texts.of("Cycle Time: " + autoLoader.getCycleTime()), Texts.of("Clip Reload Time: " + autoLoader.getClipSize()))));
+                                    item.setRawData(lore.toContainer());
+                                }
+                            }
 
-                                    for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
-                                    {
-                                        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
-                                        if (field.getPlayer(player.getUniqueId()) != null)
-                                        {
-                                            SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
-                                            pt.setClipSize(pt.getTank().getClipSize());
-                                        }
-                                    }
+                            for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
+                            {
+                                SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
+                                if (field.getPlayer(player.getUniqueId()) != null)
+                                {
+                                    SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
+                                    pt.setClipSize(cannon instanceof SpongeAutoLoader ? ((SpongeAutoLoader) cannon).getClipSize() : 1);
                                 }
                             }
                         }
-                    }, 1L, time);
+                    }
+                }
+            });
+            tb.submit(SpongeMineTanks.getPluginContainer());
         }
         catch (NullPointerException e)
         {
+            //TODO debug code
+            SpongeMineTanks.getLogger().debug("quack");
         }
         return false;
     }

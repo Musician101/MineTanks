@@ -29,7 +29,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         return createField(name, false, null, null, null, null);
     }
 
-    public boolean createField(String name, boolean enabled, SpongeRegion region, Location greenSpawn, Location redSpawn, Location spectators)
+    public boolean createField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators)
     {
         for (String field : getFields().keySet())
             if (field.equalsIgnoreCase(name))

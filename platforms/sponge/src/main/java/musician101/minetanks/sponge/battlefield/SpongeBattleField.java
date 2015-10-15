@@ -8,13 +8,14 @@ import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.handler.ReloadHandler;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
-import musician101.minetanks.sponge.tank.Tanks;
+import musician101.minetanks.sponge.tank.Tank;
 import musician101.minetanks.sponge.util.MTUtils;
 import musician101.minetanks.sponge.util.SpongeRegion;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -257,14 +258,14 @@ public class SpongeBattleField extends AbstractBattleField
             {
                 pt.setTeam(MTTeam.ASSIGNED);
                 sb.addGreenPlayer(uuid);
-                MTUtils.getPlayer(uuid).setRawData(pt.getTank().getSpeedEffect());
+                MTUtils.getPlayer(uuid).setRawData(pt.getTank().getSpeedEffect().toContainer());
                 unassigned--;
             }
             else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
-                sb.addRedPlayer(Bukkit.getOfflinePlayer(uuid));
-                SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get().addPotionEffect(pt.getTank().getSpeedEffect(), true);
+                sb.addRedPlayer(uuid);
+                MTUtils.getPlayer(uuid).setRawData(pt.getTank().getSpeedEffect().toContainer());
                 unassigned--;
             }
         }
@@ -273,28 +274,27 @@ public class SpongeBattleField extends AbstractBattleField
         for (UUID uuid : players)
         {
             final SpongePlayerTank pt = getPlayer(uuid);
-            final Tanks tank = pt.getTank();
-            final Player player = SpongeMineTanks.getGame().getServer().get().getPlayer(uuid).get();
+            final Tank tank = pt.getTank();
+            final Player player = MTUtils.getPlayer(uuid);
             if (pt.getTeam() != MTTeam.SPECTATOR)
             {
-                if (sb.isOnGreen(player))
+                if (sb.isOnGreen(uuid))
                     player.setLocation(greenSpawn);
 
-                if (sb.isOnRed(player))
+                if (sb.isOnRed(uuid))
                     player.setLocation(redSpawn);
 
                 player.setScoreboard(sb.getScoreboard());
                 sb.setPlayerHealth(uuid, tank.getHealth());
-                SpongeMineTanks.getGame().getScheduler().runTaskAfter(SpongeMineTanks.getPluginContainer(), new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                player.getInventory().setContents(tank.getWeapons().getContents());
-                                player.getInventory().setArmorContents(tank.getArmor());
-                            }
-                        }, 1L);
-                new ReloadHandler(player, tank.getCannonType(), tank.reloadTime(), tank.cycleTime(), pt.getClipSize(), tank.getClipSize()).isReloading();
+                player.getInventory().clear();
+                for (ItemStack item : tank.getWeapons())
+                    player.getInventory().set(item);
+
+                player.setHelmet(tank.getHelmet());
+                player.setChestplate(tank.getChestplate());
+                player.setLeggings(tank.getLeggings());
+                player.setBoots(tank.getBoots());
+                new ReloadHandler(player, tank.getCannon(), pt.getClipSize()).isReloading();
             }
             else
             {
@@ -334,7 +334,7 @@ public class SpongeBattleField extends AbstractBattleField
                 SpongePlayerTank pt = getPlayer(uuid);
                 pt.setTeam(MTTeam.SPECTATOR);
                 pt.setTank(null);
-                sb.playerDeath(player);
+                sb.playerDeath(uuid);
                 if (forced)
                     player.sendMessage(Texts.of(SpongeMineTanks.getPrefix() + "The match has been forcibly ended by an admin."));
                 else if (sb.getGreenTeamSize() == 0)

@@ -52,9 +52,9 @@ public class SpongeMineTanks
 
         initMenu();
 
-        //TODO using 'this' might not work. Won't know for sure until all missing API is implemented
-        game.getEventManager().register(this, new MTListener());
-        game.getEventManager().register(this, new BattlefieldListener());
+        //TODO left off here
+        game.getEventManager().register(getPluginContainer(), new MTListener());
+        game.getEventManager().register(getPluginContainer(), new BattlefieldListener());
 
         game.getCommandDispatcher().register(this, new MTCommandExecutor(), Arrays.asList("mt"));
 

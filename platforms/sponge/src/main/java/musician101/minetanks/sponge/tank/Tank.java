@@ -15,40 +15,47 @@ import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.potion.PotionEffectTypes;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Tank extends AbstractTank
 {
     Armor armor;
+    SpongeCannon cannon;
+    Engine engine;
+    Radio radio;
+    Trackz tracks;
+    Turret turret;
 
     public Tank(String name, SpongeTankType type, int health, Armor armor, int speed, SpongeCannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
     {
-        super(name, type, health, speed, cannon, engine, radio, tracks, turret, description);
+        super(name, type, health, speed, description);
+        this.cannon = cannon;
+        this.engine = engine;
+        this.radio = radio;
+        this.tracks = tracks;
+        this.turret = turret;
         this.armor = armor;
     }
 
-    private ItemStack[] parseArmor(double armor, int speed, Engine engine, Radio radio, Trackz tracks, Turret turret)
+    private ItemStack parseArmorValue(ItemStack item)
     {
-        return new ItemStack[]{parseArmorValue(tracks.getItem(), armor), parseArmorValue(parseSpeedValue(engine.getIcon(), speed), armor), parseArmorValue(radio.getIcon(), armor), parseArmorValue(turret.getIcon(), (turret.getArmor().getArmorValue() != 0 ? turret.getArmor().getArmorValue() : armor))};
+        return parseArmorValue(item, armor);
     }
 
-    private ItemStack parseArmorValue(ItemStack item)
+    private ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
         GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
         EnchantmentData enchantments = gr.getManipulatorRegistry().getBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
@@ -63,22 +70,38 @@ public class Tank extends AbstractTank
     {
         GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
         LoreData lore = gr.getManipulatorRegistry().getBuilder(CatalogItemData.LORE_DATA).get().create();
-        lore.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, Arrays.asList(item.get(Keys.ITEM_LORE).get().get(0), Texts.of("Speed Value: " + getSpeed()))));
+        List<Text> loreList = lore.lore().get();
+        loreList.add(Texts.of("Speed Value: " + getSpeed()));
+        lore.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, loreList));
         ItemStackBuilder isb = gr.createItemBuilder();
         isb.fromItemStack(item);
         isb.itemData(lore);
         return isb.build();
     }
 
-    //TODO left off here
     public ItemStack getHelmet()
     {
-        return null;
+        return parseArmorValue(turret.getItem(), armor);
+    }
+
+    public ItemStack getChestplate()
+    {
+        return parseArmorValue(radio.getItem());
+    }
+
+    public ItemStack getLeggings()
+    {
+        return parseArmorValue(parseSpeedValue(engine.getItem()));
+    }
+
+    public ItemStack getBoots()
+    {
+        return parseArmorValue(tracks.getItem());
     }
 
     public SpongeCannon getCannon()
     {
-        return (SpongeCannon) cannon;
+        return cannon;
     }
 
     public List<ItemStack> getWeapons()
