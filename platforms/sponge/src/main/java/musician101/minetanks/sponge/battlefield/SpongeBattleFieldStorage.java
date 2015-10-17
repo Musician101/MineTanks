@@ -3,7 +3,6 @@ package musician101.minetanks.sponge.battlefield;
 import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
 import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.sponge.SpongeMineTanks;
-import musician101.minetanks.sponge.util.MTUtils;
 import musician101.minetanks.sponge.util.SpongeRegion;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -40,6 +39,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         return true;
     }
 
+    @Override
     public boolean removeField(String field)
     {
         for (String name : fields.keySet())
@@ -62,6 +62,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         return (SpongeBattleField) fields.get(name);
     }
 
+    @Override
     public void loadFromFiles()
     {
         for (File file : getStorageDir().listFiles())
@@ -82,13 +83,13 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
                         region = new SpongeRegion(field.getSpongeJSONConfig("region"));
 
                     if (field.containsKey("greenSpawn"))
-                        greenSpawn = MTUtils.deserializeLocation(field.getSpongeJSONConfig("greenSpawn"));
+                        greenSpawn = deserializeLocation(field.getSpongeJSONConfig("greenSpawn"));
 
                     if (field.containsKey("redSpawn"))
-                        redSpawn = MTUtils.deserializeLocation(field.getSpongeJSONConfig("redSpawn"));
-
+                        redSpawn = deserializeLocation(field.getSpongeJSONConfig("redSpawn"));
+                    
                     if (field.containsKey("spectators"))
-                        spectators = MTUtils.deserializeLocation(field.getSpongeJSONConfig("spectators"));
+                        spectators = deserializeLocation(field.getSpongeJSONConfig("spectators"));
 
                     if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
                         SpongeMineTanks.getLogger().warn("Failed to load " + file.getName());
@@ -101,12 +102,20 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         }
     }
 
+    private static Location<World> deserializeLocation(SpongeJSONConfig locJSON)
+    {
+        World world = SpongeMineTanks.getGame().getServer().getWorld(locJSON.get("world").toString()).get();
+        return new Location<>(world, locJSON.getInteger("x", 0), locJSON.getInteger("y", 0), locJSON.getInteger("z", 0));
+    }
+
+    @Override
     public void saveToFiles()
     {
         for (String name : fields.keySet())
             fields.get(name).saveToFile(getStorageDir());
     }
 
+    @Override
     public boolean canPlayerExit(UUID player)
     {
         for (String name : fields.keySet())

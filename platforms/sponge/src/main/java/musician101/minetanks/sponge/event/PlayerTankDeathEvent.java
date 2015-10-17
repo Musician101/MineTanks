@@ -1,10 +1,9 @@
 package musician101.minetanks.sponge.event;
 
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.callback.CallbackList;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.impl.AbstractEvent;
 
-public class PlayerTankDeathEvent implements Event
+public class PlayerTankDeathEvent extends AbstractEvent
 {
     String field;
     Player killed;
@@ -12,6 +11,7 @@ public class PlayerTankDeathEvent implements Event
 
     public PlayerTankDeathEvent(String field, Player killed, Player killer)
     {
+        super();
         this.field = field;
         this.killed = killed;
         this.killer = killer;
@@ -30,11 +30,5 @@ public class PlayerTankDeathEvent implements Event
     public Player getKiller()
     {
         return killer;
-    }
-
-    @Override
-    public CallbackList getCallbacks()
-    {
-        return null;
     }
 }

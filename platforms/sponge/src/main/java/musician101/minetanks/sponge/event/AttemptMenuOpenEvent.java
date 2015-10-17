@@ -1,15 +1,15 @@
 package musician101.minetanks.sponge.event;
 
 import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.impl.AbstractEvent;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.callback.CallbackList;
 
 import java.util.UUID;
 
-public class AttemptMenuOpenEvent implements Event
+public class AttemptMenuOpenEvent extends AbstractEvent implements Cancellable
 {
-    boolean isCancelled;
+    boolean isCancelled = false;
     ItemType material;
     String field;
     SpongePlayerTank pt;
@@ -17,11 +17,11 @@ public class AttemptMenuOpenEvent implements Event
 
     public AttemptMenuOpenEvent(ItemType type, String field, SpongePlayerTank pt, UUID player)
     {
+        super();
         this.material = type;
         this.field = field;
         this.pt = pt;
         this.player = player;
-
     }
 
     public ItemType getItemType()
@@ -45,8 +45,14 @@ public class AttemptMenuOpenEvent implements Event
     }
 
     @Override
-    public CallbackList getCallbacks()
+    public boolean isCancelled()
     {
-        return null;
+        return isCancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean isCancelled)
+    {
+        this.isCancelled = isCancelled;
     }
 }

@@ -6,14 +6,15 @@ import musician101.minetanks.sponge.handler.TankSelectionHandler;
 import musician101.minetanks.sponge.lib.Reference;
 import musician101.minetanks.sponge.listener.BattlefieldListener;
 import musician101.minetanks.sponge.listener.MTListener;
+import musician101.minetanks.sponge.tank.Tank;
 import musician101.minetanks.sponge.tank.Tanks;
 import musician101.minetanks.sponge.util.IconMenu;
-import musician101.minetanks.sponge.util.MTUtils;
 import musician101.minetanks.sponge.util.Menus;
 import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
@@ -21,6 +22,8 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
 import java.util.Arrays;
@@ -52,9 +55,8 @@ public class SpongeMineTanks
 
         initMenu();
 
-        //TODO left off here
-        game.getEventManager().register(getPluginContainer(), new MTListener());
-        game.getEventManager().register(getPluginContainer(), new BattlefieldListener());
+        game.getEventManager().registerListeners(getPluginContainer(), new MTListener());
+        game.getEventManager().registerListeners(getPluginContainer(), new BattlefieldListener());
 
         game.getCommandDispatcher().register(this, new MTCommandExecutor(), Arrays.asList("mt"));
 
@@ -95,9 +97,9 @@ public class SpongeMineTanks
 
     private void initMenu()
     {
-        tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler());
-        for (Tanks tank : Tanks.values())
-            tankSelection.setOption(tank.getId(), ItemTypes.MINECART, "\u00A7a" + tank.getName(), tank.getDescription());
+        tankSelection = new IconMenu("Tank Selection", new TankSelectionHandler());
+        for (Tank tank : Tanks.tankList)
+            tankSelection.setOption(ItemTypes.MINECART, Texts.builder().append(Texts.of(tank.getName())).color(TextColors.GREEN).build(), tank.getDescription());
     }
 
     public static void openTankMenu(Player player)

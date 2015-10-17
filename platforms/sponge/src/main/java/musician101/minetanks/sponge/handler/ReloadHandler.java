@@ -60,7 +60,7 @@ public class ReloadHandler
             TaskBuilder tb = SpongeMineTanks.getGame().getScheduler().createTaskBuilder();
             tb.name("SpongeMineTanks-ReloadHandler-" + player.getName());
             tb.interval(1L, TimeUnit.SECONDS);
-            tb.delay(1L);
+            tb.delayTicks(1L);
             tb.execute(new Runnable()
             {
                 @Override

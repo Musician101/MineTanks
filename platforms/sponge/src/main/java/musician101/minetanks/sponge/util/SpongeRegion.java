@@ -3,7 +3,6 @@ package musician101.minetanks.sponge.util;
 import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
 import musician101.minetanks.common.util.AbstractRegion;
 import musician101.minetanks.sponge.SpongeMineTanks;
-import org.json.simple.JSONObject;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -70,6 +69,6 @@ public class SpongeRegion extends AbstractRegion
         if (xRadius < 0 || yRadius < 0 || zRadius < 0)
             throw new IllegalArgumentException("The radius cannot be negative!");
 
-        return xRadius > 0 || yRadius > 0 || zRadius > 0 ? new SpongeRegion(MTUtils.subPosition(location, xRadius, yRadius, zRadius), MTUtils.addPosition(location, xRadius, yRadius, zRadius)) : new SpongeRegion(location);
+        return xRadius > 0 || yRadius > 0 || zRadius > 0 ? new SpongeRegion(location.sub(xRadius, yRadius, zRadius), location.add(xRadius, yRadius, zRadius)) : new SpongeRegion(location);
     }
 }

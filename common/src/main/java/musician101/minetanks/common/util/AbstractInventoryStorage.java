@@ -14,7 +14,7 @@ public abstract class AbstractInventoryStorage extends AbstractStorage
 
     public abstract boolean save(UUID playerId);
 
-    protected File getPlayerFile(UUID playerId)
+    public File getPlayerFile(UUID playerId)
     {
         return new File(getStorageDir(), playerId.toString() + ".json");
     }

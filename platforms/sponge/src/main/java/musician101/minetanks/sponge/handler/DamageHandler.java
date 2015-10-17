@@ -1,24 +1,26 @@
 package musician101.minetanks.sponge.handler;
 
 import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import musician101.minetanks.sponge.event.PlayerTankDeathEvent;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
-import musician101.minetanks.sponge.battlefield.SpongeBattleField;
-import musician101.minetanks.sponge.tank.Tanks.TankTypes;
+import musician101.minetanks.sponge.tank.SpongeTankType;
+import musician101.minetanks.sponge.tank.SpongeTankTypes;
+import musician101.minetanks.sponge.util.MTUtils;
 
 import java.util.UUID;
 
 public class DamageHandler
 {
-    private int getModifier(TankTypes type)
+    private int getModifier(SpongeTankType type)
     {
-        if (type == TankTypes.LIGHT)
+        if (type == SpongeTankTypes.LIGHT)
             return 1;
-        else if (type == TankTypes.MEDIUM || type == TankTypes.TD)
+        else if (type == SpongeTankTypes.MEDIUM || type == SpongeTankTypes.TD)
             return 2;
-        else if (type == TankTypes.ARTY)
+        else if (type == SpongeTankTypes.ARTY)
             return 3;
-        else if (type == TankTypes.HEAVY)
+        else if (type == SpongeTankTypes.HEAVY)
             return 5;
 
         return 0;
@@ -35,12 +37,12 @@ public class DamageHandler
             playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
     }
 
-    public void playerHitEnemy(SpongeBattleField field, UUID dmgd, UUID dmgr, int damage)
+    public void playerHitEnemy(SpongeBattleField field, UUID damaged, UUID damager, int damage)
     {
         MTScoreboard sb = field.getScoreboard();
-        sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
-        if (sb.getPlayerHealth(dmgd) <= 0)
-            SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), SpongeMineTanks.getGame().getServer().get().getPlayer(dmgd).get(), SpongeMineTanks.getGame().getServer().get().getPlayer(dmgr).get()));
+        sb.setPlayerHealth(damaged, sb.getPlayerHealth(damaged) - (damage * 2 * 20));
+        if (sb.getPlayerHealth(damaged) <= 0)
+            SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(damaged), MTUtils.getPlayer(damager)));
     }
 
     public void gravityHit(SpongeBattleField field, UUID player, int damage)
@@ -49,10 +51,10 @@ public class DamageHandler
         MTScoreboard sb = field.getScoreboard();
         sb.setPlayerHealth(player, sb.getPlayerHealth(player) - (int) dmg);
         if (sb.getPlayerHealth(player) <= 0)
-            SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), SpongeMineTanks.getGame().getServer().get().getPlayer(player).get(), null));
+            SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(player), null));
     }
 
-    public void meleeHitFriendly(SpongeBattleField field, UUID rammed, UUID rammer, int damage)
+    /*public void meleeHitFriendly(SpongeBattleField field, UUID rammed, UUID rammer, int damage)
     {
         double rammerDmg = damage * 20;
         double rammedDmg = damage * 15;
@@ -68,6 +70,6 @@ public class DamageHandler
         MTScoreboard sb = field.getScoreboard();
         sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
         if (sb.getPlayerHealth(dmgd) <= 0)
-            SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), SpongeMineTanks.getGame().getServer().get().getPlayer(dmgd).get(), SpongeMineTanks.getGame().getServer().get().getPlayer(dmgr).get()));
-    }
+            SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(dmgd), MTUtils.getPlayer(dmgr)));
+    }*/
 }

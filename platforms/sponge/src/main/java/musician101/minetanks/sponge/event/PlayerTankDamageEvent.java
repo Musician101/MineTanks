@@ -1,28 +1,28 @@
 package musician101.minetanks.sponge.event;
 
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.callback.CallbackList;
+import org.spongepowered.api.event.impl.AbstractEvent;
 
 import java.util.UUID;
 
-public class PlayerTankDamageEvent implements Event
+public class PlayerTankDamageEvent extends AbstractEvent
 {
     int damage;
     PlayerTankDamageCause cause;
-    UUID dmgd;
-    UUID dmgr;
+    UUID damaged;
+    UUID damager;
     String field;
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, SpongeBattleField field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, SpongeBattleField field, int damage)
     {
-        this(cause, dmgd, null, field, damage);
+        this(cause, damaged, null, field, damage);
     }
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID dmgd, UUID damager, SpongeBattleField field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, UUID damager, SpongeBattleField field, int damage)
     {
-        this.dmgd = dmgd;
-        this.dmgr = damager;
+        super();
+        this.damaged = damaged;
+        this.damager = damager;
         this.field = field.getName();
         this.damage = damage;
         this.cause = cause;
@@ -35,12 +35,12 @@ public class PlayerTankDamageEvent implements Event
 
     public UUID getDamagedPlayer()
     {
-        return dmgd;
+        return damaged;
     }
 
     public UUID getDamager()
     {
-        return dmgr;
+        return damager;
     }
 
     public String getField()
@@ -53,17 +53,11 @@ public class PlayerTankDamageEvent implements Event
         return damage;
     }
 
-    @Override
-    public CallbackList getCallbacks()
-    {
-        return null;
-    }
-
     public enum PlayerTankDamageCause
     {
         FALL,
         PENETRATION,
         RAM,
-        SPLASH;
+        SPLASH
     }
 }

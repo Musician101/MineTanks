@@ -350,7 +350,13 @@ public class SpongeBattleField extends AbstractBattleField
     {
         getPlayer(playerId).killed();
         sb.playerDeath(playerId);
-        MTUtils.getPlayer(playerId).setLocation(spectators);
+        Player player = MTUtils.getPlayer(playerId);
+        player.setLocation(spectators);
+        player.getInventory().clear();
+        player.setHelmet(null);
+        player.setChestplate(null);
+        player.setLeggings(null);
+        player.setBoots(null);
     }
 
     public MTScoreboard getScoreboard()

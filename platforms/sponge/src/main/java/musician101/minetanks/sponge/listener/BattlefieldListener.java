@@ -1,6 +1,8 @@
 package musician101.minetanks.sponge.listener;
 
 import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.event.AttemptMenuOpenEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
@@ -8,109 +10,90 @@ import musician101.minetanks.sponge.event.PlayerTankDeathEvent;
 import musician101.minetanks.sponge.handler.DamageHandler;
 import musician101.minetanks.sponge.lib.Reference.Messages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
-import musician101.minetanks.sponge.battlefield.SpongeBattleField;
-import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.util.MTUtils;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.event.Subscribe;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 public class BattlefieldListener
 {
-    //TODO inventory handling not implemented
-    @Subscribe
+    @Listener
     public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
     {
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
-        Player player = SpongeMineTanks.getGame().getServer().get().getPlayer(event.getPlayer()).get();
+        Player player = MTUtils.getPlayer(event.getPlayer());
         SpongePlayerTank pt = event.getPlayerTank();
         if (event.getItemType() == ItemTypes.CLOCK)
         {
             if (pt.isReady())
             {
                 pt.setReady(false);
-                player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", Arrays.asList("You are currently not ready.")));
+                player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", Collections.singletonList("You are currently not ready.")));
                 return;
             }
 
             pt.setReady(true);
-            player.getInventory().setItem(1, MTUtils.createCustomItem(ItemTypes.CLOCK, "Unready", Arrays.asList("You are currently ready.")));
+            player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, "Unready", Collections.singletonList("You are currently ready.")));
             field.startMatch();
             return;
         }
 
         if (pt.isReady())
         {
-            player.sendMessage(Messages.NEGATIVE_PREFIX + "You must unready to change your tank.");
+            player.sendMessage(Texts.of(Messages.NEGATIVE_PREFIX + "You must unready to change your tank."));
             return;
         }
 
         SpongeMineTanks.openTankMenu(player);
-        return;
     }
 
-    @Subscribe
+    @Listener
     public void onPlayerDeath(PlayerTankDeathEvent event)
     {
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
         Player killed = event.getKilled();
         Player killer = event.getKiller();
         MTScoreboard sb = field.getScoreboard();
-        String dmgdMsg = (sb.isOnGreen(killed) ? TextColors.GREEN + killed.getName() : TextColors.RED + killed.getName());
-        String dmgrMsg = (sb.isOnGreen(killer) ? TextColors.GREEN + killer.getName() : TextColors.RED + killer.getName());
-        for (Player player : SpongeMineTanks.getGame().getServer().get().getOnlinePlayers())
+        Text prefix = Texts.builder().append(Texts.of(SpongeMineTanks.getPrefix())).color(TextColors.GREEN).build();
+        Text damagedMsg = (sb.isOnGreen(killed.getUniqueId()) ? Texts.builder().append(Texts.of(killed.getName())).color(TextColors.GREEN).build() : Texts.builder().append(Texts.of(killed.getName())).color(TextColors.RED).build());
+        Text damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? Texts.builder().append(Texts.of(killer.getName())).color(TextColors.GREEN).build() : Texts.builder().append(Texts.of(killer.getName())).color(TextColors.RED).build());
+        Text damagedBy = Texts.builder().append(Texts.of("was damaged by")).color(TextColors.WHITE).build();
+        for (Player player : SpongeMineTanks.getGame().getServer().getOnlinePlayers())
             if (field.getPlayer(player.getUniqueId()) != null)
-                player.sendMessage(TextColors.GREEN + SpongeMineTanks.getPrefix() + TextColors.RESET + " " + dmgdMsg + TextColors.RESET + " was killed by " + dmgrMsg + TextColors.RESET + ".");
+                player.sendMessage(Texts.join(Texts.of(" "), new Text[]{prefix, damagedMsg, damagedBy, damagerMsg}));
 
-        killed.getInventory().clear();
-        killed.getInventory().setHelmet(null);
-        killed.getInventory().setChestplate(null);
-        killed.getInventory().setLeggings(null);
-        killed.getInventory().setBoots(null);
         field.playerKilled(killed.getUniqueId());
         field.endMatch();
     }
 
-    @Subscribe
+    @Listener
     public void onPlayerDamageEvent(PlayerTankDamageEvent event)
     {
         DamageHandler dh = new DamageHandler();
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
-        UUID dmgd = event.getDamagedPlayer();
+        UUID damagedPlayer = event.getDamagedPlayer();
         if (event.getCause() == PlayerTankDamageCause.FALL)
-            dh.gravityHit(field, dmgd, event.getDamage());
+            dh.gravityHit(field, damagedPlayer, event.getDamage());
 
-        UUID dmgr = event.getDamager();
+        UUID damager = event.getDamager();
         int damage = event.getDamage();
         MTScoreboard sb = field.getScoreboard();
-        if (sb.getPlayerHealth(dmgd) <= 0 || sb.getPlayerHealth(dmgr) <= 0)
+        if (sb.getPlayerHealth(damagedPlayer) <= 0 || sb.getPlayerHealth(damager) <= 0)
             return;
-
-        if ((sb.isOnGreen(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnGreen(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgd).get())) || (sb.isOnRed(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgr).get()) && sb.isOnRed(SpongeMineTanks.getGame().getServer().get().getPlayer(dmgd).get())))
-        {
-            if (event.getCause() == PlayerTankDamageCause.RAM)
-                dh.meleeHitFriendly(field, dmgr, dmgd, damage);
-
-            if (event.getCause() == PlayerTankDamageCause.SPLASH)
-                dh.playerHitFriendly(field, dmgd, dmgr, damage);
-
-            if (event.getCause() == PlayerTankDamageCause.PENETRATION)
-                dh.playerHitFriendly(field, dmgd, dmgr, damage);
-
-            return;
-        }
 
         if (event.getCause() == PlayerTankDamageCause.RAM)
-            dh.meleeHitEnemy(field, dmgd, dmgr, damage);
+            dh.meleeHitEnemy(field, damagedPlayer, damager, damage);
 
         if (event.getCause() == PlayerTankDamageCause.SPLASH)
-            dh.playerHitEnemy(field, dmgd, dmgr, damage);
+            dh.playerHitEnemy(field, damagedPlayer, damager, damage);
 
         if (event.getCause() == PlayerTankDamageCause.PENETRATION)
-            dh.playerHitEnemy(field, dmgd, dmgr, damage);
+            dh.playerHitEnemy(field, damagedPlayer, damager, damage);
     }
 }
