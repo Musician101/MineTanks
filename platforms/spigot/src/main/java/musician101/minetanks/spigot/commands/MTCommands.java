@@ -2,6 +2,8 @@ package musician101.minetanks.spigot.commands;
 
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.CommandArgument;
+import musician101.minetanks.common.CommonReference;
+import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.commands.edit.CreateCommand;
 import musician101.minetanks.spigot.commands.edit.RegionCommand;
@@ -27,7 +29,7 @@ public class MTCommands extends AbstractSpigotCommand
 
     public MTCommands(MineTanks plugin)
     {
-        super("minetanks", "Minecraft PvP plugin influenced by Wargaming's World of Tanks.", Collections.singletonList(new CommandArgument("/minetanks")), 0, "minetanks", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only", Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
+        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new CommandArgument("/" + CommonReference.ID)), 0, "", false, "", "", Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
         this.plugin = plugin;
     }
 
@@ -36,7 +38,7 @@ public class MTCommands extends AbstractSpigotCommand
     {
         if (args.length > 0)
         {
-            if (args[0].equalsIgnoreCase("help"))
+            if (args[0].equalsIgnoreCase(CommonCommands.HELP))
                 return new HelpCommand(plugin, this).onCommand(sender, moveArguments(args));
 
             for (AbstractSpigotCommand command : getSubCommands())

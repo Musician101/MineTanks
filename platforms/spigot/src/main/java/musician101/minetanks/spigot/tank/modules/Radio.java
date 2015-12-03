@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.tank.modules;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractRadio;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
@@ -44,7 +45,7 @@ public class Radio extends AbstractRadio implements HasIcon
         ItemMeta meta = getIcon().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Collections.singletonList("Your Radio"));
+        meta.setLore(Collections.singletonList(CommonItemText.RADIO));
         getIcon().setItemMeta(meta);
     }
 }

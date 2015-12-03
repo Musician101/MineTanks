@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.tank.modules.turret;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.Armor;
 import musician101.minetanks.common.tank.modules.AbstractTurret;
 import musician101.minetanks.spigot.tank.TankType;
@@ -45,7 +46,7 @@ public class Turret extends AbstractTurret implements HasIcon
         ItemMeta meta = getIcon().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Collections.singletonList("Your Turret"));
+        meta.setLore(Collections.singletonList(CommonItemText.TURRET));
         getIcon().setItemMeta(meta);
     }
 }

@@ -3,7 +3,12 @@ package musician101.minetanks.spigot.commands.edit;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.CommandArgument;
 import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
+import musician101.minetanks.spigot.battlefield.BattleFieldStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +21,7 @@ public class CreateCommand extends AbstractSpigotCommand
 
     public CreateCommand(MineTanks plugin)
     {
-        super("create", "Create a new battlefield.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("create"), new CommandArgument("name", Syntax.REPLACE, Syntax.REQUIRED)), 1, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super(CommonCommands.CREATE, CommonCommands.CREATE, Arrays.asList(new CommandArgument("/" + CommonCommands.MT), new CommandArgument(CommonCommands.CREATE, new CommandArgument(CommonCommands.NAME, Syntax.REPLACE, Syntax.REQUIRED))), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 
@@ -27,16 +32,17 @@ public class CreateCommand extends AbstractSpigotCommand
             return false;
 
         Player player = (Player) sender;
-        if (!minArgsMet(player, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
+        if (!minArgsMet(player, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
-        if (!plugin.getFieldStorage().createField(args[0]))
+        BattleFieldStorage fieldStorage = plugin.getFieldStorage();
+        if (!fieldStorage.createField(args[0]))
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field already exists.");
+            player.sendMessage(ChatColor.RED + CommonMessages.FIELD_EXISTS);
             return false;
         }
 
-        player.sendMessage(new String[]{ChatColor.GREEN + plugin.getPrefix() + " " + args[1] + " successfully created.", ChatColor.GREEN + plugin.getPrefix() + " Check the status of the battlefield by using /mt status."});
+        player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.FIELD_CREATED, fieldStorage.getField(args[0])), ChatColor.GREEN + CommonMessages.FIELD_CREATED_2});
         return true;
     }
 }

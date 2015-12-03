@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.scoreboards;
 
+import musician101.minetanks.common.CommonReference.CommonScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -26,20 +27,20 @@ public class MTScoreboard
     {
         ScoreboardManager sbm = Bukkit.getScoreboardManager();
         board = sbm.getNewScoreboard();
-        green = board.registerNewTeam("green");
-        green.setDisplayName("Green Team");
+        green = board.registerNewTeam(CommonScoreboard.GREEN_ID);
+        green.setDisplayName(CommonScoreboard.GREEN_ID);
         green.setPrefix(ChatColor.GREEN + "");
-        red = board.registerNewTeam("red");
-        red.setDisplayName("Red Team");
+        red = board.registerNewTeam(CommonScoreboard.RED_ID);
+        red.setDisplayName(CommonScoreboard.RED_NAME);
         red.setPrefix(ChatColor.RED + "");
-        teamCount = board.registerNewObjective("teamcount", "dummy");
+        teamCount = board.registerNewObjective(CommonScoreboard.TEAM_COUNT_ID, CommonScoreboard.DUMMY);
         teamCount.setDisplaySlot(DisplaySlot.SIDEBAR);
-        teamCount.setDisplayName("Team Count");
-        greenScore = teamCount.getScore(ChatColor.GREEN + "Green Team");
-        redScore = teamCount.getScore(ChatColor.RED + "Red Team");
-        health = board.registerNewObjective("health", "dummy");
+        teamCount.setDisplayName(CommonScoreboard.TEAM_COUNT_NAME);
+        greenScore = teamCount.getScore(ChatColor.GREEN + CommonScoreboard.GREEN_NAME);
+        redScore = teamCount.getScore(ChatColor.RED + CommonScoreboard.RED_NAME);
+        health = board.registerNewObjective(CommonScoreboard.HEALTH_ID, CommonScoreboard.DUMMY);
         health.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-        health.setDisplayName("Health");
+        health.setDisplayName(CommonScoreboard.HEALTH_NAME);
     }
 
     public Scoreboard getScoreboard()

@@ -1,5 +1,7 @@
 package musician101.minetanks.spigot;
 
+import musician101.minetanks.common.CommonReference;
+import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.battlefield.BattleFieldStorage;
 import musician101.minetanks.spigot.commands.MTCommands;
 import musician101.minetanks.spigot.listeners.BattlefieldListener;
@@ -9,19 +11,16 @@ import musician101.minetanks.spigot.util.Menus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-//TODO need messages class
+//TODO need to change spawn related commands to check for region
 public class MineTanks extends JavaPlugin
 {
     private BattleFieldStorage fieldStorage;
     private InventoryStorage inventoryStorage;
     private Menus menus;
-    private String prefix;
 
     @Override
     public void onEnable()
     {
-        prefix = "[" + getDescription().getPrefix() + "] ";
-
         fieldStorage = new BattleFieldStorage(this);
         inventoryStorage = new InventoryStorage(this);
 
@@ -30,7 +29,7 @@ public class MineTanks extends JavaPlugin
         getServer().getPluginManager().registerEvents(new MTListener(this), this);
         getServer().getPluginManager().registerEvents(new BattlefieldListener(this), this);
 
-        getLogger().info("Movin' on out. Shuck 'em up!");
+        getLogger().info(CommonReference.MOVIN_ON_OUT);
     }
 
     @Override
@@ -38,13 +37,13 @@ public class MineTanks extends JavaPlugin
     {
         fieldStorage.getFields().keySet().forEach(field -> fieldStorage.getField(field).endMatch(true));
         fieldStorage.saveToFiles();
-        getLogger().info("Pack it up, boys. We're heading home.");
+        getLogger().info(CommonReference.PACK_IT_UP);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        return (command.getName().equalsIgnoreCase("minetanks") || command.getName().equalsIgnoreCase("mt")) && new MTCommands(this).onCommand(sender, args);
+        return (command.getName().equalsIgnoreCase(CommonReference.ID) || command.getName().equalsIgnoreCase(CommonCommands.MT)) && new MTCommands(this).onCommand(sender, args);
     }
 
     public BattleFieldStorage getFieldStorage()
@@ -60,10 +59,5 @@ public class MineTanks extends JavaPlugin
     public Menus getMenuHandler()
     {
         return menus;
-    }
-
-    public String getPrefix()
-    {
-        return prefix;
     }
 }

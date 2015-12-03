@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.util;
 
+import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.util.AbstractRegion;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -32,14 +33,14 @@ public class SpigotRegion extends AbstractRegion
 
     public SpigotRegion(Map<String, Object> map)
     {
-        super(map.containsKey("X1") ? (Integer) map.get("X1") : 0,
-            map.containsKey("Y1") ? (Integer) map.get("Y1") : 0,
-            map.containsKey("Z1") ? (Integer) map.get("Z1") : 0,
-            map.containsKey("X2") ? (Integer) map.get("X2") : 0,
-            map.containsKey("Y2") ? (Integer) map.get("Y2") : 0,
-            map.containsKey("Z2") ? (Integer) map.get("Z2") : 0);
+        super(map.containsKey(CommonConfig.MINX) ? (Integer) map.get(CommonConfig.MINX) : 0,
+            map.containsKey(CommonConfig.MINY) ? (Integer) map.get(CommonConfig.MINY) : 0,
+            map.containsKey(CommonConfig.MINZ) ? (Integer) map.get(CommonConfig.MINZ) : 0,
+                map.containsKey(CommonConfig.MAXX) ? (Integer) map.get(CommonConfig.MAXX) : 0,
+                map.containsKey(CommonConfig.MAXY) ? (Integer) map.get(CommonConfig.MAXY) : 0,
+                map.containsKey(CommonConfig.MAXZ) ? (Integer) map.get(CommonConfig.MAXZ) : 0);
 
-        this.worldName = map.containsKey("World") ? (String) map.get("World") : "";
+        this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
     }
 
     public static SpigotRegion createFromLocationRadius(Location location, double radius)
@@ -60,6 +61,7 @@ public class SpigotRegion extends AbstractRegion
         World world = Bukkit.getServer().getWorld(this.worldName);
         if (world == null)
             world = Bukkit.getServer().createWorld(WorldCreator.name(this.worldName));
+
         return world;
     }
 
@@ -67,7 +69,7 @@ public class SpigotRegion extends AbstractRegion
     public Map<String, Object> serialize()
     {
         Map<String, Object> map = super.serialize();
-        map.put("World", this.worldName);
+        map.put(CommonConfig.WORLD, this.worldName);
         return map;
     }
 

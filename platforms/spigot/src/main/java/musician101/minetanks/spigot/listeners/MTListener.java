@@ -1,7 +1,13 @@
 package musician101.minetanks.spigot.listeners;
 
+import musician101.minetanks.common.CommonReference;
+import musician101.minetanks.common.CommonReference.CommonConfig;
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.events.AttemptMenuOpenEvent;
@@ -65,7 +71,6 @@ public class MTListener implements Listener
 
     private boolean isSword(Material material)
     {
-        //It's technically a sword without a blade.
         //Stick is the default item if a player hasn't chosen a tank.
         return material == Material.STICK || material == Material.WOOD_SWORD || material == Material.STONE_SWORD || material == Material.IRON_SWORD || material == Material.GOLD_SWORD || material == Material.DIAMOND_SWORD;
     }
@@ -90,7 +95,7 @@ public class MTListener implements Listener
             double maxZ = field.getSpigotRegion().getMaxZ();
             if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
             {
-                if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
+                if (event.getPlayer().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
                     return;
 
                 event.setCancelled(true);
@@ -119,7 +124,7 @@ public class MTListener implements Listener
             double maxZ = field.getSpigotRegion().getMaxZ();
             if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
             {
-                if (event.getPlayer().hasPermission("minetanks.edit") && !field.isEnabled())
+                if (event.getPlayer().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
                     return;
 
                 event.setCancelled(true);
@@ -166,17 +171,17 @@ public class MTListener implements Listener
         if (!file.exists())
             return;
 
-        player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You logged off with items still stored away. They will now be returned to you.");
+        player.sendMessage(ChatColor.GREEN + CommonMessages.LOGGED_OFF_WITH_ITEMS_STORED);
         YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
         for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-            player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
+            player.getInventory().setItem(slot, yml.getItemStack(CommonConfig.INVENTORY + slot));
 
         ItemStack[] armor = new ItemStack[4];
         for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
-            armor[slot] = yml.getItemStack("armor." + slot);
+            armor[slot] = yml.getItemStack(CommonConfig.ARMOR + slot);
 
         player.getInventory().setArmorContents(armor);
-        player.teleport(new Location(Bukkit.getWorld(yml.getString("world")), yml.getDouble("x"), yml.getDouble("y"), yml.getDouble("z")));
+        player.teleport(Location.deserialize(yml.getValues(true)));
         file.delete();
     }
 
@@ -224,7 +229,7 @@ public class MTListener implements Listener
                     else if (z >= maxZ)
                         z = maxZ - correction;
 
-                    player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Out of bounds!");
+                    player.sendMessage(ChatColor.RED + CommonMessages.OUT_OF_BOUNDS);
                     player.teleport(new Location(player.getLocation().getWorld(), x, player.getLocation().getY(), z));
                     return;
                 }
@@ -270,8 +275,9 @@ public class MTListener implements Listener
                             item.setAmount(item.getAmount() - 1);
                         else if (item.getType() == Material.BOW && tank.getCannon() instanceof AutoLoader)
                         {
+                            AutoLoader cannon = (AutoLoader) tank.getCannon();
                             ItemMeta meta = item.getItemMeta();
-                            meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + pt.getClipSize() + "/" + ((AutoLoader) tank.getCannon()).getClipSize(), "Cycle Time: " + ((AutoLoader) tank.getCannon()).getCycleTime(), "Clip Reload Time: " + tank.getCannon().getReloadTime()));
+                            meta.setLore(Arrays.asList(CommonItemText.CANNON, SpigotReference.autoLoaderClipSize(CommonItemText.CLIP_SIZE, pt.getClipSize(), cannon.getClipSize()), SpigotReference.number(CommonItemText.CYCLE_TIME, cannon.getCycleTime()), SpigotReference.number(CommonItemText.CLIP_RELOAD_TIME, cannon.getReloadTime())));
                             item.setItemMeta(meta);
                         }
                     }

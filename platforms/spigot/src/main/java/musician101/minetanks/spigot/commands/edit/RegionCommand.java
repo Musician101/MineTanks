@@ -3,7 +3,11 @@ package musician101.minetanks.spigot.commands.edit;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.CommandArgument;
 import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.ChatColor;
@@ -18,7 +22,7 @@ public class RegionCommand extends AbstractSpigotCommand
 
     public RegionCommand(MineTanks plugin)
     {
-        super("region", "Set the region region of the currently selected battlefield.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("region"), new CommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED), new CommandArgument("radius | xradius yradius zradius", Syntax.REPLACE, Syntax.REQUIRED)), 2, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super(CommonCommands.REGION_NAME, CommonCommands.REGION_DESC, Arrays.asList(new CommandArgument("/" + CommonCommands.MT), new CommandArgument(CommonCommands.REGION_NAME), new CommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED), new CommandArgument(CommonCommands.RADIUS, Syntax.REPLACE, Syntax.REQUIRED)), 2, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 
@@ -32,7 +36,7 @@ public class RegionCommand extends AbstractSpigotCommand
         BattleField field = plugin.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+            sender.sendMessage(ChatColor.RED + CommonMessages.FIELD_DNE);
             return false;
         }
 
@@ -45,12 +49,12 @@ public class RegionCommand extends AbstractSpigotCommand
             }
             catch (NumberFormatException e)
             {
-                player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: " + args[1] + " is not a number.");
+                player.sendMessage(ChatColor.RED + SpigotReference.string(CommonMessages.NOT_A_NUMBER, args[1]));
                 return false;
             }
 
             field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), radius));
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Region set.");
+            player.sendMessage(ChatColor.GREEN + CommonMessages.REGION_SET);
             return true;
         }
         else if (args.length >= 4)
@@ -66,16 +70,16 @@ public class RegionCommand extends AbstractSpigotCommand
             }
             catch (NumberFormatException e)
             {
-                player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: One or more of the inputted radii is not a number.");
+                player.sendMessage(ChatColor.RED + CommonMessages.NOT_A_NUMBER_2);
                 return false;
             }
 
             field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Region set.");
+            player.sendMessage(ChatColor.GREEN + CommonMessages.REGION_SET);
             return true;
         }
 
-        player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: Not enough args.");
+        player.sendMessage(ChatColor.RED + CommonMessages.NOT_ENOUGH_ARGS);
         return false;
     }
 }

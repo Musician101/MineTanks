@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.util;
 
+import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.handlers.MenuHandlers.TankSelectionHandler;
 import musician101.minetanks.spigot.tank.Tank;
@@ -14,7 +15,7 @@ public class Menus
 
     public Menus(MineTanks plugin)
     {
-        this.tankSelection = new IconMenu("Tank Selection", MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
+        this.tankSelection = new IconMenu(CommonReference.TANK_SELECTION, MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
 
         //TODO need to implement a page system for the inevitable
         int slot = 0;

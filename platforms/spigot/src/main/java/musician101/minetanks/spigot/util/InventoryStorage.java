@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.util;
 
+import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.util.AbstractStorage;
 import musician101.minetanks.spigot.MineTanks;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class InventoryStorage extends AbstractStorage
 
     public InventoryStorage(MineTanks plugin)
     {
-        super(new File(plugin.getDataFolder(), "inventorystorage"));
+        super(new File(plugin.getDataFolder(), CommonStorage.INVENTORY));
         this.plugin = plugin;
     }
 

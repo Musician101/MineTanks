@@ -1,5 +1,7 @@
 package musician101.minetanks.spigot.listeners;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
@@ -39,19 +41,19 @@ public class BattlefieldListener implements Listener
             if (pt.isReady())
             {
                 pt.setReady(false);
-                player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
+                player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, CommonItemText.READY_UP, CommonItemText.NOT_READY));
                 return;
             }
 
             pt.setReady(true);
-            player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Unready", "You are currently ready."));
+            player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, CommonItemText.UNREADY, CommonItemText.READY));
             field.startMatch();
             return;
         }
 
         if (pt.isReady())
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " You must unready to change your tank.");
+            player.sendMessage(ChatColor.RED + CommonMessages.MUST_UNREADY);
             return;
         }
 

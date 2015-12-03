@@ -1,6 +1,9 @@
 package musician101.minetanks.spigot.handlers;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.Tanks;
@@ -38,15 +41,16 @@ public class MenuHandlers
                 if (pt != null)
                 {
                     pt.setTank(tank);
-                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), "Open Hangar.", "Tank: " + tank.getName()));
-                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have chosen the " + tank.getName() + ".");
-                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " If you wish to choose another tank, right click with the 'Open Hangar' item.");
-                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " When you are ready, simply right click the 'Ready' item.");
+                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), CommonItemText.OPEN_HANGAR, SpigotReference.tank(CommonItemText.SELECTED_TANK, tank)));
+                    player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.tank(CommonMessages.TANK_SELECTION_1, tank),
+                            ChatColor.GREEN + CommonMessages.TANK_SELECTION_2,
+                            ChatColor.GREEN + CommonMessages.TANK_SELECTION_3});
+
                     return;
                 }
             }
 
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + "Please click a valid tank.");
+            player.sendMessage(ChatColor.RED + CommonMessages.INVALID_TANK);
             event.setWillClose(false);
         }
     }

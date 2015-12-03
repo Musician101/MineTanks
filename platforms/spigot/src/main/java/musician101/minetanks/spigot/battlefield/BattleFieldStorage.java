@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.battlefield;
 
+import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.util.SpigotRegion;
@@ -16,7 +17,7 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
 
     public BattleFieldStorage(MineTanks plugin)
     {
-        super(new File(plugin.getDataFolder(), "battlefields"));
+        super(new File(plugin.getDataFolder(), CommonStorage.BATTLEFIELDS));
         this.plugin = plugin;
         loadFromFiles();
     }

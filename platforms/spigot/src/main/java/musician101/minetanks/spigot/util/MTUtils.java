@@ -9,16 +9,11 @@ import java.util.Collections;
 
 public class MTUtils
 {
-    public static ItemStack createCustomItem(Material material, String displayName)
-    {
-        return createCustomItem(material, displayName, "");
-    }
-
     public static ItemStack createCustomItem(Material material, String displayName, String description)
     {
         ItemStack item = new ItemStack(material, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§a" + displayName);
+        meta.setDisplayName("\u00A7a" + displayName);
         if (!description.equals(""))
             meta.setLore(Collections.singletonList(description));
 

@@ -3,6 +3,9 @@ package musician101.minetanks.spigot.commands.participate;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.CommandArgument;
 import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.battlefield.BattleField;
@@ -18,7 +21,7 @@ public class JoinCommand extends AbstractSpigotCommand
 
     public JoinCommand(MineTanks plugin)
     {
-        super("join", "Enter the selected battlefield.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("join"), new CommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super(CommonCommands.JOIN_NAME, CommonCommands.JOIN_DESC, Arrays.asList(new CommandArgument("/" + CommonCommands.MT), new CommandArgument(CommonCommands.JOIN_NAME), new CommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 
@@ -29,31 +32,31 @@ public class JoinCommand extends AbstractSpigotCommand
             return false;
 
         Player player = (Player) sender;
-        if (minArgsMet(player, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
+        if (minArgsMet(player, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
         BattleField field = plugin.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+            sender.sendMessage(ChatColor.RED + CommonMessages.FIELD_DNE);
             return false;
         }
 
         if (!field.isEnabled())
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, this field is currently disabled.");
+            player.sendMessage(ChatColor.RED + CommonMessages.FIELD_DISABLED);
             return false;
         }
 
         if (!field.isReady())
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, this field is not ready.");
+            player.sendMessage(ChatColor.RED + CommonMessages.FIELD_NOT_READY);
             return false;
         }
 
         if (field.inProgress())
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, but the match has already started.");
+            player.sendMessage(ChatColor.RED + CommonMessages.MATCH_IN_PROGRESS);
             return false;
         }
 

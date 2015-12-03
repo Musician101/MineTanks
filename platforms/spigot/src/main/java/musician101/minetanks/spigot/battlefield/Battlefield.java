@@ -1,8 +1,12 @@
 package musician101.minetanks.spigot.battlefield;
 
+import musician101.minetanks.common.CommonReference.CommonConfig;
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.battlefield.AbstractBattleField;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.handlers.ReloadHandler;
 import musician101.minetanks.spigot.scoreboards.MTScoreboard;
@@ -101,12 +105,12 @@ public class BattleField extends AbstractBattleField
         if (team == MTTeam.SPECTATOR)
         {
             player.teleport(spectators);
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You are now spectating in " + getName() + ".");
+            player.sendMessage(SpigotReference.battleField(ChatColor.GREEN + CommonMessages.FIELD_SPECTATING, this));
         }
         else
         {
-            player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, "Open Hangar", "Tank: None"));
-            player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, "Ready Up", "You are currently not ready."));
+            player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, CommonItemText.OPEN_HANGAR, SpigotReference.tank(CommonItemText.SELECTED_TANK, null)));
+            player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, CommonItemText.READY_UP, CommonItemText.NOT_READY));
             unassigned++;
         }
 
@@ -151,46 +155,31 @@ public class BattleField extends AbstractBattleField
         }
         catch (IOException e)
         {
-            plugin.getLogger().warning("Error: Failed to create file: " + file.getName());
+            plugin.getLogger().warning(SpigotReference.file(CommonMessages.FILE_CREATE_FAIL, file));
             return;
         }
 
         YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
         if (spigotRegion != null)
-            field.set("region", spigotRegion.serialize());
+            field.set(CommonConfig.REGION, spigotRegion.serialize());
 
         if (greenSpawn != null)
-        {
-            field.set("greenSpawn.world", greenSpawn.getWorld().getName());
-            field.set("greenSpawn.x", greenSpawn.getX());
-            field.set("greenSpawn.y", greenSpawn.getY());
-            field.set("greenSpawn.z", greenSpawn.getZ());
-        }
+            field.set(CommonConfig.GREEN_SPAWN, greenSpawn.serialize());
 
         if (redSpawn != null)
-        {
-            field.set("redSpawn.world", redSpawn.getWorld().getName());
-            field.set("redSpawn.x", redSpawn.getX());
-            field.set("redSpawn.y", redSpawn.getY());
-            field.set("redSpawn.z", redSpawn.getZ());
-        }
+            field.set(CommonConfig.RED_SPAWN, redSpawn.serialize());
 
         if (spectators != null)
-        {
-            field.set("spectators.world", spectators.getWorld().getName());
-            field.set("spectators.x", spectators.getX());
-            field.set("spectators.y", spectators.getY());
-            field.set("spectators.z", spectators.getZ());
-        }
+            field.set(CommonConfig.SPECTATORS, spectators.serialize());
 
-        field.set("enabled", isEnabled());
+        field.set(CommonConfig.ENABLED, isEnabled());
         try
         {
             field.save(file);
         }
         catch (IOException e)
         {
-            plugin.getLogger().warning("Error: Could not save " + file.getName());
+            plugin.getLogger().warning(SpigotReference.file(CommonMessages.FIELD_SAVE_FAIL, file));
         }
     }
 
@@ -307,11 +296,11 @@ public class BattleField extends AbstractBattleField
                 pt.setTank(null);
                 sb.playerDeath(player);
                 if (forced)
-                    player.sendMessage(ChatColor.RED + plugin.getPrefix() + " The match was forcibly ended by an admin.");
+                    player.sendMessage(ChatColor.GOLD + CommonMessages.MATCH_FORCE_ENDED);
                 else if (sb.getGreenTeamSize() == 0)
-                    player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Red team wins!");
+                    player.sendMessage(ChatColor.RED + CommonMessages.RED_WINS);
                 else if (sb.getRedTeamSize() == 0)
-                    player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green team wins!");
+                    player.sendMessage(ChatColor.GREEN + CommonMessages.GREEN_WINS);
             }
         }
     }

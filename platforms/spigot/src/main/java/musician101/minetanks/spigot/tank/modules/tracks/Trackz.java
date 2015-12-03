@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.tank.modules.tracks;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractTracks;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
@@ -44,7 +45,7 @@ public class Trackz extends AbstractTracks implements HasIcon
         ItemMeta meta = getIcon().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.setLore(Collections.singletonList("Your Tracks"));
+        meta.setLore(Collections.singletonList(CommonItemText.TRACKS));
         getIcon().setItemMeta(meta);
     }
 }

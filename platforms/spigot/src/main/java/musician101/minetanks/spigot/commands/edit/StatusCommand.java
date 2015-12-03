@@ -3,7 +3,11 @@ package musician101.minetanks.spigot.commands.edit;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.CommandArgument;
 import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.BattleField;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +21,7 @@ public class StatusCommand extends AbstractSpigotCommand
 
     public StatusCommand(MineTanks plugin)
     {
-        super("status", "View the status of the specified field.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("status"), new CommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
+        super(CommonCommands.STATUS_NAME, CommonCommands.STATUS_DESC, Arrays.asList(new CommandArgument("/" + CommonCommands.MT), new CommandArgument(CommonCommands.STATUS_NAME), new CommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, false, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 
@@ -27,17 +31,24 @@ public class StatusCommand extends AbstractSpigotCommand
         if (!canSenderUseCommand(sender))
             return false;
 
-        if (minArgsMet(sender, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
+        if (minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
         BattleField field = plugin.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
+            sender.sendMessage(ChatColor.RED + CommonMessages.FIELD_DNE);
             return false;
         }
 
-        sender.sendMessage(new String[]{ChatColor.GREEN + plugin.getPrefix() + " Status of " + field.getName(), ChatColor.GREEN + plugin.getPrefix() + " Enabled: " + field.isEnabled(), ChatColor.GREEN + plugin.getPrefix() + " Region: " + (field.getSpigotRegion() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Green Spawn: " + (field.getGreenSpawn() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Red Spawn: " + (field.getRedSpawn() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn: " + (field.getSpectators() == null ? "Not Set" : "Set")});
+        sender.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.STATUS_OF_FIELD, field),
+                ChatColor.GREEN + SpigotReference.enabled(CommonMessages.STATUS_OF_FIELD_ENABLED, field),
+                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_REGION, field.getSpigotRegion() == null),
+                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_GREEN, field.getGreenSpawn() == null),
+                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_RED, field.getRedSpawn() == null),
+                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_SPECTATORS, field.getSpectators() == null)});
+
+
         return true;
     }
 }
