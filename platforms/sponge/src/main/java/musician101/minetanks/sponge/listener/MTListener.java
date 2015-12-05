@@ -1,6 +1,5 @@
 package musician101.minetanks.sponge.listener;
 
-import com.flowpowered.math.vector.Vector3d;
 import musician101.common.java.util.ListUtil;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.sponge.SpongeMineTanks;
@@ -12,20 +11,16 @@ import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.sponge.handler.ExplosionTracker;
 import musician101.minetanks.sponge.handler.ReloadHandler;
-import musician101.minetanks.sponge.lib.Reference.Messages;
-import musician101.minetanks.sponge.tank.Tank;
-import musician101.minetanks.sponge.tank.Tanks;
+import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
 import musician101.minetanks.sponge.tank.module.cannon.SpongeAutoLoader;
 import musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
 import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import musician101.minetanks.sponge.util.SpongeRegion;
-import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockTransaction;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.explosive.Explosive;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.entity.projectile.Projectile;
@@ -51,11 +46,8 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.explosion.Explosion;
 import org.spongepowered.api.world.explosion.ExplosionBuilder;
 
 import java.io.File;
@@ -186,7 +178,7 @@ public class MTListener
         if (!file.exists())
             return;
 
-        player.sendMessage(Texts.of(Messages.POSITIVE_PREFIX + "You logged off with items still stored away. They will now be returned to you."));
+        player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "You logged off with items still stored away. They will now be returned to you."));
         sis.load(player.getUniqueId());
     }
 
@@ -221,7 +213,7 @@ public class MTListener
                 if (!region.isInRegion(player.getLocation()))
                 {
                     event.setCancelled(true);
-                    player.sendMessage(Texts.of(Messages.NEGATIVE_PREFIX + "Out of bounds!"));
+                    player.sendMessage(Texts.of(SpongeMessages.NEGATIVE_PREFIX + "Out of bounds!"));
                     return;
                 }
             }

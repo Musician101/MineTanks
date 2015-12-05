@@ -8,7 +8,7 @@ import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.sponge.event.PlayerTankDeathEvent;
 import musician101.minetanks.sponge.handler.DamageHandler;
-import musician101.minetanks.sponge.lib.Reference.Messages;
+import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
 import musician101.minetanks.sponge.util.MTUtils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -46,7 +46,7 @@ public class BattlefieldListener
 
         if (pt.isReady())
         {
-            player.sendMessage(Texts.of(Messages.NEGATIVE_PREFIX + "You must unready to change your tank."));
+            player.sendMessage(Texts.of(SpongeMessages.NEGATIVE_PREFIX + "You must unready to change your tank."));
             return;
         }
 

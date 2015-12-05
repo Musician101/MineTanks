@@ -1,15 +1,14 @@
 package musician101.minetanks.sponge;
 
 import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
-import musician101.minetanks.sponge.command.MTCommandExecutor;
+import musician101.minetanks.sponge.command.MTCommand;
 import musician101.minetanks.sponge.handler.TankSelectionHandler;
-import musician101.minetanks.sponge.lib.Reference;
+import musician101.minetanks.sponge.lib.SpongeReference;
 import musician101.minetanks.sponge.listener.BattlefieldListener;
 import musician101.minetanks.sponge.listener.MTListener;
 import musician101.minetanks.sponge.tank.Tank;
 import musician101.minetanks.sponge.tank.Tanks;
 import musician101.minetanks.sponge.util.IconMenu;
-import musician101.minetanks.sponge.util.Menus;
 import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,27 +25,25 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
-import java.util.Arrays;
 
-@Plugin(id = Reference.ID, name = Reference.NAME, version = Reference.VERSION)
+@Plugin(id = SpongeReference.ID, name = SpongeReference.NAME, version = SpongeReference.VERSION)
 public class SpongeMineTanks
 {
     private static SpongeBattleFieldStorage fieldStorage;
     private static SpongeInventoryStorage inventoryStorage;
-    private Menus menus;
     static Game game;
     static IconMenu tankSelection;
     static Logger logger;
     static String prefix;
     @ConfigDir(sharedRoot = false)
-    File configDir = new File(Reference.NAME);
+    File configDir = new File(SpongeReference.NAME);
 
     @Listener
     public void onServerStart(GameStartedServerEvent event)
     {
         game = event.getGame();
-        logger = LoggerFactory.getLogger(Reference.NAME);
-        prefix = "[" + Reference.NAME + "]";
+        logger = LoggerFactory.getLogger(SpongeReference.NAME);
+        prefix = "[" + SpongeReference.NAME + "]";
 
         fieldStorage = new SpongeBattleFieldStorage(configDir);
         fieldStorage.loadFromFiles();
@@ -58,7 +55,7 @@ public class SpongeMineTanks
         game.getEventManager().registerListeners(getPluginContainer(), new MTListener());
         game.getEventManager().registerListeners(getPluginContainer(), new BattlefieldListener());
 
-        game.getCommandDispatcher().register(this, new MTCommandExecutor(), Arrays.asList("mt"));
+        game.getCommandDispatcher().register(this, new MTCommand(), "mt");
 
         logger.info("Movin' on out. Shuck 'em up!");
     }
@@ -109,6 +106,6 @@ public class SpongeMineTanks
 
     public static PluginContainer getPluginContainer()
     {
-        return game.getPluginManager().getPlugin(Reference.ID).get();
+        return game.getPluginManager().getPlugin(SpongeReference.ID).get();
     }
 }

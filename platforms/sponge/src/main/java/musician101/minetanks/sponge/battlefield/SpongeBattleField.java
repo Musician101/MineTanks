@@ -6,7 +6,7 @@ import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.handler.ReloadHandler;
-import musician101.minetanks.sponge.lib.Reference.Messages;
+import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
 import musician101.minetanks.sponge.tank.Tank;
 import musician101.minetanks.sponge.util.MTUtils;
@@ -102,7 +102,7 @@ public class SpongeBattleField extends AbstractBattleField
         if (team == MTTeam.SPECTATOR)
         {
             player.setLocation(spectators);
-            player.sendMessage(Texts.of(Messages.POSITIVE_PREFIX + "You are now spectating in " + getName() + "."));
+            player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "You are now spectating in " + getName() + "."));
         }
         else
         {
@@ -338,9 +338,9 @@ public class SpongeBattleField extends AbstractBattleField
                 if (forced)
                     player.sendMessage(Texts.of(SpongeMineTanks.getPrefix() + "The match has been forcibly ended by an admin."));
                 else if (sb.getGreenTeamSize() == 0)
-                    player.sendMessage(Texts.of(Messages.NEGATIVE_PREFIX + "Red team wins!"));
+                    player.sendMessage(Texts.of(SpongeMessages.NEGATIVE_PREFIX + "Red team wins!"));
                 else if (sb.getRedTeamSize() == 0)
-                    player.sendMessage(Texts.of(Messages.POSITIVE_PREFIX + "Green team wins!"));
+                    player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "Green team wins!"));
             }
         }
     }

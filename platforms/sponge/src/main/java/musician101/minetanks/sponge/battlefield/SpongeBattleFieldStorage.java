@@ -87,7 +87,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
 
                     if (field.containsKey("redSpawn"))
                         redSpawn = deserializeLocation(field.getSpongeJSONConfig("redSpawn"));
-                    
+
                     if (field.containsKey("spectators"))
                         spectators = deserializeLocation(field.getSpongeJSONConfig("spectators"));
 
