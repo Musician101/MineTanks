@@ -33,12 +33,12 @@ public class SpigotRegion extends AbstractRegion
 
     public SpigotRegion(Map<String, Object> map)
     {
-        super(map.containsKey(CommonConfig.MINX) ? (Integer) map.get(CommonConfig.MINX) : 0,
-            map.containsKey(CommonConfig.MINY) ? (Integer) map.get(CommonConfig.MINY) : 0,
-            map.containsKey(CommonConfig.MINZ) ? (Integer) map.get(CommonConfig.MINZ) : 0,
-                map.containsKey(CommonConfig.MAXX) ? (Integer) map.get(CommonConfig.MAXX) : 0,
-                map.containsKey(CommonConfig.MAXY) ? (Integer) map.get(CommonConfig.MAXY) : 0,
-                map.containsKey(CommonConfig.MAXZ) ? (Integer) map.get(CommonConfig.MAXZ) : 0);
+        super(map.containsKey(CommonConfig.MIN_X) ? (Integer) map.get(CommonConfig.MIN_X) : 0,
+            map.containsKey(CommonConfig.MIN_Y) ? (Integer) map.get(CommonConfig.MIN_Y) : 0,
+            map.containsKey(CommonConfig.MIN_Z) ? (Integer) map.get(CommonConfig.MIN_Z) : 0,
+                map.containsKey(CommonConfig.MAX_X) ? (Integer) map.get(CommonConfig.MAX_X) : 0,
+                map.containsKey(CommonConfig.MAX_Y) ? (Integer) map.get(CommonConfig.MAX_Y) : 0,
+                map.containsKey(CommonConfig.MAX_Z) ? (Integer) map.get(CommonConfig.MAX_Z) : 0);
 
         this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
     }

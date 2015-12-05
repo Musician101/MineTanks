@@ -41,7 +41,7 @@ public class MenuHandlers
                 if (pt != null)
                 {
                     pt.setTank(tank);
-                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getIcon().getType(), CommonItemText.OPEN_HANGAR, SpigotReference.tank(CommonItemText.SELECTED_TANK, tank)));
+                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getItem().getType(), CommonItemText.OPEN_HANGAR, SpigotReference.tank(CommonItemText.SELECTED_TANK, tank)));
                     player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.tank(CommonMessages.TANK_SELECTION_1, tank),
                             ChatColor.GREEN + CommonMessages.TANK_SELECTION_2,
                             ChatColor.GREEN + CommonMessages.TANK_SELECTION_3});

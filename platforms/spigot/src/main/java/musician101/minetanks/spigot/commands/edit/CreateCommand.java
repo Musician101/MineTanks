@@ -1,8 +1,8 @@
 package musician101.minetanks.spigot.commands.edit;
 
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
+import musician101.common.java.minecraft.spigot.command.SpigotCommandArgument;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
@@ -21,7 +21,7 @@ public class CreateCommand extends AbstractSpigotCommand
 
     public CreateCommand(MineTanks plugin)
     {
-        super(CommonCommands.CREATE, CommonCommands.CREATE, Arrays.asList(new CommandArgument("/" + CommonCommands.MT), new CommandArgument(CommonCommands.CREATE, new CommandArgument(CommonCommands.NAME, Syntax.REPLACE, Syntax.REQUIRED))), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
+        super(CommonCommands.CREATE, CommonCommands.CREATE, Arrays.asList(new SpigotCommandArgument("/" + CommonCommands.MT), new SpigotCommandArgument(CommonCommands.CREATE), new SpigotCommandArgument(CommonCommands.NAME, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 

@@ -1,5 +1,9 @@
 package musician101.minetanks.common;
 
+import musician101.minetanks.common.battlefield.AbstractBattleField;
+
+import java.util.UUID;
+
 public class CommonReference
 {
     public static final String DESCRIPTION = "${project.description}";
@@ -62,24 +66,41 @@ public class CommonReference
 
     public static class CommonConfig
     {
+        public static final String AMPLIFIER = "amplifier";
         public static final String ARMOR = "armor.";
+        public static final String DURATION = "duration";
+        public static final String EFFECTS = "effects";
         public static final String ENABLED = "enabled";
         public static final String GREEN_SPAWN = "greenSpawn";
         public static final String INVENTORY = "inventory.";
-        public static final String MAXX = "maxX";
-        public static final String MINX = "minX";
-        public static final String MAXY = "maxY";
-        public static final String MINY = "minY";
-        public static final String MAXZ = "maxZ";
-        public static final String MINZ = "minZ";
+        public static final String LOCATION = "location";
+        public static final String MAX_X = "maxX";
+        public static final String MIN_X = "minX";
+        public static final String MAX_Y = "maxY";
+        public static final String MIN_Y = "minY";
+        public static final String MAX_Z = "maxZ";
+        public static final String MIN_Z = "minZ";
         public static final String RED_SPAWN = "redSpawn";
         public static final String REGION = "region";
         public static final String SPECTATORS = "spectators";
+        public static final String XP = "xp";
+        public static final String TYPE = "type";
         public static final String WORLD = "world";
+
+        public static String playerFileYAML(UUID uuid)
+        {
+            return uuid.toString() + ".yml";
+        }
+
+        public static String battlefieldFile(AbstractBattleField field, String extension)
+        {
+            return field.getName() + "." + extension;
+        }
     }
 
     public static class CommonItemText
     {
+        public static final String AMMO = "Ammo";
         public static final String CANNON = "Your Cannon";
         public static final String CLIP_RELOAD_TIME = "Clip Reload Time: " + Constants.NUMBER;
         public static final String CLIP_SIZE = "Clip Size: " + Constants.CURRENT_CLIP + "/" + Constants.MAX_CLIP;
@@ -97,9 +118,10 @@ public class CommonReference
         public static final String TURRET = "Your Turret";
         public static final String UNREADY = "Unready";
     }
+
     public static class CommonMessages
     {
-        static final String PREFIX = "[" + CommonReference.NAME + "] ";
+        public static final String PREFIX = "[" + CommonReference.NAME + "] ";
         public static final String CHECK_FIELD_STATUS = PREFIX + "Check the status of the battlefield by using /mt status.";
         public static final String FIELD_CREATED = PREFIX + Constants.FIELD + " successfully created.";
         public static final String FIELD_CREATED_2 = PREFIX + "Check the status of the battlefield by using /mt status.";
@@ -110,9 +132,9 @@ public class CommonReference
         public static final String FIELD_EXISTS = PREFIX + "Sorry, that field already exists.";
         public static final String FIELD_NOT_READY = PREFIX + "Sorry, this field is not ready.";
         public static final String FIELD_NOT_SPECIFIED = PREFIX + "Error: Field not specified.";
-        public static final String FIELD_SAVE_FAIL = "Error: Could not save " + Constants.FILE;
         public static final String FIELD_SPECTATING = PREFIX + "You are now spectating in " + Constants.FIELD + ".";
         public static final String FILE_CREATE_FAIL = "Error: Failed to create file: " + Constants.FILE;
+        public static final String FILE_SAVE_FAIL = "Error: Could not save " + Constants.FILE;
         public static final String GREEN_SPAWN_SET = PREFIX + "Green spawn point set.";
         public static final String GREEN_WINS = PREFIX + "Green ream wins!";
         public static final String INVALID_TANK = PREFIX + "Please click a valid tank.";
@@ -286,7 +308,8 @@ public class CommonReference
         NUMBER,
         SET,
         STRING,
-        TANK;
+        TANK,
+        UUID;
 
         @Override
         public String toString()

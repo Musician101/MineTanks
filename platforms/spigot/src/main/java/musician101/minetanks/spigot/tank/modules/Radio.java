@@ -4,7 +4,7 @@ import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractRadio;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
-import musician101.minetanks.spigot.util.HasIcon;
+import musician101.minetanks.spigot.util.ItemRepresentation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 
-public class Radio extends AbstractRadio implements HasIcon
+public class Radio extends AbstractRadio implements ItemRepresentation
 {
     public Radio(String name, TankType type)
     {
@@ -22,7 +22,7 @@ public class Radio extends AbstractRadio implements HasIcon
     }
 
     @Override
-    public ItemStack getIcon()
+    public ItemStack getItem()
     {
         return (ItemStack) radio;
     }
@@ -42,10 +42,10 @@ public class Radio extends AbstractRadio implements HasIcon
             material = Material.GOLD_CHESTPLATE;
 
         radio = new ItemStack(material);
-        ItemMeta meta = getIcon().getItemMeta();
+        ItemMeta meta = getItem().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.setLore(Collections.singletonList(CommonItemText.RADIO));
-        getIcon().setItemMeta(meta);
+        getItem().setItemMeta(meta);
     }
 }

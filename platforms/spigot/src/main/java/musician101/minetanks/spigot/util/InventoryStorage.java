@@ -1,12 +1,14 @@
 package musician101.minetanks.spigot.util;
 
+import musician101.minetanks.common.CommonReference.CommonConfig;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonStorage;
-import musician101.minetanks.common.util.AbstractStorage;
+import musician101.minetanks.common.util.AbstractInventoryStorage;
 import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotReference;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,20 +22,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-public class InventoryStorage extends AbstractStorage
+public class InventoryStorage extends AbstractInventoryStorage
 {
-    private final MineTanks plugin;
-
     public InventoryStorage(MineTanks plugin)
     {
         super(new File(plugin.getDataFolder(), CommonStorage.INVENTORY));
-        this.plugin = plugin;
     }
 
-    public void returnInventory(Player player)
+    @Override
+    public void load(UUID playerId)
     {
-        File file = getFile(player);
+        Player player = Bukkit.getPlayer(playerId);
+        File file = getPlayerFile(playerId);
         if (file.exists())
         {
             player.getInventory().setHelmet(null);
@@ -46,76 +48,65 @@ public class InventoryStorage extends AbstractStorage
 
             YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
             for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-                player.getInventory().setItem(slot, yml.getItemStack("inventory." + slot));
+                player.getInventory().setItem(slot, yml.getItemStack(CommonConfig.INVENTORY + slot));
 
             ItemStack[] armor = new ItemStack[4];
             for (int slot = 0; slot < armor.length; slot++)
-                armor[slot] = yml.getItemStack("armor." + slot);
+                armor[slot] = yml.getItemStack(CommonConfig.ARMOR + slot);
 
             player.getInventory().setArmorContents(armor);
-            for (Map pe : yml.getMapList("effects"))
-                player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(pe.get("type").toString().toUpperCase()), Integer.parseInt(pe.get("duration").toString()), Integer.parseInt(pe.get("amplifier").toString()), true), true);
+            for (Map pe : yml.getMapList(CommonConfig.EFFECTS))
+                player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(pe.get(CommonConfig.TYPE).toString().toUpperCase()), Integer.parseInt(pe.get(CommonConfig.DURATION).toString()), Integer.parseInt(pe.get(CommonConfig.AMPLIFIER).toString()), true), true);
 
-            ConfigurationSection locCS = yml.getConfigurationSection("location");
-            player.teleport(new Location(Bukkit.getWorld(locCS.getString("world")), locCS.getDouble("x"), locCS.getDouble("y"), locCS.getDouble("z"), Float.parseFloat(locCS.getString("yaw")), Float.parseFloat(locCS.getString("pitch"))));
-
-            player.setExp(Float.parseFloat(yml.getString("xp")));
+            player.teleport(Location.deserialize(yml.getConfigurationSection(CommonConfig.LOCATION).getValues(true)));
+            player.setExp(Float.parseFloat(yml.getString(CommonConfig.XP)));
             file.delete();
         }
     }
 
-    public boolean saveInventory(Player player)
+    @Override
+    public boolean save(UUID playerId)
     {
-        File file = getFile(player);
+        Player player = Bukkit.getPlayer(playerId);
+        File file = getPlayerFile(playerId);
         try
         {
             file.createNewFile();
         }
         catch (IOException e)
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error occurred.");
+            player.sendMessage(ChatColor.RED + SpigotReference.file(CommonMessages.FILE_CREATE_FAIL, file));
             return false;
         }
 
         YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
         PlayerInventory inv = player.getInventory();
         for (int slot = 0; slot < inv.getSize(); slot++)
-            yml.set("inventory." + slot, inv.getItem(slot));
+            yml.set(CommonConfig.INVENTORY + slot, inv.getItem(slot));
 
         for (int slot = 0; slot < inv.getArmorContents().length; slot++)
-            yml.set("armor." + slot, player.getInventory().getArmorContents()[slot]);
+            yml.set(CommonConfig.ARMOR + slot, player.getInventory().getArmorContents()[slot]);
 
         List<Map<String, Object>> effects = new ArrayList<>();
         for (PotionEffect effect : player.getActivePotionEffects())
         {
             Map<String, Object> pe = new HashMap<>();
-            pe.put("ambient", effect.isAmbient());
-            pe.put("type", effect.getType().toString());
-            pe.put("duration", effect.getDuration());
-            pe.put("amplifier", effect.getAmplifier());
+            pe.put(CommonConfig.TYPE, effect.getType().toString());
+            pe.put(CommonConfig.DURATION, effect.getDuration());
+            pe.put(CommonConfig.AMPLIFIER, effect.getAmplifier());
             effects.add(pe);
         }
 
-        yml.set("effects", effects);
-
-        Location loc = player.getLocation();
-        Map<String, Object> pl = new HashMap<>();
-        pl.put("world", loc.getWorld().getName());
-        pl.put("x", loc.getX());
-        pl.put("y", loc.getY());
-        pl.put("z", loc.getZ());
-        pl.put("yaw", loc.getYaw());
-        pl.put("pitch", loc.getPitch());
-        yml.set("location", pl);
-        yml.set("xp", player.getExp());
-
+        yml.set(CommonConfig.EFFECTS, effects);
+        yml.set(CommonConfig.LOCATION, player.getLocation().serialize());
+        yml.set(CommonConfig.XP, player.getExp());
         try
         {
             yml.save(file);
         }
         catch (IOException e)
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: An internal error has prevented you from joining the game.");
+            player.sendMessage(ChatColor.RED + SpigotReference.file(CommonMessages.FILE_SAVE_FAIL, file));
             file.delete();
             return false;
         }
@@ -133,8 +124,9 @@ public class InventoryStorage extends AbstractStorage
         return true;
     }
 
-    public File getFile(Player player)
+    @Override
+    public File getPlayerFile(UUID playerId)
     {
-        return new File(getStorageDir(), player.getUniqueId().toString() + ".yml");
+        return new File(getStorageDir(), CommonConfig.playerFileYAML(playerId));
     }
 }

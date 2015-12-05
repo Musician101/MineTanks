@@ -5,7 +5,7 @@ import musician101.minetanks.common.tank.Armor;
 import musician101.minetanks.common.tank.modules.AbstractTurret;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
-import musician101.minetanks.spigot.util.HasIcon;
+import musician101.minetanks.spigot.util.ItemRepresentation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 
-public class Turret extends AbstractTurret implements HasIcon
+public class Turret extends AbstractTurret implements ItemRepresentation
 {
     public Turret(String name, TankType type, Armor armor)
     {
@@ -23,7 +23,7 @@ public class Turret extends AbstractTurret implements HasIcon
     }
 
     @Override
-    public ItemStack getIcon()
+    public ItemStack getItem()
     {
         return (ItemStack) turret;
     }
@@ -43,10 +43,10 @@ public class Turret extends AbstractTurret implements HasIcon
             material = Material.GOLD_HELMET;
 
         turret = new ItemStack(material);
-        ItemMeta meta = getIcon().getItemMeta();
+        ItemMeta meta = getItem().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.setLore(Collections.singletonList(CommonItemText.TURRET));
-        getIcon().setItemMeta(meta);
+        getItem().setItemMeta(meta);
     }
 }

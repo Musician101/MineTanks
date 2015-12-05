@@ -1,7 +1,7 @@
 package musician101.minetanks.spigot.commands;
 
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
+import musician101.common.java.minecraft.spigot.command.SpigotCommandArgument;
 import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.MineTanks;
@@ -29,7 +29,7 @@ public class MTCommands extends AbstractSpigotCommand
 
     public MTCommands(MineTanks plugin)
     {
-        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new CommandArgument("/" + CommonReference.ID)), 0, "", false, "", "", Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
+        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new SpigotCommandArgument("/" + CommonReference.ID)), 0, "", false, "", "", Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
         this.plugin = plugin;
     }
 

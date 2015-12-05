@@ -9,6 +9,7 @@ import musician101.minetanks.spigot.tank.modules.Radio;
 import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
 import musician101.minetanks.spigot.tank.modules.tracks.Trackz;
 import musician101.minetanks.spigot.tank.modules.turret.Turret;
+import musician101.minetanks.spigot.util.MTUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -19,37 +20,46 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Tank extends AbstractTank
 {
-    private final ItemStack[] wornArmor;
-    private final Inventory weapons;
+    Armor armor;
+    Cannon cannon;
+    Engine engine;
+    Radio radio;
+    Trackz tracks;
+    Turret turret;
 
     public Tank(String name, TankType type, int health, Armor armor, int speed, Cannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
     {
-        super(name, type, health, speed, cannon, engine, radio, tracks, turret, description);
-        this.wornArmor = parseArmor(armor.getArmorValue(), speed, engine, radio, tracks, turret);
-        this.weapons = parseWeapons(cannon);
+        super(name, type, health, speed, description);
+        this.cannon = cannon;
+        this.engine = engine;
+        this.radio = radio;
+        this.tracks = tracks;
+        this.turret = turret;
     }
 
-    private ItemStack[] parseArmor(double armor, int speed, Engine engine, Radio radio, Trackz tracks, Turret turret)
+    private ItemStack parseArmorValue(ItemStack item)
     {
-        return new ItemStack[]{parseArmorValue(tracks.getIcon(), armor), parseArmorValue(parseSpeedValue(engine.getIcon(), speed), armor), parseArmorValue(radio.getIcon(), armor), parseArmorValue(turret.getIcon(), (turret.getArmor().getArmorValue() != 0 ? turret.getArmor().getArmorValue() : armor))};
+        return parseArmorValue(item, armor);
     }
 
-    private ItemStack parseArmorValue(ItemStack item, double armor)
+    private ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
         ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.DURABILITY, (int) Math.round(armor), true);
+        meta.addEnchant(Enchantment.DURABILITY, (int) Math.round(armor.getArmorValue()), true);
         item.setItemMeta(meta);
         return item;
     }
 
-    private ItemStack parseSpeedValue(ItemStack item, int speed)
+    private ItemStack parseSpeedValue(ItemStack item)
     {
         ItemMeta meta = item.getItemMeta();
-        meta.setLore(Arrays.asList(meta.getLore().get(0), SpigotReference.number(CommonItemText.SPEED_VALUE, speed)));
+        meta.setLore(Arrays.asList(meta.getLore().get(0), SpigotReference.number(CommonItemText.SPEED_VALUE, getSpeed())));
         item.setItemMeta(meta);
         return item;
     }
@@ -57,24 +67,44 @@ public class Tank extends AbstractTank
     private Inventory parseWeapons(Cannon cannon)
     {
         Inventory inv = Bukkit.createInventory(null, InventoryType.PLAYER);
-        inv.setItem(0, cannon.getIcon());
+        inv.setItem(0, cannon.getItem());
         inv.addItem(new ItemStack(Material.ARROW, cannon.getAmmoCount()));
         return inv;
     }
 
     public Cannon getCannon()
     {
-        return (Cannon) cannon;
+        return cannon;
     }
 
-    public ItemStack[] getArmor()
+    public ItemStack getHelmet()
     {
-        return wornArmor;
+        return parseArmorValue(turret.getItem(), armor);
     }
 
-    public Inventory getWeapons()
+    public ItemStack getChestplate()
     {
-        return weapons;
+        return parseArmorValue(radio.getItem());
+    }
+
+    public ItemStack getLeggings()
+    {
+        return parseArmorValue(parseSpeedValue(engine.getItem()));
+    }
+
+    public ItemStack getBoots()
+    {
+        return parseArmorValue(tracks.getItem());
+    }
+
+    public List<ItemStack> getWeapons()
+    {
+        List<ItemStack> items = new ArrayList<>();
+        items.add(cannon.getItem());
+        ItemStack ammo = MTUtils.createCustomItem(Material.ARROW, CommonItemText.AMMO, "");
+        ammo.setAmount(cannon.getAmmoCount());
+        items.add(ammo);
+        return items;
     }
 
     public PotionEffect getSpeedEffect()

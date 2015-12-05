@@ -1,19 +1,22 @@
 package musician101.minetanks.spigot.tank;
 
 import musician101.minetanks.common.tank.AbstractTankType;
-import musician101.minetanks.spigot.util.HasIcon;
+import musician101.minetanks.spigot.util.ItemRepresentation;
 import org.bukkit.inventory.ItemStack;
 
-public class TankType extends AbstractTankType implements HasIcon
+public class TankType extends AbstractTankType implements ItemRepresentation
 {
-    public TankType(String name, ItemStack icon)
+    ItemStack item;
+
+    public TankType(String name, ItemStack item)
     {
-        super(name, icon);
+        super(name);
+        this.item = item;
     }
 
     @Override
-    public ItemStack getIcon()
+    public ItemStack getItem()
     {
-        return (ItemStack) icon;
+        return item;
     }
 }

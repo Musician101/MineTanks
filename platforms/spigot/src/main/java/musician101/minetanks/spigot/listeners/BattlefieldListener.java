@@ -71,7 +71,7 @@ public class BattlefieldListener implements Listener
         String damagerMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
         Bukkit.getOnlinePlayers().forEach(player -> {
             if (field.getPlayer(player.getUniqueId()) != null)
-                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + ChatColor.RESET + " " + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
+                player.sendMessage(ChatColor.GREEN + CommonMessages.PREFIX + " " + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
         });
 
         killed.getInventory().clear();
@@ -86,7 +86,7 @@ public class BattlefieldListener implements Listener
     @EventHandler
     public void onPlayerDamageEvent(PlayerTankDamageEvent event)
     {
-        DamageHandler dh = new DamageHandler(plugin);
+        DamageHandler dh = new DamageHandler();
         BattleField field = plugin.getFieldStorage().getField(event.getField());
         UUID damaged = event.getDamagedPlayer();
         if (event.getCause() == PlayerTankDamageCause.FALL)

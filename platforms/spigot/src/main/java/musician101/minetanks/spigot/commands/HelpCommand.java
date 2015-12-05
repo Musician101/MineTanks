@@ -1,7 +1,7 @@
 package musician101.minetanks.spigot.commands;
 
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
+import musician101.common.java.minecraft.spigot.command.SpigotCommandArgument;
 import musician101.minetanks.spigot.MineTanks;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ public class HelpCommand extends AbstractSpigotCommand
 
     public HelpCommand(MineTanks plugin, AbstractSpigotCommand mainCommand)
     {
-        super("help", "Display help info for " + mainCommand.getUsage(), Arrays.asList(new CommandArgument(mainCommand.getUsage()), new CommandArgument("help")), 1, "", false, "", "");
+        super("help", "Display help info for " + mainCommand.getUsage(), Arrays.asList(new SpigotCommandArgument(mainCommand.getUsage()), new SpigotCommandArgument("help")), 1, "", false, "", "");
         this.plugin = plugin;
         this.mainCommand = mainCommand;
     }

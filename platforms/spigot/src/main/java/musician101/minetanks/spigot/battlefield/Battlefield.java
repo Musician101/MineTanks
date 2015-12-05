@@ -11,8 +11,8 @@ import musician101.minetanks.spigot.battlefield.player.PlayerTank;
 import musician101.minetanks.spigot.handlers.ReloadHandler;
 import musician101.minetanks.spigot.scoreboards.MTScoreboard;
 import musician101.minetanks.spigot.tank.Tank;
-import musician101.minetanks.spigot.util.SpigotRegion;
 import musician101.minetanks.spigot.util.MTUtils;
+import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -99,7 +99,7 @@ public class BattleField extends AbstractBattleField
     public boolean addPlayer(UUID playerId, MTTeam team)
     {
         Player player = Bukkit.getPlayer(playerId);
-        if (!plugin.getInventoryStorage().saveInventory(player))
+        if (!plugin.getInventoryStorage().save(playerId))
             return false;
 
         if (team == MTTeam.SPECTATOR)
@@ -126,7 +126,7 @@ public class BattleField extends AbstractBattleField
         if (pt == null)
             return false;
 
-        plugin.getInventoryStorage().returnInventory(player);
+        plugin.getInventoryStorage().load(playerId);
 
         if (sb.isOnGreen(player) || sb.isOnRed(player))
             sb.playerDeath(player);
@@ -148,7 +148,7 @@ public class BattleField extends AbstractBattleField
     @Override
     public void saveToFile(File battlefields)
     {
-        File file = new File(battlefields, getName() + ".yml");
+        File file = new File(battlefields, CommonConfig.battlefieldFile(this, "yml"));
         try
         {
             file.createNewFile();
@@ -179,7 +179,7 @@ public class BattleField extends AbstractBattleField
         }
         catch (IOException e)
         {
-            plugin.getLogger().warning(SpigotReference.file(CommonMessages.FIELD_SAVE_FAIL, file));
+            plugin.getLogger().warning(SpigotReference.file(CommonMessages.FILE_SAVE_FAIL, file));
         }
     }
 
@@ -251,8 +251,11 @@ public class BattleField extends AbstractBattleField
                     @Override
                     public void run()
                     {
-                        player.getInventory().setContents(tank.getWeapons().getContents());
-                        player.getInventory().setArmorContents(tank.getArmor());
+                        tank.getWeapons().forEach(item -> player.getInventory().addItem(item));
+                        player.getInventory().setHelmet(tank.getHelmet());
+                        player.getInventory().setChestplate(tank.getChestplate());
+                        player.getInventory().setLeggings(tank.getLeggings());
+                        player.getInventory().setBoots(tank.getBoots());
                     }
                 }.runTaskLater(plugin, 1L);
                 new ReloadHandler(plugin, player, tank.getCannon()).isReloading();

@@ -1,6 +1,5 @@
 package musician101.minetanks.spigot.listeners;
 
-import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.CommonReference.CommonMessages;
@@ -167,7 +166,7 @@ public class MTListener implements Listener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        File file = plugin.getInventoryStorage().getFile(player);
+        File file = plugin.getInventoryStorage().getPlayerFile(player);
         if (!file.exists())
             return;
 

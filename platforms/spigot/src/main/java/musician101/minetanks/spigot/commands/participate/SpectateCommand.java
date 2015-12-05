@@ -1,8 +1,8 @@
 package musician101.minetanks.spigot.commands.participate;
 
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
+import musician101.common.java.minecraft.spigot.command.SpigotCommandArgument;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
@@ -21,7 +21,7 @@ public class SpectateCommand extends AbstractSpigotCommand
 
     public SpectateCommand(MineTanks plugin)
     {
-        super(CommonCommands.SPECTATE_NAME, CommonCommands.SPECTATE_DESC, Arrays.asList(new CommandArgument("/" + CommonCommands.MT), new CommandArgument(CommonCommands.SPECTATE_NAME), new CommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
+        super(CommonCommands.SPECTATE_NAME, CommonCommands.SPECTATE_DESC, Arrays.asList(new SpigotCommandArgument("/" + CommonCommands.MT), new SpigotCommandArgument(CommonCommands.SPECTATE_NAME), new SpigotCommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 

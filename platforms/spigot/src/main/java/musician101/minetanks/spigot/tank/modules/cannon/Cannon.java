@@ -3,7 +3,7 @@ package musician101.minetanks.spigot.tank.modules.cannon;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractCannon;
 import musician101.minetanks.spigot.SpigotReference;
-import musician101.minetanks.spigot.util.HasIcon;
+import musician101.minetanks.spigot.util.ItemRepresentation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 
-public class Cannon extends AbstractCannon implements HasIcon
+public class Cannon extends AbstractCannon implements ItemRepresentation
 {
     public Cannon(String name, int ammoCount, double reloadTime)
     {
@@ -21,7 +21,7 @@ public class Cannon extends AbstractCannon implements HasIcon
     }
 
     @Override
-    public ItemStack getIcon()
+    public ItemStack getItem()
     {
         return (ItemStack) cannon;
     }
@@ -29,11 +29,11 @@ public class Cannon extends AbstractCannon implements HasIcon
     private void parseCannon()
     {
         cannon = new ItemStack(Material.BOW);
-        ItemMeta meta = getIcon().getItemMeta();
+        ItemMeta meta = getItem().getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         meta.setLore(Arrays.asList(CommonItemText.CANNON, SpigotReference.number(CommonItemText.RELOAD_TIME, getReloadTime())));
-        getIcon().setItemMeta(meta);
+        getItem().setItemMeta(meta);
     }
 }
