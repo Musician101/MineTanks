@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public abstract class AbstractBattleFieldStorage extends AbstractStorage
 {
-    protected Map<String, AbstractBattleField> fields = new HashMap<>();
-
     public AbstractBattleFieldStorage(File file)
     {
         super(file);
@@ -22,10 +20,7 @@ public abstract class AbstractBattleFieldStorage extends AbstractStorage
 
     public abstract boolean removeField(String field);
 
-    public Map<String, AbstractBattleField> getFields()
-    {
-        return fields;
-    }
+    public abstract Map<String, ? extends AbstractBattleField> getFields();
 
     public abstract void loadFromFiles();
 
