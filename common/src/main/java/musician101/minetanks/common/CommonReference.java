@@ -2,6 +2,7 @@ package musician101.minetanks.common;
 
 import musician101.minetanks.common.battlefield.AbstractBattleField;
 
+import java.io.File;
 import java.util.UUID;
 
 public class CommonReference
@@ -166,6 +167,11 @@ public class CommonReference
         public static final String TANK_SELECTION_1 = PREFIX + "You have chosen the " + Constants.TANK + ".";
         public static final String TANK_SELECTION_2 = PREFIX + "If you wish to choose another tank, right click with the 'Open Hangar' item.";
         public static final String TANK_SELECTION_3 = PREFIX + "When you are ready, simply right click with the 'Ready' item.";
+
+        public static String fileLoadFailed(File file)
+        {
+            return "Failed to load " + file.getName();
+        }
     }
 
     public static class CommonPermissions

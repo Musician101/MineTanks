@@ -1,25 +1,42 @@
 package musician101.minetanks.spigot.battlefield;
 
+import musician101.minetanks.common.CommonReference.CommonConfig;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.spigot.MineTanks;
 import musician101.minetanks.spigot.util.SpigotRegion;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class BattleFieldStorage extends AbstractBattleFieldStorage
 {
     private final MineTanks plugin;
+    Map<String, BattleField> fields = new HashMap<>();
 
     public BattleFieldStorage(MineTanks plugin)
     {
         super(new File(plugin.getDataFolder(), CommonStorage.BATTLEFIELDS));
         this.plugin = plugin;
         loadFromFiles();
+    }
+
+    @Override
+    public boolean canPlayerExit(UUID player)
+    {
+        for (String name : fields.keySet())
+        {
+            BattleField field = getField(name);
+            if (field.getPlayers().containsKey(player))
+                return field.canPlayerExit(player);
+        }
+
+        return false;
     }
 
     @Override
@@ -30,32 +47,37 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
 
     private boolean createField(String name, boolean enabled, SpigotRegion spigotRegion, Location greenSpawn, Location redSpawn, Location spectators)
     {
-        for (String field : getFields().keySet())
+        for (String field : fields.keySet())
             if (field.equals(name))
                 return false;
 
-        BattleField field = new BattleField(plugin, name, enabled, spigotRegion, greenSpawn, redSpawn, spectators);
-        getFields().put(name, field);
+        fields.put(name, new BattleField(plugin, name, enabled, spigotRegion, greenSpawn, redSpawn, spectators));
         return true;
     }
 
     @Override
     public boolean removeField(String field)
     {
-        if (!getFields().containsKey(field))
+        if (!fields.containsKey(field))
             return false;
 
-        getFields().remove(field);
-        return new File(getStorageDir(), field + ".yml").delete();
+        fields.remove(field);
+        return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(field), "yml")).delete();
     }
 
     public BattleField getField(String name)
     {
-        for (String field : getFields().keySet())
+        for (String field : fields.keySet())
             if (field.equalsIgnoreCase(name))
-                return (BattleField) getFields().get(name);
+                return fields.get(name);
 
         return null;
+    }
+
+    @Override
+    public Map<String, BattleField> getFields()
+    {
+        return fields;
     }
 
     @Override
@@ -68,26 +90,26 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
             {
                 YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
                 String name = file.getName().replace(".yml", "");
-                boolean enabled = field.getBoolean("enabled");
+                boolean enabled = field.getBoolean(CommonConfig.ENABLED);
                 SpigotRegion spigotRegion = null;
                 Location greenSpawn = null;
                 Location redSpawn = null;
                 Location spectators = null;
 
-                if (field.isSet("region"))
-                    spigotRegion = new SpigotRegion(field.getConfigurationSection("region").getValues(false));
+                if (field.isSet(CommonConfig.REGION))
+                    spigotRegion = new SpigotRegion(field.getConfigurationSection(CommonConfig.REGION).getValues(true));
 
-                if (field.isSet("greenSpawn.x"))
-                    greenSpawn = new Location(Bukkit.getWorld(field.getString("greenSpawn.world")), field.getInt("greenSpawn.x"), field.getInt("greenSpawn.y"), field.getInt("greenSpawn.z"));
+                if (field.isSet(CommonConfig.GREEN_SPAWN))
+                    greenSpawn = Location.deserialize(field.getConfigurationSection(CommonConfig.GREEN_SPAWN).getValues(true));
 
-                if (field.isSet("redSpawn.x"))
-                    redSpawn = new Location(Bukkit.getWorld(field.getString("redSpawn.world")), field.getInt("redSpawn.x"), field.getInt("redSpawn.y"), field.getInt("redSpawn.z"));
+                if (field.isSet(CommonConfig.RED_SPAWN))
+                    redSpawn = Location.deserialize(field.getConfigurationSection(CommonConfig.RED_SPAWN).getValues(true));
 
-                if (field.isSet("spectators.x"))
-                    spectators = new Location(Bukkit.getWorld(field.getString("spectators.world")), field.getInt("spectators.x"), field.getInt("spectators.y"), field.getInt("spectators.z"));
+                if (field.isSet(CommonConfig.SPECTATORS))
+                    spectators = Location.deserialize(field.getConfigurationSection(CommonConfig.SPECTATORS).getValues(true));
 
                 if (!createField(name, enabled, spigotRegion, greenSpawn, redSpawn, spectators))
-                    plugin.getLogger().warning("Failed to load " + file.getName());
+                    plugin.getLogger().warning(CommonMessages.fileLoadFailed(file));
             }
         }
     }
@@ -95,20 +117,7 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
     @Override
     public void saveToFiles()
     {
-        for (String name : getFields().keySet())
-            getFields().get(name).saveToFile(getStorageDir());
-    }
-
-    @Override
-    public boolean canPlayerExit(UUID player)
-    {
-        for (String name : getFields().keySet())
-        {
-            BattleField field = getField(name);
-            if (field.getPlayers().containsKey(player))
-                return field.canPlayerExit(player);
-        }
-
-        return false;
+        for (String name : fields.keySet())
+            fields.get(name).saveToFile(getStorageDir());
     }
 }
