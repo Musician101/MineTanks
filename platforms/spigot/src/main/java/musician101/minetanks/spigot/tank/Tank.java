@@ -64,14 +64,6 @@ public class Tank extends AbstractTank
         return item;
     }
 
-    private Inventory parseWeapons(Cannon cannon)
-    {
-        Inventory inv = Bukkit.createInventory(null, InventoryType.PLAYER);
-        inv.setItem(0, cannon.getItem());
-        inv.addItem(new ItemStack(Material.ARROW, cannon.getAmmoCount()));
-        return inv;
-    }
-
     public Cannon getCannon()
     {
         return cannon;
