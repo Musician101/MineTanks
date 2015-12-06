@@ -67,10 +67,10 @@ public class BattlefieldListener implements Listener
         Player killed = event.getKilled();
         Player killer = event.getKiller();
         MTScoreboard sb = field.getScoreboard();
-        String damagedMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
-        String damagerMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
+        String damagedMsg = (sb.isOnGreen(killed.getUniqueId()) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
+        String damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
         Bukkit.getOnlinePlayers().forEach(player -> {
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
                 player.sendMessage(ChatColor.GREEN + CommonMessages.PREFIX + " " + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
         });
 
@@ -98,7 +98,7 @@ public class BattlefieldListener implements Listener
         if (sb.getPlayerHealth(damaged) <= 0 || sb.getPlayerHealth(damager) <= 0)
             return;
 
-        if ((sb.isOnGreen(Bukkit.getPlayer(damager)) && sb.isOnGreen(Bukkit.getPlayer(damaged))) || (sb.isOnRed(Bukkit.getPlayer(damager)) && sb.isOnRed(Bukkit.getPlayer(damaged))))
+        if ((sb.isOnGreen(damager) && sb.isOnGreen(damaged)) || (sb.isOnRed(damager) && sb.isOnRed(damaged)))
         {
             if (event.getCause() == PlayerTankDamageCause.RAM)
                 dh.meleeHitFriendly(field, damager, damaged, damage);

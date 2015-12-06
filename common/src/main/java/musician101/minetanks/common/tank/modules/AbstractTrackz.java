@@ -2,11 +2,9 @@ package musician101.minetanks.common.tank.modules;
 
 import musician101.minetanks.common.tank.Info;
 
-public abstract class AbstractTracks extends Info
+public abstract class AbstractTrackz<I> extends Info<I>
 {
-    protected Object tracks;
-
-    protected AbstractTracks(String name)
+    protected AbstractTrackz(String name)
     {
         super(name);
     }

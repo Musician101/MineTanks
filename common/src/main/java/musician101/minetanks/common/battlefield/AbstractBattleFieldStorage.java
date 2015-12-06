@@ -7,11 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class AbstractBattleFieldStorage extends AbstractStorage
+public abstract class AbstractBattleFieldStorage<B extends AbstractBattleField> extends AbstractStorage
 {
+    protected Map<String, B> fields = new HashMap<>();
+
     public AbstractBattleFieldStorage(File file)
     {
         super(file);
+    }
+
+    public B getField(String fieldName)
+    {
+        return fields.get(fieldName);
+    }
+
+    public Map<String, B> getFields()
+    {
+        return fields;
     }
 
     public abstract boolean canPlayerExit(UUID player);
@@ -19,8 +31,6 @@ public abstract class AbstractBattleFieldStorage extends AbstractStorage
     public abstract boolean createField(String name);
 
     public abstract boolean removeField(String field);
-
-    public abstract Map<String, ? extends AbstractBattleField> getFields();
 
     public abstract void loadFromFiles();
 

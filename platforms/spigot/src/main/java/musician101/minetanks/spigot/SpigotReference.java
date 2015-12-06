@@ -8,6 +8,7 @@ import java.io.File;
 
 public class SpigotReference
 {
+    //TODO move all methods to CommonReference
     public static String autoLoaderClipSize(String message, int current, int max)
     {
         return message.replace(Constants.CURRENT_CLIP.toString(), current + "").replace(Constants.MAX_CLIP.toString(), max + "");

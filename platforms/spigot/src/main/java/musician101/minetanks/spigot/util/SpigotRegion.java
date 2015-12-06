@@ -10,7 +10,7 @@ import org.bukkit.WorldCreator;
 
 import java.util.Map;
 
-public class SpigotRegion extends AbstractRegion
+public class SpigotRegion extends AbstractRegion<Location>
 {
     private String worldName = "";
 
@@ -43,6 +43,12 @@ public class SpigotRegion extends AbstractRegion
         this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
     }
 
+    @Override
+    public boolean isInRegion(Location location)
+    {
+        return location.getWorld().getName().equals(worldName) && location.getX() > getMinX() && location.getX() < getMaxX() && location.getZ() > getMinZ() && location.getZ() < getMaxZ();
+    }
+
     public static SpigotRegion createFromLocationRadius(Location location, double radius)
     {
         return createFromLocationRadius(location, radius, radius, radius);
@@ -71,10 +77,5 @@ public class SpigotRegion extends AbstractRegion
         Map<String, Object> map = super.serialize();
         map.put(CommonConfig.WORLD, this.worldName);
         return map;
-    }
-
-    public boolean isInRegion(Location location)
-    {
-        return location.getWorld().getName().equals(worldName) && location.getX() > getMinX() && location.getX() < getMaxX() && location.getZ() > getMinZ() && location.getZ() < getMaxZ();
     }
 }

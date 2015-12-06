@@ -1,6 +1,7 @@
 package musician101.minetanks.spigot.scoreboards;
 
 import musician101.minetanks.common.CommonReference.CommonScoreboard;
+import musician101.minetanks.common.util.AbstractScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,9 +14,8 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.UUID;
 
-public class MTScoreboard
+public class MTScoreboard extends AbstractScoreboard<Scoreboard>
 {
-    private final Scoreboard board;
     private final Team green;
     private final Team red;
     private final Objective health;
@@ -25,43 +25,43 @@ public class MTScoreboard
 
     public MTScoreboard()
     {
+        super(Bukkit.getScoreboardManager().getNewScoreboard());
         ScoreboardManager sbm = Bukkit.getScoreboardManager();
-        board = sbm.getNewScoreboard();
-        green = board.registerNewTeam(CommonScoreboard.GREEN_ID);
+        scoreboard = sbm.getNewScoreboard();
+        green = scoreboard.registerNewTeam(CommonScoreboard.GREEN_ID);
         green.setDisplayName(CommonScoreboard.GREEN_ID);
         green.setPrefix(ChatColor.GREEN + "");
-        red = board.registerNewTeam(CommonScoreboard.RED_ID);
+        red = scoreboard.registerNewTeam(CommonScoreboard.RED_ID);
         red.setDisplayName(CommonScoreboard.RED_NAME);
         red.setPrefix(ChatColor.RED + "");
-        teamCount = board.registerNewObjective(CommonScoreboard.TEAM_COUNT_ID, CommonScoreboard.DUMMY);
+        teamCount = scoreboard.registerNewObjective(CommonScoreboard.TEAM_COUNT_ID, CommonScoreboard.DUMMY);
         teamCount.setDisplaySlot(DisplaySlot.SIDEBAR);
         teamCount.setDisplayName(CommonScoreboard.TEAM_COUNT_NAME);
         greenScore = teamCount.getScore(ChatColor.GREEN + CommonScoreboard.GREEN_NAME);
         redScore = teamCount.getScore(ChatColor.RED + CommonScoreboard.RED_NAME);
-        health = board.registerNewObjective(CommonScoreboard.HEALTH_ID, CommonScoreboard.DUMMY);
+        health = scoreboard.registerNewObjective(CommonScoreboard.HEALTH_ID, CommonScoreboard.DUMMY);
         health.setDisplaySlot(DisplaySlot.PLAYER_LIST);
         health.setDisplayName(CommonScoreboard.HEALTH_NAME);
     }
 
-    public Scoreboard getScoreboard()
+    @Override
+    public void addGreenPlayer(UUID playerId)
     {
-        return board;
-    }
-
-    public void addGreenPlayer(Player player)
-    {
-        green.addEntry(player.getName());
+        green.addEntry(Bukkit.getPlayer(playerId).getName());
         greenScore.setScore(green.getSize());
     }
 
-    public void addRedPlayer(Player player)
+    @Override
+    public void addRedPlayer(UUID playerId)
     {
-        red.addEntry(player.getName());
+        red.addEntry(Bukkit.getPlayer(playerId).getName());
         redScore.setScore(red.getSize());
     }
 
-    public void playerDeath(Player player)
+    @Override
+    public void playerDeath(UUID playerId)
     {
+        Player player = Bukkit.getPlayer(playerId);
         if (green.getEntries().contains(player.getName()))
             greenPlayerDeath(player);
         else if (red.getEntries().contains(player.getName()))
@@ -84,31 +84,37 @@ public class MTScoreboard
         player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
     }
 
-    public boolean isOnGreen(Player player)
+    @Override
+    public boolean isOnGreen(UUID playerId)
     {
-        return green.getEntries().contains(player.getName());
+        return green.getEntries().contains(Bukkit.getPlayer(playerId).getName());
     }
 
-    public boolean isOnRed(Player player)
+    @Override
+    public boolean isOnRed(UUID playerId)
     {
-        return red.getEntries().contains(player.getName());
+        return red.getEntries().contains(Bukkit.getPlayer(playerId).getName());
     }
 
+    @Override
     public int getGreenTeamSize()
     {
         return green.getSize();
     }
 
+    @Override
     public int getRedTeamSize()
     {
         return red.getSize();
     }
 
+    @Override
     public void setPlayerHealth(UUID player, int hp)
     {
         health.getScore(Bukkit.getOfflinePlayer(player).getName()).setScore(hp);
     }
 
+    @Override
     public int getPlayerHealth(UUID player)
     {
         return health.getScore(Bukkit.getOfflinePlayer(player).getName()).getScore();

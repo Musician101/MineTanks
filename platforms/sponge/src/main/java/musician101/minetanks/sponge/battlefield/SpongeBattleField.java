@@ -220,9 +220,9 @@ public class SpongeBattleField extends AbstractBattleField
     }
 
     @Override
-    public boolean canPlayerExit(UUID player)
+    public boolean canPlayerExit(UUID playerId)
     {
-        SpongePlayerTank pt = getPlayer(player);
+        SpongePlayerTank pt = getPlayer(playerId);
         if (pt != null)
             return pt.getTeam().canExit();
 

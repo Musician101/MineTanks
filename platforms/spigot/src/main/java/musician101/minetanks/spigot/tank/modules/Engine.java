@@ -4,7 +4,6 @@ import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractEngine;
 import musician101.minetanks.spigot.tank.TankType;
 import musician101.minetanks.spigot.tank.TankTypes;
-import musician101.minetanks.spigot.util.ItemRepresentation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -13,18 +12,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 
-public class Engine extends AbstractEngine implements ItemRepresentation
+public class Engine extends AbstractEngine<ItemStack>
 {
     public Engine(String name, TankType type)
     {
         super(name);
         parseEngine(type);
-    }
-
-    @Override
-    public ItemStack getItem()
-    {
-        return (ItemStack) engine;
     }
 
     private void parseEngine(TankType type)
@@ -41,11 +34,12 @@ public class Engine extends AbstractEngine implements ItemRepresentation
         else if (type == TankTypes.ARTY)
             material = Material.GOLD_LEGGINGS;
 
-        engine = new ItemStack(material);
-        ItemMeta meta = getItem().getItemMeta();
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         meta.setLore(Collections.singletonList(CommonItemText.ENGINE));
-        getItem().setItemMeta(meta);
+        item.setItemMeta(meta);
+        setItem(item);
     }
 }

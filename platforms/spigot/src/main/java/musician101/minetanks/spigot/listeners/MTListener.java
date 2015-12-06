@@ -62,7 +62,7 @@ public class MTListener implements Listener
     private boolean isInField(UUID playerId)
     {
         for (String name : plugin.getFieldStorage().getFields().keySet())
-            if (plugin.getFieldStorage().getField(name).getPlayer(playerId) != null)
+            if (plugin.getFieldStorage().getField(name).getPlayerTank(playerId) != null)
                 return true;
 
         return false;
@@ -86,12 +86,12 @@ public class MTListener implements Listener
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
-            double minX = field.getSpigotRegion().getMinX();
-            double maxX = field.getSpigotRegion().getMaxX();
-            double minY = field.getSpigotRegion().getMinY();
-            double maxY = field.getSpigotRegion().getMaxY();
-            double minZ = field.getSpigotRegion().getMinZ();
-            double maxZ = field.getSpigotRegion().getMaxZ();
+            double minX = field.getRegion().getMinX();
+            double maxX = field.getRegion().getMaxX();
+            double minY = field.getRegion().getMinY();
+            double maxY = field.getRegion().getMaxY();
+            double minZ = field.getRegion().getMinZ();
+            double maxZ = field.getRegion().getMaxZ();
             if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
             {
                 if (event.getPlayer().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
@@ -115,12 +115,12 @@ public class MTListener implements Listener
             double x = event.getBlock().getX();
             double y = event.getBlock().getY();
             double z = event.getBlock().getZ();
-            double minX = field.getSpigotRegion().getMinX();
-            double maxX = field.getSpigotRegion().getMaxX();
-            double minY = field.getSpigotRegion().getMinY();
-            double maxY = field.getSpigotRegion().getMaxY();
-            double minZ = field.getSpigotRegion().getMinZ();
-            double maxZ = field.getSpigotRegion().getMaxZ();
+            double minX = field.getRegion().getMinX();
+            double maxX = field.getRegion().getMaxX();
+            double minY = field.getRegion().getMinY();
+            double maxY = field.getRegion().getMaxY();
+            double minZ = field.getRegion().getMinZ();
+            double maxZ = field.getRegion().getMaxZ();
             if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
             {
                 if (event.getPlayer().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
@@ -151,8 +151,8 @@ public class MTListener implements Listener
             if (field.inProgress())
                 return;
 
-            if (field.getPlayer(event.getPlayer().getUniqueId()) != null)
-                Bukkit.getPluginManager().callEvent(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
+            if (field.getPlayerTank(event.getPlayer().getUniqueId()) != null)
+                Bukkit.getPluginManager().callEvent(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayerTank(player.getUniqueId()), player.getUniqueId()));
         }
     }
 
@@ -166,7 +166,7 @@ public class MTListener implements Listener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        File file = plugin.getInventoryStorage().getPlayerFile(player);
+        File file = plugin.getInventoryStorage().getPlayerFile(player.getUniqueId());
         if (!file.exists())
             return;
 
@@ -189,7 +189,7 @@ public class MTListener implements Listener
     {
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
-            if (plugin.getFieldStorage().getField(name).getPlayer(event.getPlayer().getUniqueId()) != null)
+            if (plugin.getFieldStorage().getField(name).getPlayerTank(event.getPlayer().getUniqueId()) != null)
             {
                 plugin.getFieldStorage().getField(name).removePlayer(event.getPlayer().getUniqueId());
                 return;
@@ -197,6 +197,7 @@ public class MTListener implements Listener
         }
     }
 
+    //TODO rewrite needed
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
@@ -204,16 +205,16 @@ public class MTListener implements Listener
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
             BattleField field = plugin.getFieldStorage().getField(name);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
-                PlayerTank pt = field.getPlayer(player.getUniqueId());
+                PlayerTank pt = field.getPlayerTank(player.getUniqueId());
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
-                double minX = field.getSpigotRegion().getMinX();
-                double maxX = field.getSpigotRegion().getMaxX();
-                double minZ = field.getSpigotRegion().getMinZ();
-                double maxZ = field.getSpigotRegion().getMaxZ();
+                double minX = field.getRegion().getMinX();
+                double maxX = field.getRegion().getMaxX();
+                double minZ = field.getRegion().getMinZ();
+                double maxZ = field.getRegion().getMaxZ();
                 double x = player.getLocation().getX();
                 double z = player.getLocation().getZ();
                 double correction = 2.0;
@@ -253,9 +254,9 @@ public class MTListener implements Listener
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
             BattleField field = plugin.getFieldStorage().getField(name);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
-                PlayerTank pt = field.getPlayer(player.getUniqueId());
+                PlayerTank pt = field.getPlayerTank(player.getUniqueId());
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
@@ -296,17 +297,17 @@ public class MTListener implements Listener
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
             BattleField field = plugin.getFieldStorage().getField(name);
-            if (field.getPlayer(damaged) != null)
+            if (field.getPlayerTank(damaged) != null)
             {
                 int damage = (int) event.getDamage() * 2;
-                if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player && field.getPlayer(((Player) ((Arrow) event.getDamager()).getShooter()).getUniqueId()) != null)
+                if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player && field.getPlayerTank(((Player) ((Arrow) event.getDamager()).getShooter()).getUniqueId()) != null)
                 {
                     Arrow arrow = (Arrow) event.getDamager();
                     UUID damager = ((Player) arrow.getShooter()).getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, damaged, damager, field, damage));
                     ExplosionTracker.addArrow(arrow);
                 }
-                else if (event.getDamager() instanceof Player && field.getPlayer(event.getDamager().getUniqueId()) != null)
+                else if (event.getDamager() instanceof Player && field.getPlayerTank(event.getDamager().getUniqueId()) != null)
                 {
                     UUID damager = event.getDamager().getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, damaged, damager, field, damage));
@@ -367,7 +368,7 @@ public class MTListener implements Listener
         {
             for (String name : plugin.getFieldStorage().getFields().keySet())
             {
-                if (plugin.getFieldStorage().getField(name).getSpigotRegion().isInRegion(block.getLocation()))
+                if (plugin.getFieldStorage().getField(name).getRegion().isInRegion(block.getLocation()))
                 {
                     event.blockList().clear();
                     return;

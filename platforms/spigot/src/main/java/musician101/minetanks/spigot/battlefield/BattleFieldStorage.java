@@ -10,14 +10,11 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-public class BattleFieldStorage extends AbstractBattleFieldStorage
+public class BattleFieldStorage extends AbstractBattleFieldStorage<BattleField>
 {
     private final MineTanks plugin;
-    Map<String, BattleField> fields = new HashMap<>();
 
     public BattleFieldStorage(MineTanks plugin)
     {
@@ -63,21 +60,6 @@ public class BattleFieldStorage extends AbstractBattleFieldStorage
 
         fields.remove(field);
         return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(field), "yml")).delete();
-    }
-
-    public BattleField getField(String name)
-    {
-        for (String field : fields.keySet())
-            if (field.equalsIgnoreCase(name))
-                return fields.get(name);
-
-        return null;
-    }
-
-    @Override
-    public Map<String, BattleField> getFields()
-    {
-        return fields;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class RegionCommand extends AbstractSpigotCommand
                 return false;
             }
 
-            field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), radius));
+            field.setRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), radius));
             player.sendMessage(ChatColor.GREEN + CommonMessages.REGION_SET);
             return true;
         }
@@ -74,7 +74,7 @@ public class RegionCommand extends AbstractSpigotCommand
                 return false;
             }
 
-            field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
+            field.setRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
             player.sendMessage(ChatColor.GREEN + CommonMessages.REGION_SET);
             return true;
         }

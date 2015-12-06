@@ -1,7 +1,7 @@
 package musician101.minetanks.sponge.tank.module.tracks;
 
 import musician101.common.java.util.ListUtil;
-import musician101.minetanks.common.tank.modules.AbstractTracks;
+import musician101.minetanks.common.tank.modules.AbstractTrackz;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.tank.SpongeTankType;
 import musician101.minetanks.sponge.tank.SpongeTankTypes;
@@ -25,7 +25,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
 
-public class Trackz extends AbstractTracks implements ItemRepresentation
+public class Trackz extends AbstractTrackz implements ItemRepresentation
 {
     SpongeTankType type;
 

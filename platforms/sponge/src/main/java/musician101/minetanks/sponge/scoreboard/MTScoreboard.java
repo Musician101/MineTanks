@@ -1,6 +1,6 @@
 package musician101.minetanks.sponge.scoreboard;
 
-import musician101.minetanks.common.util.IMTScoreboard;
+import musician101.minetanks.common.util.AbstractScoreboard;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.util.MTUtils;
 import org.spongepowered.api.GameRegistry;
@@ -18,7 +18,7 @@ import org.spongepowered.api.world.World;
 import java.util.List;
 import java.util.UUID;
 
-public class MTScoreboard implements IMTScoreboard
+public class MTScoreboard implements AbstractScoreboard
 {
     Scoreboard board;
 

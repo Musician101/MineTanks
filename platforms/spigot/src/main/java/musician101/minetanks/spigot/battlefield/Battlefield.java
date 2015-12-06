@@ -29,70 +29,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class BattleField extends AbstractBattleField
+//TODO Rename SpigotBattleField
+public class BattleField extends AbstractBattleField<PlayerTank, SpigotRegion, MTScoreboard, Location>
 {
-    private boolean inProgress = false;
-    private SpigotRegion spigotRegion;
-    private Location greenSpawn;
-    private Location redSpawn;
-    private Location spectators;
     private final MineTanks plugin;
-    private final MTScoreboard sb;
 
-    public BattleField(MineTanks plugin, String name, boolean enabled, SpigotRegion spigotRegion, Location greenSpawn, Location redSpawn, Location spectators)
+    public BattleField(MineTanks plugin, String name, boolean enabled, SpigotRegion region, Location greenSpawn, Location redSpawn, Location spectators)
     {
-        super(name, enabled);
+        super(name, enabled, region, greenSpawn, redSpawn, spectators, new MTScoreboard());
         this.plugin = plugin;
-        this.spigotRegion = spigotRegion;
-        this.greenSpawn = greenSpawn;
-        this.redSpawn = redSpawn;
-        this.spectators = spectators;
-        this.sb = new MTScoreboard();
-    }
-
-    public PlayerTank getPlayer(UUID player)
-    {
-        return getPlayers().containsKey(player) ? (PlayerTank) getPlayers().get(player) : null;
-    }
-
-    public SpigotRegion getSpigotRegion()
-    {
-        return spigotRegion;
-    }
-
-    public void setSpigotRegion(SpigotRegion spigotRegion)
-    {
-        this.spigotRegion = spigotRegion;
-    }
-
-    public Location getGreenSpawn()
-    {
-        return greenSpawn;
-    }
-
-    public void setGreenSpawn(Location loc)
-    {
-        greenSpawn = loc;
-    }
-
-    public Location getRedSpawn()
-    {
-        return redSpawn;
-    }
-
-    public void setRedSpawn(Location loc)
-    {
-        redSpawn = loc;
-    }
-
-    public Location getSpectators()
-    {
-        return spectators;
-    }
-
-    public void setSpectators(Location loc)
-    {
-        spectators = loc;
     }
 
     @Override
@@ -104,7 +49,7 @@ public class BattleField extends AbstractBattleField
 
         if (team == MTTeam.SPECTATOR)
         {
-            player.teleport(spectators);
+            player.teleport(getSpectators());
             player.sendMessage(SpigotReference.battleField(ChatColor.GREEN + CommonMessages.FIELD_SPECTATING, this));
         }
         else
@@ -114,24 +59,23 @@ public class BattleField extends AbstractBattleField
             unassigned++;
         }
 
-        getPlayers().put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
+        players.put(player.getUniqueId(), new PlayerTank(player.getUniqueId(), team));
         return true;
     }
 
     @Override
     public boolean removePlayer(UUID playerId)
     {
-        Player player = Bukkit.getPlayer(playerId);
-        PlayerTank pt = getPlayer(player.getUniqueId());
+        PlayerTank pt = getPlayerTank(playerId);
         if (pt == null)
             return false;
 
         plugin.getInventoryStorage().load(playerId);
 
-        if (sb.isOnGreen(player) || sb.isOnRed(player))
-            sb.playerDeath(player);
+        if (getScoreboard().isOnGreen(playerId) || getScoreboard().isOnRed(playerId))
+            getScoreboard().playerDeath(playerId);
 
-        getPlayers().remove(player.getUniqueId());
+        players.remove(playerId);
         if (unassigned > 0)
             unassigned--;
 
@@ -141,8 +85,7 @@ public class BattleField extends AbstractBattleField
     @Override
     public boolean isReady()
     {
-        return spigotRegion != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
-
+        return getRegion() != null && getGreenSpawn() != null && getRedSpawn() != null && getSpectators() != null && isEnabled();
     }
 
     @Override
@@ -160,17 +103,17 @@ public class BattleField extends AbstractBattleField
         }
 
         YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
-        if (spigotRegion != null)
-            field.set(CommonConfig.REGION, spigotRegion.serialize());
+        if (getRegion() != null)
+            field.set(CommonConfig.REGION, getRegion().serialize());
 
-        if (greenSpawn != null)
-            field.set(CommonConfig.GREEN_SPAWN, greenSpawn.serialize());
+        if (getGreenSpawn() != null)
+            field.set(CommonConfig.GREEN_SPAWN, getGreenSpawn().serialize());
 
-        if (redSpawn != null)
-            field.set(CommonConfig.RED_SPAWN, redSpawn.serialize());
+        if (getRedSpawn() != null)
+            field.set(CommonConfig.RED_SPAWN, getRedSpawn().serialize());
 
-        if (spectators != null)
-            field.set(CommonConfig.SPECTATORS, spectators.serialize());
+        if (getSpectators() != null)
+            field.set(CommonConfig.SPECTATORS, getSpectators().serialize());
 
         field.set(CommonConfig.ENABLED, isEnabled());
         try
@@ -184,18 +127,12 @@ public class BattleField extends AbstractBattleField
     }
 
     @Override
-    public boolean canPlayerExit(UUID player)
-    {
-        return getPlayer(player).getTeam().canExit();
-    }
-
-    @Override
     public void startMatch()
     {
         List<UUID> players = new ArrayList<>();
-        for (UUID player : getPlayers().keySet())
+        for (UUID player : this.players.keySet())
         {
-            if (!getPlayer(player).isReady())
+            if (!getPlayerTank(player).isReady())
                 return;
 
             players.add(player);
@@ -205,47 +142,47 @@ public class BattleField extends AbstractBattleField
 
         for (UUID uuid : players)
         {
-            PlayerTank pt = getPlayer(uuid);
-            if (sb.getGreenTeamSize() == 0 && sb.getRedTeamSize() == 0 && unassigned < 2)
+            PlayerTank pt = getPlayerTank(uuid);
+            if (getScoreboard().getGreenTeamSize() == 0 && getScoreboard().getRedTeamSize() == 0 && unassigned < 2)
                 return;
 
-            if (sb.getGreenTeamSize() == sb.getRedTeamSize() && unassigned == 1)
+            if (getScoreboard().getGreenTeamSize() == getScoreboard().getRedTeamSize() && unassigned == 1)
             {
                 pt.setTeam(MTTeam.SPECTATOR);
                 unassigned--;
             }
-            else if (sb.getGreenTeamSize() <= sb.getRedTeamSize())
+            else if (getScoreboard().getGreenTeamSize() <= getScoreboard().getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
-                sb.addGreenPlayer(Bukkit.getPlayer(uuid));
+                getScoreboard().addGreenPlayer(uuid);
                 Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
                 unassigned--;
             }
-            else if (sb.getGreenTeamSize() >= sb.getRedTeamSize())
+            else if (getScoreboard().getGreenTeamSize() >= getScoreboard().getRedTeamSize())
             {
                 pt.setTeam(MTTeam.ASSIGNED);
-                sb.addRedPlayer(Bukkit.getPlayer(uuid));
+                getScoreboard().addRedPlayer(uuid);
                 Bukkit.getPlayer(uuid).addPotionEffect(pt.getTank().getSpeedEffect());
                 unassigned--;
             }
         }
 
-        inProgress = true;
+        setInProgress(true);
         for (UUID uuid : players)
         {
-            final PlayerTank pt = getPlayer(uuid);
+            final PlayerTank pt = getPlayerTank(uuid);
             final Tank tank = pt.getTank();
             final Player player = Bukkit.getPlayer(uuid);
             if (pt.getTeam() != MTTeam.SPECTATOR)
             {
-                if (sb.isOnGreen(player))
-                    player.teleport(greenSpawn);
+                if (getScoreboard().isOnGreen(uuid))
+                    player.teleport(getGreenSpawn());
 
-                if (sb.isOnRed(player))
-                    player.teleport(redSpawn);
+                if (getScoreboard().isOnRed(uuid))
+                    player.teleport(getRedSpawn());
 
-                player.setScoreboard(sb.getScoreboard());
-                sb.setPlayerHealth(uuid, tank.getHealth());
+                player.setScoreboard(getScoreboard().getScoreboard());
+                getScoreboard().setPlayerHealth(uuid, tank.getHealth());
                 new BukkitRunnable()
                 {
                     @Override
@@ -277,16 +214,16 @@ public class BattleField extends AbstractBattleField
     @Override
     public void endMatch(boolean forced)
     {
-        if ((sb.getGreenTeamSize() != 0 && sb.getRedTeamSize() != 0) || !inProgress)
+        if ((getScoreboard().getGreenTeamSize() != 0 && getScoreboard().getRedTeamSize() != 0) || !inProgress())
             return;
 
-        if (forced || sb.getGreenTeamSize() == 0 || sb.getRedTeamSize() == 0)
+        if (forced || getScoreboard().getGreenTeamSize() == 0 || getScoreboard().getRedTeamSize() == 0)
         {
-            inProgress = false;
-            for (UUID uuid : getPlayers().keySet())
+            setInProgress(false);
+            for (UUID uuid : players.keySet())
             {
                 Player player = Bukkit.getPlayer(uuid);
-                player.teleport(spectators);
+                player.teleport(getSpectators());
                 player.getInventory().setHelmet(null);
                 player.getInventory().setChestplate(null);
                 player.getInventory().setLeggings(null);
@@ -294,30 +231,25 @@ public class BattleField extends AbstractBattleField
                 player.getInventory().clear();
                 player.removePotionEffect(PotionEffectType.SLOW);
                 player.removePotionEffect(PotionEffectType.SPEED);
-                PlayerTank pt = getPlayer(uuid);
+                PlayerTank pt = getPlayerTank(uuid);
                 pt.setTeam(MTTeam.SPECTATOR);
                 pt.setTank(null);
-                sb.playerDeath(player);
+                getScoreboard().playerDeath(uuid);
                 if (forced)
                     player.sendMessage(ChatColor.GOLD + CommonMessages.MATCH_FORCE_ENDED);
-                else if (sb.getGreenTeamSize() == 0)
+                else if (getScoreboard().getGreenTeamSize() == 0)
                     player.sendMessage(ChatColor.RED + CommonMessages.RED_WINS);
-                else if (sb.getRedTeamSize() == 0)
+                else if (getScoreboard().getRedTeamSize() == 0)
                     player.sendMessage(ChatColor.GREEN + CommonMessages.GREEN_WINS);
             }
         }
     }
 
     @Override
-    public void playerKilled(UUID player)
+    public void playerKilled(UUID playerId)
     {
-        getPlayer(player).killed();
-        sb.playerDeath(Bukkit.getPlayer(player));
-        Bukkit.getPlayer(player).teleport(spectators);
-    }
-
-    public MTScoreboard getScoreboard()
-    {
-        return sb;
+        getPlayerTank(playerId).killed();
+        getScoreboard().playerDeath(playerId);
+        Bukkit.getPlayer(playerId).teleport(getSpectators());
     }
 }

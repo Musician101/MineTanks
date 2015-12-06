@@ -77,9 +77,9 @@ public class ReloadHandler
                             for (String name : plugin.getFieldStorage().getFields().keySet())
                             {
                                 BattleField bf = plugin.getFieldStorage().getField(name);
-                                if (bf.getPlayer(player.getUniqueId()) != null)
+                                if (bf.getPlayerTank(player.getUniqueId()) != null)
                                 {
-                                    bf.getPlayer(player.getUniqueId()).setClipSize(maxClipSize);
+                                    bf.getPlayerTank(player.getUniqueId()).setClipSize(maxClipSize);
                                 }
                             }
                         }

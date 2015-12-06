@@ -3,10 +3,9 @@ package musician101.minetanks.common.tank.modules;
 import musician101.minetanks.common.tank.Armor;
 import musician101.minetanks.common.tank.Info;
 
-public abstract class AbstractTurret extends Info
+public abstract class AbstractTurret<I> extends Info<I>
 {
     protected Armor armor;
-    protected Object turret;
 
     protected AbstractTurret(String name, Armor armor)
     {

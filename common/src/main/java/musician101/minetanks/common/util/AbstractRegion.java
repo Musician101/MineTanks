@@ -3,7 +3,7 @@ package musician101.minetanks.common.util;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractRegion
+public abstract class AbstractRegion<L>
 {
     int minX = 0;
     int maxX = 0;
@@ -21,6 +21,8 @@ public abstract class AbstractRegion
         this.minZ = minZ;
         this.maxZ = maxZ;
     }
+
+    public abstract boolean isInRegion(L location);
 
     public int getMinX()
     {

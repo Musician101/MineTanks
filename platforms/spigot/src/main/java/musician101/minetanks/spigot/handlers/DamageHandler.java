@@ -32,8 +32,8 @@ public class DamageHandler
 
     public void meleeHitEnemy(BattleField field, UUID rammed, UUID rammer, int damage)
     {
-        double rammerDmg = damage * getModifier(field.getPlayer(rammed).getTank().getType());
-        double rammedDmg = damage * getModifier(field.getPlayer(rammer).getTank().getType());
+        double rammerDmg = damage * getModifier(field.getPlayerTank(rammed).getTank().getType());
+        double rammedDmg = damage * getModifier(field.getPlayerTank(rammer).getTank().getType());
         if (rammerDmg > 0)
             playerHitEnemy(field, rammed, rammer, (int) rammerDmg);
 

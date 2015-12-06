@@ -43,7 +43,7 @@ public class StatusCommand extends AbstractSpigotCommand
 
         sender.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.STATUS_OF_FIELD, field),
                 ChatColor.GREEN + SpigotReference.enabled(CommonMessages.STATUS_OF_FIELD_ENABLED, field),
-                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_REGION, field.getSpigotRegion() == null),
+                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_REGION, field.getRegion() == null),
                 ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_GREEN, field.getGreenSpawn() == null),
                 ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_RED, field.getRedSpawn() == null),
                 ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_SPECTATORS, field.getSpectators() == null)});

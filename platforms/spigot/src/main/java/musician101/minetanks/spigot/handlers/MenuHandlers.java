@@ -37,7 +37,7 @@ public class MenuHandlers
 
             for (String name : plugin.getFieldStorage().getFields().keySet())
             {
-                PlayerTank pt = plugin.getFieldStorage().getField(name).getPlayer(player.getUniqueId());
+                PlayerTank pt = plugin.getFieldStorage().getField(name).getPlayerTank(player.getUniqueId());
                 if (pt != null)
                 {
                     pt.setTank(tank);

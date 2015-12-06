@@ -43,7 +43,7 @@ public class GreenSpawnCommand extends AbstractSpigotCommand
         }
 
         Location loc = player.getLocation();
-        if (field.getSpigotRegion() == null || !field.getSpigotRegion().isInRegion(loc))
+        if (field.getRegion() == null || !field.getRegion().isInRegion(loc))
         {
             player.sendMessage(ChatColor.RED + CommonMessages.LOCATION_NOT_IN_REGION);
             return false;

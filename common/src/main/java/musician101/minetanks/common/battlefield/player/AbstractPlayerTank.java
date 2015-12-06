@@ -4,12 +4,12 @@ import musician101.minetanks.common.tank.AbstractTank;
 
 import java.util.UUID;
 
-public abstract class AbstractPlayerTank
+public abstract class AbstractPlayerTank<T extends AbstractTank>
 {
     boolean isReady = false;
     protected int clipSize = 1;
     MTTeam team;
-    protected AbstractTank tank;
+    T tank;
     UUID player;
 
     protected AbstractPlayerTank(UUID player, MTTeam team)
@@ -18,19 +18,29 @@ public abstract class AbstractPlayerTank
         this.team = team;
     }
 
+    public boolean isReady()
+    {
+        return isReady;
+    }
+
     public MTTeam getTeam()
     {
         return team;
     }
 
-    public void setTank(AbstractTank tank)
-    {
-        this.tank = tank;
-    }
-
     public int getClipSize()
     {
         return clipSize;
+    }
+
+    public T getTank()
+    {
+        return tank;
+    }
+
+    public void setTank(T tank)
+    {
+        this.tank = tank;
     }
 
     public void setClipSize(int clipSize)
@@ -43,11 +53,6 @@ public abstract class AbstractPlayerTank
         this.team = team;
     }
 
-    public boolean isReady()
-    {
-        return isReady;
-    }
-
     public void setReady(boolean isReady)
     {
         this.isReady = isReady;
@@ -56,7 +61,7 @@ public abstract class AbstractPlayerTank
     public void killed()
     {
         this.team = MTTeam.SPECTATOR;
-        this.tank = null;
+        tank = null;
     }
 
     public enum MTTeam

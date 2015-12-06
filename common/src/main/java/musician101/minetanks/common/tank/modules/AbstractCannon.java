@@ -2,11 +2,10 @@ package musician101.minetanks.common.tank.modules;
 
 import musician101.minetanks.common.tank.Info;
 
-public abstract class AbstractCannon extends Info
+public abstract class AbstractCannon<I> extends Info<I>
 {
     double reloadTime;
     int ammoCount;
-    protected Object cannon;
 
     protected AbstractCannon(String name, int ammoCount, double reloadTime)
     {

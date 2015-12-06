@@ -39,7 +39,7 @@ public class LeaveCommand extends AbstractSpigotCommand
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
             BattleField field = plugin.getFieldStorage().getField(name);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
                 player.sendMessage(ChatColor.GREEN + CommonMessages.LEFT_FIELD);
                 field.removePlayer(player.getUniqueId());

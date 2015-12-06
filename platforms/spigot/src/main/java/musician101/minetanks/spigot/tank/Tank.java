@@ -10,11 +10,8 @@ import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
 import musician101.minetanks.spigot.tank.modules.tracks.Trackz;
 import musician101.minetanks.spigot.tank.modules.turret.Turret;
 import musician101.minetanks.spigot.util.MTUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -24,23 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Tank extends AbstractTank
+public class Tank extends AbstractTank<TankType, Cannon, Engine, Radio, Trackz, Turret, ItemStack>
 {
-    Armor armor;
-    Cannon cannon;
-    Engine engine;
-    Radio radio;
-    Trackz tracks;
-    Turret turret;
-
     public Tank(String name, TankType type, int health, Armor armor, int speed, Cannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
     {
-        super(name, type, health, speed, description);
-        this.cannon = cannon;
-        this.engine = engine;
-        this.radio = radio;
-        this.tracks = tracks;
-        this.turret = turret;
+        super(name, type, health, armor, speed, cannon, engine, radio, tracks, turret, description);
     }
 
     private ItemStack parseArmorValue(ItemStack item)
@@ -64,31 +49,31 @@ public class Tank extends AbstractTank
         return item;
     }
 
-    public Cannon getCannon()
-    {
-        return cannon;
-    }
-
+    @Override
     public ItemStack getHelmet()
     {
         return parseArmorValue(turret.getItem(), armor);
     }
 
+    @Override
     public ItemStack getChestplate()
     {
         return parseArmorValue(radio.getItem());
     }
 
+    @Override
     public ItemStack getLeggings()
     {
         return parseArmorValue(parseSpeedValue(engine.getItem()));
     }
 
+    @Override
     public ItemStack getBoots()
     {
         return parseArmorValue(tracks.getItem());
     }
 
+    @Override
     public List<ItemStack> getWeapons()
     {
         List<ItemStack> items = new ArrayList<>();
@@ -133,10 +118,5 @@ public class Tank extends AbstractTank
         }
 
         return new PotionEffect(effect, amplifier, Integer.MAX_VALUE, false);
-    }
-
-    public TankType getType()
-    {
-        return (TankType) type;
     }
 }
