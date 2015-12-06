@@ -7,11 +7,9 @@ import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
 
 import java.util.Arrays;
 
@@ -41,13 +39,12 @@ public class StatusCommand extends AbstractSpigotCommand
             return false;
         }
 
-        sender.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.STATUS_OF_FIELD, field),
-                ChatColor.GREEN + SpigotReference.enabled(CommonMessages.STATUS_OF_FIELD_ENABLED, field),
-                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_REGION, field.getRegion() == null),
-                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_GREEN, field.getGreenSpawn() == null),
-                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_RED, field.getRedSpawn() == null),
-                ChatColor.GREEN + SpigotReference.set(CommonMessages.STATUS_OF_FIELD_SPECTATORS, field.getSpectators() == null)});
-
+        sender.sendMessage(new String[]{ChatColor.GREEN + CommonMessages.statusOfField(field),
+                ChatColor.GREEN + CommonMessages.statusOfFieldEnabled(field),
+                ChatColor.GREEN + CommonMessages.statusOfFieldRegion(field),
+                ChatColor.GREEN + CommonMessages.statusOfFieldGreenSpawn(field),
+                ChatColor.GREEN + CommonMessages.statusOfFieldRedSpawn(field),
+                ChatColor.GREEN + CommonMessages.statusOfFieldSpectatorsSpawn(field)});
 
         return true;
     }

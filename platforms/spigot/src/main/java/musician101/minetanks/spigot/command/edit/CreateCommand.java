@@ -7,7 +7,6 @@ import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.SpigotBattleFieldStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +41,7 @@ public class CreateCommand extends AbstractSpigotCommand
             return false;
         }
 
-        player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.FIELD_CREATED, fieldStorage.getField(args[0])), ChatColor.GREEN + CommonMessages.FIELD_CREATED_STATUS});
+        player.sendMessage(new String[]{ChatColor.GREEN + CommonMessages.fieldCreated(fieldStorage.getField(args[0])), ChatColor.GREEN + CommonMessages.FIELD_CREATED_STATUS});
         return true;
     }
 }
