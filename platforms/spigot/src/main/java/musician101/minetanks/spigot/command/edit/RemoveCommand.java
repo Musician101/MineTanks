@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 public class RemoveCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public RemoveCommand(SpigotMineTanks plugin)
     {

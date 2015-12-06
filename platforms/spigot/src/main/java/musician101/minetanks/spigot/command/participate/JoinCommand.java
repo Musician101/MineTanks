@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class JoinCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public JoinCommand(SpigotMineTanks plugin)
     {

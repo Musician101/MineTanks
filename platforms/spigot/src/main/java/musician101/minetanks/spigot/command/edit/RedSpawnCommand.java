@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class RedSpawnCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public RedSpawnCommand(SpigotMineTanks plugin)
     {

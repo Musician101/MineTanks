@@ -14,12 +14,12 @@ public class SpigotRegion extends AbstractRegion<Location>
 {
     private String worldName = "";
 
-    public SpigotRegion(Location location)
+    private SpigotRegion(Location location)
     {
         this(location, location);
     }
 
-    public SpigotRegion(Location location, Location location2)
+    private SpigotRegion(Location location, Location location2)
     {
         super(Math.min((int) location.getX(), (int) location2.getX()),
                 Math.min((int) location.getY(), (int) location2.getY()),
@@ -59,6 +59,7 @@ public class SpigotRegion extends AbstractRegion<Location>
         Validate.notNull(location);
         if (xRadius < 0 || yRadius < 0 || zRadius < 0)
             throw new IllegalArgumentException("The radius cannot be negative!");
+
         return xRadius > 0 || yRadius > 0 || zRadius > 0 ? new SpigotRegion(location.clone().subtract(xRadius, yRadius, zRadius), location.clone().add(xRadius, yRadius, zRadius)) : new SpigotRegion(location);
     }
 

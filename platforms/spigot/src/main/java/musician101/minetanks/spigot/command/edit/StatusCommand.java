@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class StatusCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public StatusCommand(SpigotMineTanks plugin)
     {

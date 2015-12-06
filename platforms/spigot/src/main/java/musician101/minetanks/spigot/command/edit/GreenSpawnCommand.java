@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class GreenSpawnCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public GreenSpawnCommand(SpigotMineTanks plugin)
     {

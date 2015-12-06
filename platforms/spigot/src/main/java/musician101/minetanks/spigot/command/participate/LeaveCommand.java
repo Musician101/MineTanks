@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class LeaveCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public LeaveCommand(SpigotMineTanks plugin)
     {

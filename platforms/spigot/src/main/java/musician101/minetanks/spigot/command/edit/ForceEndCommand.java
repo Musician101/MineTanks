@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class ForceEndCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public ForceEndCommand(SpigotMineTanks plugin)
     {

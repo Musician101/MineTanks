@@ -25,7 +25,7 @@ import java.util.Collections;
 
 public class MTCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public MTCommand(SpigotMineTanks plugin)
     {

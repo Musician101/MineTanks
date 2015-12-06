@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class SpectateCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public SpectateCommand(SpigotMineTanks plugin)
     {

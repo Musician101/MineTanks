@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class CreateCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public CreateCommand(SpigotMineTanks plugin)
     {

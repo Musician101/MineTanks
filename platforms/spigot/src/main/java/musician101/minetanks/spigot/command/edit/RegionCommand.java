@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 public class RegionCommand extends AbstractSpigotCommand
 {
-    SpigotMineTanks plugin;
+    private final SpigotMineTanks plugin;
 
     public RegionCommand(SpigotMineTanks plugin)
     {
