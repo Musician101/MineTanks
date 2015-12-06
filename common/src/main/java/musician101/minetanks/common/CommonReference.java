@@ -369,7 +369,7 @@ public class CommonReference
         public static final String SPAHPANZER_RU_251_PT_II = "Spahpanzer RU 251 PT II";
         public static final String STB_1 = "STB-1";
         public static final String TYPE_5_HEAVY = "Type 5 Heavy";
-        public static final String T_54_ENCHANCED_LTWT_VERSION = "T-54 enhanced ltwt. version";
+        public static final String T_54_ENHANCED_LTWT_VERSION = "T-54 enhanced ltwt. version";
         public static final String T_62A = "T-62A";
         public static final String T92_T80E1 = "T92 T80E1";
         public static final String T97 = "T97";

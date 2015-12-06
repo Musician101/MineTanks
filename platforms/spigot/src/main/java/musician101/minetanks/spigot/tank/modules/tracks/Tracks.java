@@ -113,7 +113,7 @@ public class Tracks
     /**
      * Russian Light Tracks
      */
-    public static final Trackz T_54_ENHANCED_LTWT_VERSION = new Trackz(CommonTracks.T_54_ENCHANCED_LTWT_VERSION, TankTypes.LIGHT);
+    public static final Trackz T_54_ENHANCED_LTWT_VERSION = new Trackz(CommonTracks.T_54_ENHANCED_LTWT_VERSION, TankTypes.LIGHT);
     /**
      * Russian Medium Tracks
      */
