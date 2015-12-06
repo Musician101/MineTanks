@@ -1,7 +1,7 @@
 package musician101.minetanks.spigot;
 
 import musician101.minetanks.common.CommonReference.Constants;
-import musician101.minetanks.spigot.battlefield.BattleField;
+import musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import musician101.minetanks.spigot.tank.Tank;
 
 import java.io.File;
@@ -14,12 +14,12 @@ public class SpigotReference
         return message.replace(Constants.CURRENT_CLIP.toString(), current + "").replace(Constants.MAX_CLIP.toString(), max + "");
     }
 
-    public static String battleField(String message, BattleField field)
+    public static String battleField(String message, SpigotBattleField field)
     {
         return message.replace(Constants.FIELD.toString(), field.getName());
     }
 
-    public static String enabled(String message, BattleField field)
+    public static String enabled(String message, SpigotBattleField field)
     {
         return message.replace(Constants.ENABLED.toString(), field.isEnabled() ? "Enabled" : "Disabled");
     }

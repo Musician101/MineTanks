@@ -4,7 +4,7 @@ import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.util.AbstractInventoryStorage;
-import musician101.minetanks.spigot.MineTanks;
+import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.SpigotReference;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class InventoryStorage extends AbstractInventoryStorage
 {
-    public InventoryStorage(MineTanks plugin)
+    public InventoryStorage(SpigotMineTanks plugin)
     {
         super(new File(plugin.getDataFolder(), CommonStorage.INVENTORY));
     }

@@ -1,8 +1,8 @@
 package musician101.minetanks.spigot.util;
 
 import musician101.minetanks.common.CommonReference;
-import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.handlers.MenuHandlers.TankSelectionHandler;
+import musician101.minetanks.spigot.SpigotMineTanks;
+import musician101.minetanks.spigot.handler.MenuHandlers.TankSelectionHandler;
 import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.Tanks;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ public class Menus
 {
     private final IconMenu tankSelection;
 
-    public Menus(MineTanks plugin)
+    public Menus(SpigotMineTanks plugin)
     {
         this.tankSelection = new IconMenu(CommonReference.TANK_SELECTION, MTUtils.getMenuSize(), new TankSelectionHandler(plugin), plugin);
 
