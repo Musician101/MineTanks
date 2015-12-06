@@ -2,6 +2,7 @@ package musician101.minetanks.spigot.command;
 
 import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
 import musician101.common.java.minecraft.spigot.command.SpigotCommandArgument;
+import musician101.common.java.minecraft.spigot.command.SpigotHelpCommand;
 import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.SpigotMineTanks;
@@ -38,14 +39,14 @@ public class MTCommand extends AbstractSpigotCommand
         if (args.length > 0)
         {
             if (args[0].equalsIgnoreCase(CommonCommands.HELP))
-                return new HelpCommand(plugin, this).onCommand(sender, moveArguments(args));
-
+                return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
+            
             for (AbstractSpigotCommand command : getSubCommands())
                 if (command.getName().equalsIgnoreCase(args[0]))
                     return command.onCommand(sender, moveArguments(args));
         }
 
-        sender.sendMessage(new HelpCommand(plugin, this).getCommandHelpInfo());
+        sender.sendMessage(new SpigotHelpCommand(this).getCommandHelpInfo());
         return true;
     }
 }
