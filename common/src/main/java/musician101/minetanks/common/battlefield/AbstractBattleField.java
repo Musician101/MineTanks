@@ -12,16 +12,16 @@ import java.util.UUID;
 
 public abstract class AbstractBattleField<P extends AbstractPlayerTank, R extends AbstractRegion, S extends AbstractScoreboard, L>
 {
-    boolean enabled;
-    boolean inProgress = false;
-    protected Map<UUID, P> players = new HashMap<>();
-    private S scoreboard;
+    private boolean enabled;
+    private boolean inProgress = false;
+    protected final Map<UUID, P> players = new HashMap<>();
+    private final S scoreboard;
     protected int unassigned = 0;
     private L greenSpawn;
     private L redSpawn;
     private L spectators;
-    R region;
-    String name;
+    private R region;
+    private final String name;
 
     protected AbstractBattleField(String name, boolean enabled, R region, L greenSpawn, L redSpawn, L spectators, S scoreboard)
     {

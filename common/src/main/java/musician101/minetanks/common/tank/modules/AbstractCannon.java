@@ -4,8 +4,8 @@ import musician101.minetanks.common.tank.Info;
 
 public abstract class AbstractCannon<I> extends Info<I>
 {
-    double reloadTime;
-    int ammoCount;
+    private final double reloadTime;
+    private final int ammoCount;
 
     protected AbstractCannon(String name, int ammoCount, double reloadTime)
     {

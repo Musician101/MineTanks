@@ -2,8 +2,8 @@ package musician101.minetanks.common.tank;
 
 public abstract class Info<I>
 {
-    I item;
-    String name;
+    private I item;
+    private final String name;
 
     protected Info(String name)
     {

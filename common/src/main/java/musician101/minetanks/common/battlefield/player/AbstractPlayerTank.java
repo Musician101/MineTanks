@@ -6,11 +6,11 @@ import java.util.UUID;
 
 public abstract class AbstractPlayerTank<T extends AbstractTank>
 {
-    boolean isReady = false;
+    private boolean isReady = false;
     protected int clipSize = 1;
-    MTTeam team;
-    T tank;
-    UUID player;
+    private MTTeam team;
+    private T tank;
+    private final UUID player;
 
     protected AbstractPlayerTank(UUID player, MTTeam team)
     {
@@ -36,6 +36,11 @@ public abstract class AbstractPlayerTank<T extends AbstractTank>
     public T getTank()
     {
         return tank;
+    }
+
+    public UUID getPlayerId()
+    {
+        return player;
     }
 
     public void setTank(T tank)
@@ -70,7 +75,7 @@ public abstract class AbstractPlayerTank<T extends AbstractTank>
         SPECTATOR(),
         UNASSIGNED();
 
-        boolean canExit;
+        final boolean canExit;
 
         MTTeam()
         {

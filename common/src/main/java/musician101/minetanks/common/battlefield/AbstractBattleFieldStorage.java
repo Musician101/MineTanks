@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public abstract class AbstractBattleFieldStorage<B extends AbstractBattleField> extends AbstractStorage
 {
-    protected Map<String, B> fields = new HashMap<>();
+    protected final Map<String, B> fields = new HashMap<>();
 
     public AbstractBattleFieldStorage(File file)
     {

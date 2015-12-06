@@ -5,12 +5,12 @@ import java.util.Map;
 
 public abstract class AbstractRegion<L>
 {
-    int minX = 0;
-    int maxX = 0;
-    int minY = 0;
-    int maxY = 0;
-    int minZ = 0;
-    int maxZ = 0;
+    private int minX = 0;
+    private int maxX = 0;
+    private int minY = 0;
+    private int maxY = 0;
+    private int minZ = 0;
+    private int maxZ = 0;
 
     protected AbstractRegion(int minX, int maxX, int minY, int maxY, int minZ, int maxZ)
     {

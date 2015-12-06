@@ -10,16 +10,16 @@ import java.util.List;
 
 public abstract class AbstractTank<Y extends AbstractTankType, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I> extends Info
 {
-    protected Armor armor;
-    protected C cannon;
-    protected E engine;
-    int health;
-    int speed;
-    protected R radio;
-    protected T tracks;
-    protected U turret;
-    Y type;
-    String[] description;
+    protected final Armor armor;
+    protected final C cannon;
+    protected final E engine;
+    private final int health;
+    private final int speed;
+    protected final R radio;
+    protected final T tracks;
+    protected final U turret;
+    private final Y type;
+    private final String[] description;
 
     protected AbstractTank(String name, Y type, int health, Armor armor, int speed, C cannon, E engine, R radio, T tracks, U turret, String... description)
     {

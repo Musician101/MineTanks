@@ -2,9 +2,9 @@ package musician101.minetanks.common.tank;
 
 public class Armor
 {
-    double front;
-    double side;
-    double rear;
+    private final double front;
+    private final double side;
+    private final double rear;
 
     public Armor(double front, double side, double rear)
     {

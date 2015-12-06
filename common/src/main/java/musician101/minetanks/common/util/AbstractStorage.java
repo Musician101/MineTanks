@@ -4,7 +4,7 @@ import java.io.File;
 
 public abstract class AbstractStorage
 {
-    private File storageDir;
+    private final File storageDir;
 
     protected AbstractStorage(File storageDir)
     {
