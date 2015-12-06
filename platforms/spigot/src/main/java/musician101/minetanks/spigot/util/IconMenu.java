@@ -79,13 +79,7 @@ public class IconMenu implements Listener
                 if (e.willClose())
                 {
                     final Player p = (Player) event.getWhoClicked();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-                    {
-                        public void run()
-                        {
-                            p.closeInventory();
-                        }
-                    }, 1);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, p::closeInventory, 1);
                 }
 
                 if (e.willDestroy())
