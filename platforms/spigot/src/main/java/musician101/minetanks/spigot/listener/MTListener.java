@@ -6,7 +6,6 @@ import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import musician101.minetanks.spigot.battlefield.player.SpigotPlayerTank;
 import musician101.minetanks.spigot.event.AttemptMenuOpenEvent;
@@ -277,7 +276,11 @@ public class MTListener implements Listener
                         {
                             AutoLoader cannon = (AutoLoader) tank.getCannon();
                             ItemMeta meta = item.getItemMeta();
-                            meta.setLore(Arrays.asList(CommonItemText.CANNON, SpigotReference.autoLoaderClipSize(CommonItemText.CLIP_SIZE, pt.getClipSize(), cannon.getClipSize()), SpigotReference.number(CommonItemText.CYCLE_TIME, cannon.getCycleTime()), SpigotReference.number(CommonItemText.CLIP_RELOAD_TIME, cannon.getReloadTime())));
+                            meta.setLore(Arrays.asList(CommonItemText.CANNON,
+                                    CommonItemText.clipSize(pt.getClipSize(), cannon.getClipSize()),
+                                    CommonItemText.cycleTime(cannon.getCycleTime()),
+                                    CommonItemText.clipReloadTime(cannon.getReloadTime())));
+
                             item.setItemMeta(meta);
                         }
                     }

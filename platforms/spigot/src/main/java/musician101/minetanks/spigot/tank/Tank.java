@@ -3,7 +3,6 @@ package musician101.minetanks.spigot.tank;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.AbstractTank;
 import musician101.minetanks.common.tank.Armor;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.tank.modules.Engine;
 import musician101.minetanks.spigot.tank.modules.Radio;
 import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
@@ -44,7 +43,7 @@ public class Tank extends AbstractTank<TankType, Cannon, Engine, Radio, Trackz, 
     private ItemStack parseSpeedValue(ItemStack item)
     {
         ItemMeta meta = item.getItemMeta();
-        meta.setLore(Arrays.asList(meta.getLore().get(0), SpigotReference.number(CommonItemText.SPEED_VALUE, getSpeed())));
+        meta.setLore(Arrays.asList(meta.getLore().get(0), CommonItemText.speedValue(getSpeed())));
         item.setItemMeta(meta);
         return item;
     }

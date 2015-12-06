@@ -70,7 +70,7 @@ public class RegionCommand extends AbstractSpigotCommand
             }
             catch (NumberFormatException e)
             {
-                player.sendMessage(ChatColor.RED + CommonMessages.NOT_A_NUMBER_2);
+                player.sendMessage(ChatColor.RED + CommonMessages.NOT_A_NUMBER_MULTI);
                 return false;
             }
 

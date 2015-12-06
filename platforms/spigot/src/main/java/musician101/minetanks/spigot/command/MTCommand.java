@@ -40,7 +40,7 @@ public class MTCommand extends AbstractSpigotCommand
         {
             if (args[0].equalsIgnoreCase(CommonCommands.HELP))
                 return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
-            
+
             for (AbstractSpigotCommand command : getSubCommands())
                 if (command.getName().equalsIgnoreCase(args[0]))
                     return command.onCommand(sender, moveArguments(args));

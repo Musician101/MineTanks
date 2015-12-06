@@ -6,7 +6,6 @@ import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.battlefield.AbstractBattleField;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.player.SpigotPlayerTank;
 import musician101.minetanks.spigot.handler.ReloadHandler;
 import musician101.minetanks.spigot.scoreboard.MTScoreboard;
@@ -50,11 +49,11 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         if (team == MTTeam.SPECTATOR)
         {
             player.teleport(getSpectators());
-            player.sendMessage(SpigotReference.battleField(ChatColor.GREEN + CommonMessages.FIELD_SPECTATING, this));
+            player.sendMessage(CommonMessages.fieldSpectating(this));
         }
         else
         {
-            player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, CommonItemText.OPEN_HANGAR, SpigotReference.tank(CommonItemText.SELECTED_TANK, null)));
+            player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(null)));
             player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, CommonItemText.READY_UP, CommonItemText.NOT_READY));
             unassigned++;
         }
@@ -98,7 +97,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         }
         catch (IOException e)
         {
-            plugin.getLogger().warning(SpigotReference.file(CommonMessages.FILE_CREATE_FAIL, file));
+            plugin.getLogger().warning(CommonMessages.fileCreateFailed(file));
             return;
         }
 
@@ -122,7 +121,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         }
         catch (IOException e)
         {
-            plugin.getLogger().warning(SpigotReference.file(CommonMessages.FILE_SAVE_FAIL, file));
+            plugin.getLogger().warning(CommonMessages.fileSaveFailed(file));
         }
     }
 

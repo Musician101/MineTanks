@@ -3,7 +3,6 @@ package musician101.minetanks.spigot.handler;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.player.SpigotPlayerTank;
 import musician101.minetanks.spigot.tank.Tank;
 import musician101.minetanks.spigot.tank.Tanks;
@@ -41,8 +40,8 @@ public class MenuHandlers
                 if (pt != null)
                 {
                     pt.setTank(tank);
-                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getItem().getType(), CommonItemText.OPEN_HANGAR, SpigotReference.tank(CommonItemText.SELECTED_TANK, tank)));
-                    player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.tank(CommonMessages.TANK_SELECTION_1, tank),
+                    player.getInventory().setItem(0, MTUtils.createCustomItem(tank.getType().getItem().getType(), CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(tank)));
+                    player.sendMessage(new String[]{ChatColor.GREEN + CommonMessages.tankSelection1(tank),
                             ChatColor.GREEN + CommonMessages.TANK_SELECTION_2,
                             ChatColor.GREEN + CommonMessages.TANK_SELECTION_3});
 

@@ -1,6 +1,7 @@
 package musician101.minetanks.common;
 
 import musician101.minetanks.common.battlefield.AbstractBattleField;
+import musician101.minetanks.common.tank.AbstractTank;
 
 import java.io.File;
 import java.util.UUID;
@@ -103,39 +104,57 @@ public class CommonReference
     {
         public static final String AMMO = "Ammo";
         public static final String CANNON = "Your Cannon";
-        public static final String CLIP_RELOAD_TIME = "Clip Reload Time: " + Constants.NUMBER;
-        public static final String CLIP_SIZE = "Clip Size: " + Constants.CURRENT_CLIP + "/" + Constants.MAX_CLIP;
-        public static final String CYCLE_TIME = "Cycle Time: " + Constants.NUMBER;
         public static final String ENGINE = "Your Engine";
         public static final String NOT_READY = "You are currently not ready.";
         public static final String OPEN_HANGAR = "Open Hangar";
         public static final String RADIO = "Your Radio";
         public static final String READY = "You are currently ready.";
         public static final String READY_UP = "Ready Up";
-        public static final String RELOAD_TIME = "Reload Time: " + Constants.NUMBER;
-        public static final String SELECTED_TANK = "Tank: " + Constants.TANK;
-        public static final String SPEED_VALUE = "Speed Value: " + Constants.NUMBER;
         public static final String TRACKS = "Your Tracks";
         public static final String TURRET = "Your Turret";
         public static final String UNREADY = "Unready";
+
+        public static String clipReloadTime(double time)
+        {
+            return "Clip Reload Time: " + time;
+        }
+
+        public static String clipSize(int current, int max)
+        {
+            return "Clip Size: " + current + "/" + max;
+        }
+
+        public static String cycleTime(double time)
+        {
+            return "Cycle Time: " + time;
+        }
+
+        public static String reloadTime(double time)
+        {
+            return "Reload Time: " + time;
+        }
+
+        public static <T extends AbstractTank> String selectedTank(T tank)
+        {
+            return "Tank: " + (tank == null ? "None" : tank.getName());
+        }
+
+        public static String speedValue(int speed)
+        {
+            return "Speed Value: " + speed;
+        }
     }
 
     public static class CommonMessages
     {
         public static final String PREFIX = "[" + CommonReference.NAME + "] ";
         public static final String CHECK_FIELD_STATUS = PREFIX + "Check the status of the battlefield by using /mt status.";
-        public static final String FIELD_CREATED = PREFIX + Constants.FIELD + " successfully created.";
-        public static final String FIELD_CREATED_2 = PREFIX + "Check the status of the battlefield by using /mt status.";
-        public static final String FIELD_DELETED = PREFIX + Constants.FIELD + " has been deleted.";
+        public static final String FIELD_CREATED_STATUS = PREFIX + "Check the status of the battlefield by using /mt status.";
         public static final String FIELD_DNE = PREFIX + "Sorry, that field doesn't exist.";
         public static final String FIELD_DISABLED = PREFIX + "Sorry, this field is currently disabled.";
-        public static final String FIELD_ENABLED = PREFIX + Constants.FIELD + " has been " + Constants.ENABLED + ".";
         public static final String FIELD_EXISTS = PREFIX + "Sorry, that field already exists.";
         public static final String FIELD_NOT_READY = PREFIX + "Sorry, this field is not ready.";
         public static final String FIELD_NOT_SPECIFIED = PREFIX + "Error: Field not specified.";
-        public static final String FIELD_SPECTATING = PREFIX + "You are now spectating in " + Constants.FIELD + ".";
-        public static final String FILE_CREATE_FAIL = "Error: Failed to create file: " + Constants.FILE;
-        public static final String FILE_SAVE_FAIL = "Error: Could not save " + Constants.FILE;
         public static final String GREEN_SPAWN_SET = PREFIX + "Green spawn point set.";
         public static final String GREEN_WINS = PREFIX + "Green ream wins!";
         public static final String INVALID_TANK = PREFIX + "Please click a valid tank.";
@@ -148,8 +167,7 @@ public class CommonReference
         public static final String MISSING_CUBOID = PREFIX + "Error: The battlefield contains no cuboid or the cuboid in another world.";
         public static final String MUST_UNREADY = PREFIX + "You must unready to change your tank.";
         public static final String NO_PERMISSION = PREFIX + "Sorry, but you do not have permission for that.";
-        public static final String NOT_A_NUMBER = PREFIX + "Error: " + Constants.STRING + " is not a number.";
-        public static final String NOT_A_NUMBER_2 = PREFIX + "Error: One or more of the inputted radii is not a number.";
+        public static final String NOT_A_NUMBER_MULTI = PREFIX + "Error: One or more of the inputted radii is not a number.";
         public static final String NOT_ENOUGH_ARGS = PREFIX + "Error: Field not specified.";
         public static final String NOT_IN_A_FIELD = PREFIX + "You are not in a battlefield.";
         public static final String OUT_OF_BOUNDS = PREFIX + "Out of bounds!";
@@ -158,19 +176,82 @@ public class CommonReference
         public static final String RED_WINS = PREFIX + "Red team wins!";
         public static final String REGION_SET = PREFIX + "Region set.";
         public static final String SPECTATORS_SPAWN_SET = PREFIX + "Spectators spawn point set.";
-        public static final String STATUS_OF_FIELD = PREFIX + "Status of " + Constants.FIELD;
-        public static final String STATUS_OF_FIELD_ENABLED = "Enabled: " + Constants.ENABLED;
-        public static final String STATUS_OF_FIELD_REGION = "Region: " + Constants.SET;
-        public static final String STATUS_OF_FIELD_GREEN = "Green Spawn: " + Constants.SET;
-        public static final String STATUS_OF_FIELD_RED = "Red Spawn: " + Constants.SET;
-        public static final String STATUS_OF_FIELD_SPECTATORS = "Spectators Spawn: " + Constants.SET;
-        public static final String TANK_SELECTION_1 = PREFIX + "You have chosen the " + Constants.TANK + ".";
         public static final String TANK_SELECTION_2 = PREFIX + "If you wish to choose another tank, right click with the 'Open Hangar' item.";
         public static final String TANK_SELECTION_3 = PREFIX + "When you are ready, simply right click with the 'Ready' item.";
+
+        public static <B extends AbstractBattleField> String fieldCreated(B battlefield)
+        {
+            return PREFIX + battlefield.getName() + " successfully created.";
+        }
+
+        public static <B extends AbstractBattleField> String fieldDeleted(B battlefield)
+        {
+            return PREFIX + battlefield.getName() + " has been deleted.";
+        }
+
+        public static <B extends AbstractBattleField> String fieldEnabled(B battlefield)
+        {
+            return PREFIX + battlefield.getName() + " has been " + (battlefield.isEnabled() ? "enable" : "disable") + "d.";
+        }
+
+        public static <B extends AbstractBattleField> String fieldSpectating(B battlefield)
+        {
+            return PREFIX + "You are now spectating in " + battlefield + ".";
+        }
+
+        public static String fileCreateFailed(File file)
+        {
+            return "Error: Failed to create file: " + file.getName();
+        }
 
         public static String fileLoadFailed(File file)
         {
             return "Failed to load " + file.getName();
+        }
+
+        public static String fileSaveFailed(File file)
+        {
+            return "Error: Could not save " + file.getName();
+        }
+
+        public static String notANumber(String string)
+        {
+            return PREFIX + "Error: " + string + " is not a number.";
+        }
+
+        public static <B extends AbstractBattleField> String statusOfField(B battlefield)
+        {
+            return PREFIX + "Status of " + battlefield.getName();
+        }
+
+        public static <B extends AbstractBattleField> String statusOfFieldEnabled(B battlefield)
+        {
+            return "Enabled: " + (battlefield.isEnabled() ? "Enable" : "Disable") + "d";
+        }
+
+        public static <B extends AbstractBattleField> String statusOfFieldRegion(B battlefield)
+        {
+            return "Region: " + (battlefield.getRegion() == null ? "Not " : "") + "Set";
+        }
+
+        public static <B extends AbstractBattleField> String statusOfFieldGreenSpawn(B battlefield)
+        {
+            return "Green Spawn: " + (battlefield.getGreenSpawn() == null ? "Not " : "") + "Set";
+        }
+
+        public static <B extends AbstractBattleField> String statusOfFieldRedSpawn(B battlefield)
+        {
+            return "Red Spawn: " + (battlefield.getRedSpawn() == null ? "Not " : "") + "Set";
+        }
+
+        public static <B extends AbstractBattleField> String statusOfFieldSpectatorsSpawn(B battlefield)
+        {
+            return "Spectators Spawn: " + (battlefield.getSpectators() == null ? "Not " : "") + "Set";
+        }
+
+        public static <T extends AbstractTank> String tankSelection1(T tank)
+        {
+            return PREFIX + "You have chosen the " + tank.getName() + ".";
         }
     }
 
@@ -302,25 +383,5 @@ public class CommonReference
         public static final String XM551_TEST_BED = "XM551 test bed";
         public static final String _113 = "113";
         public static final String _121 = "121";
-    }
-
-    public enum Constants
-    {
-        CURRENT_CLIP,
-        ENABLED,
-        FIELD,
-        FILE,
-        MAX_CLIP,
-        NUMBER,
-        SET,
-        STRING,
-        TANK,
-        UUID;
-
-        @Override
-        public String toString()
-        {
-            return "%" + super.toString() + "%";
-        }
     }
 }

@@ -42,7 +42,7 @@ public class CreateCommand extends AbstractSpigotCommand
             return false;
         }
 
-        player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.FIELD_CREATED, fieldStorage.getField(args[0])), ChatColor.GREEN + CommonMessages.FIELD_CREATED_2});
+        player.sendMessage(new String[]{ChatColor.GREEN + SpigotReference.battleField(CommonMessages.FIELD_CREATED, fieldStorage.getField(args[0])), ChatColor.GREEN + CommonMessages.FIELD_CREATED_STATUS});
         return true;
     }
 }
