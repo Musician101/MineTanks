@@ -19,9 +19,9 @@ public class CommonReference
 
     public static class CommonCommands
     {
-        public static final String MT = "mt";
+        public static final String MT_CMD = "/mt";
 
-        public static final String CREATE = "create";
+        public static final String CREATE_NAME = "create";
         public static final String CREATE_DESC = "Create a new battlefield.";
 
         public static final String ENABLE_NAME = "enable";
@@ -70,11 +70,15 @@ public class CommonReference
     {
         public static final String AMPLIFIER = "amplifier";
         public static final String ARMOR = "armor.";
+        public static final String BOOTS = "boots";
+        public static final String CHESTPLATE = "chestplate";
         public static final String DURATION = "duration";
         public static final String EFFECTS = "effects";
         public static final String ENABLED = "enabled";
         public static final String GREEN_SPAWN = "greenSpawn";
+        public static final String HELMET = "helmet";
         public static final String INVENTORY = "inventory.";
+        public static final String LEGGINGS = "leggings";
         public static final String LOCATION = "location";
         public static final String MAX_X = "maxX";
         public static final String MIN_X = "minX";
@@ -383,5 +387,44 @@ public class CommonReference
         public static final String XM551_TEST_BED = "XM551 test bed";
         public static final String _113 = "113";
         public static final String _121 = "121";
+    }
+
+    public static class CommonTurrets
+    {
+        public static final String _113 = "_113";
+        public static final String _121 = "121";
+        public static final String AMX_30_B = "AMX 30 B";
+        public static final String AMX_50_B = "AMX 50 B";
+        public static final String BAT_CHAT_25_T = "Batignolles-Chatillon 25 t";
+        public static final String E_50_M = "E 50 Ausf. M";
+        public static final String E_100 = "E 100";
+        public static final String FL_10_TYPE_D = "FL 10 Type D";
+        public static final String FV215 = "FV215";
+        public static final String FV215B = "FV215b";
+        public static final String FV4202 = "FV4202";
+        public static final String FV4005_STAGE_II = "FV4005 Stage II";
+        public static final String IS_4M = "IS-4M";
+        public static final String IS_7 = "IS-7";
+        public static final String LEOPARD_1 = "Leopard 1";
+        public static final String M60 = "M60";
+        public static final String M87 = "M87";
+        public static final String MAUS = "Maus";
+        public static final String NONE = "None";
+        public static final String OBJECT_140 = "Object 140";
+        public static final String OBJECT_260_MOD_1946 = "Object 260 mod 1946";
+        public static final String OBJECT_430 = "Object 430";
+        public static final String OBJECT_907 = "Object 907";
+        public static final String SPAHPANZER_RU_251 = "Spahpanzer Ru 251 Drehturm 360";
+        public static final String STB_1 = "STB-1";
+        public static final String T_54_LTWT_VERSION = "T-54 ltwt. version";
+        public static final String T_62 = "T-62";
+        public static final String T53 = "T53";
+        public static final String T169 = "T169";
+        public static final String T110E4 = "T110E4";
+        public static final String TYPE_5_HEAVY = "Type 5 Heavy";
+        public static final String VK_7201 = "VK 72.01 (K)";
+        public static final String WAFFENTRAGER_E_100 = "Waffentrager auf E 100";
+        public static final String WZ_132 = "WZ-132";
+        public static final String XM551_TEST_BED = "XM551 test bed";
     }
 }

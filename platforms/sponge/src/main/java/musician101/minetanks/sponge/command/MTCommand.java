@@ -1,6 +1,8 @@
 package musician101.minetanks.sponge.command;
 
+import musician101.common.java.minecraft.sponge.TextUtils;
 import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
 import musician101.common.java.minecraft.sponge.command.SpongeHelpCommand;
 import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
@@ -17,13 +19,9 @@ import musician101.minetanks.sponge.command.edit.StatusCommand;
 import musician101.minetanks.sponge.command.participate.JoinCommand;
 import musician101.minetanks.sponge.command.participate.LeaveCommand;
 import musician101.minetanks.sponge.command.participate.SpectateCommand;
-import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
-import musician101.minetanks.sponge.util.MTUtils;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.command.CommandException;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -33,7 +31,7 @@ public class MTCommand extends AbstractSpongeCommand
 {
     public MTCommand()
     {
-        super(CommonReference.ID, Texts.of(CommonCommands.DESCRIPTION), Collections.singletonList(Texts.of("/minetanks")), 0, "minetanks", false, SpongeMessages.NO_PERMISSION, SpongeMessages.PLAYER_ONLY, Arrays.asList(new JoinCommand(), new LeaveCommand(), new RemoveCommand(), new SpectateCommand(), new CreateCommand(), new RegionCommand(), new EnableCommand(), new ForceEndCommand(), new GreenSpawnCommand(), new RedSpawnCommand(), new SpectatorsCommand(), new StatusCommand()));
+        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new SpongeCommandArgument(CommonCommands.MT_CMD)), 0, "", false, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.PLAYER_ONLY), Arrays.asList(new JoinCommand(), new LeaveCommand(), new RemoveCommand(), new SpectateCommand(), new CreateCommand(), new RegionCommand(), new EnableCommand(), new ForceEndCommand(), new GreenSpawnCommand(), new RedSpawnCommand(), new SpectatorsCommand(), new StatusCommand()));
     }
 
     @Nonnull
@@ -43,7 +41,7 @@ public class MTCommand extends AbstractSpongeCommand
         String[] args = splitArgs(arguments);
         if (args.length > 0)
         {
-            if (args[0].equalsIgnoreCase("help"))
+            if (args[0].equalsIgnoreCase(CommonCommands.HELP))
                 return new SpongeHelpCommand(this, source).process(source, moveArguments(args));
 
             for (AbstractSpongeCommand command : getSubCommands())

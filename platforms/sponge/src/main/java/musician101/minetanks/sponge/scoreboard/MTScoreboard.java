@@ -1,9 +1,10 @@
 package musician101.minetanks.sponge.scoreboard;
 
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.minetanks.common.CommonReference.CommonScoreboard;
 import musician101.minetanks.common.util.AbstractScoreboard;
-import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.util.MTUtils;
-import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scoreboard.Score;
 import org.spongepowered.api.scoreboard.Scoreboard;
 import org.spongepowered.api.scoreboard.Team;
@@ -13,114 +14,121 @@ import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayModes;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.World;
 
-import java.util.List;
 import java.util.UUID;
 
-public class MTScoreboard implements AbstractScoreboard
+public class MTScoreboard extends AbstractScoreboard<Scoreboard>
 {
-    Scoreboard board;
-
     public MTScoreboard()
     {
-        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
-        board = gr.createScoreboardBuilder().build();
+        scoreboard = Scoreboard.builder().build();
 
-        Objective health = gr.createObjectiveBuilder().criterion(Criteria.DUMMY).name("health").displayName(Texts.of("Health")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
-        board.addObjective(health, DisplaySlots.BELOW_NAME);
+        Objective.Builder ob = Objective.builder();
+        ob.criterion(Criteria.DUMMY);
+        ob.name(CommonScoreboard.HEALTH_ID);
+        ob.displayName(Texts.of(CommonScoreboard.HEALTH_NAME));
+        ob.objectiveDisplayMode(ObjectiveDisplayModes.INTEGER);
+        scoreboard.addObjective(ob.build(), DisplaySlots.BELOW_NAME);
 
-        Objective teamCount = gr.createObjectiveBuilder().criterion(Criteria.DUMMY).name("team_count").displayName(Texts.of("Team Count")).objectiveDisplayMode(ObjectiveDisplayModes.INTEGER).build();
-        Score greenScore = teamCount.getScore(Texts.builder("Green Team").color(TextColors.GREEN).build());
-        Score redScore = teamCount.getScore(Texts.builder("Red Team").color(TextColors.RED).build());
+        ob.reset();
+        ob.criterion(Criteria.DUMMY);
+        ob.name(CommonScoreboard.TEAM_COUNT_ID);
+        ob.displayName(Texts.of(CommonScoreboard.TEAM_COUNT_NAME));
+        ob.objectiveDisplayMode(ObjectiveDisplayModes.INTEGER);
+        Objective teamCount = ob.build();
+        Score greenScore = teamCount.getScore(TextUtils.greenText(CommonScoreboard.GREEN_NAME));
+        Score redScore = teamCount.getScore(TextUtils.redText(CommonScoreboard.RED_NAME));
         teamCount.addScore(greenScore);
         teamCount.addScore(redScore);
-        board.addObjective(teamCount, DisplaySlots.SIDEBAR);
+        scoreboard.addObjective(teamCount, DisplaySlots.SIDEBAR);
 
-        Team green = gr.createTeamBuilder().color(TextColors.GREEN).displayName(Texts.of("Green Team")).name("green").build();
-        Team red = gr.createTeamBuilder().color(TextColors.RED).displayName(Texts.of("Red Team")).name("red").build();
-        board.addTeam(green);
-        board.addTeam(red);
-    }
+        Team.Builder tb = Team.builder();
+        tb.color(TextColors.GREEN);
+        tb.displayName(Texts.of(CommonScoreboard.GREEN_NAME));
+        tb.name(CommonScoreboard.GREEN_ID);
+        scoreboard.addTeam(tb.build());
 
-    public Scoreboard getScoreboard()
-    {
-        return board;
+        tb.reset();
+        tb.color(TextColors.RED);
+        tb.displayName(Texts.of(CommonScoreboard.RED_NAME));
+        tb.name(CommonScoreboard.RED_ID).build();
+        scoreboard.addTeam(tb.build());
     }
 
     @Override
     public void addGreenPlayer(UUID playerId)
     {
-        addPlayer(playerId, "Green Name");
+        addPlayer(playerId, CommonScoreboard.GREEN_ID);
     }
 
     @Override
     public void addRedPlayer(UUID playerId)
     {
-        addPlayer(playerId, "red");
+        addPlayer(playerId, CommonScoreboard.RED_ID);
     }
 
     private void addPlayer(UUID playerId, String teamName)
     {
-        board.getTeam(teamName).get().addMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
+        scoreboard.getTeam(teamName).get().addMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
         updateTeamSize(teamName);
     }
 
     @Override
     public void playerDeath(UUID playerId)
     {
-        if (board.getTeam("green").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName())))
+        if (scoreboard.getTeam(CommonScoreboard.GREEN_ID).get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName())))
         {
-            board.getTeam("green").get().removeMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
-            updateTeamSize("green");
+            scoreboard.getTeam(CommonScoreboard.GREEN_ID).get().removeMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
+            updateTeamSize(CommonScoreboard.GREEN_ID);
         }
-        else if (board.getTeam("red").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName())))
+        else if (scoreboard.getTeam(CommonScoreboard.RED_ID).get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName())))
         {
-            board.getTeam("red").get().removeMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
-            updateTeamSize("red");
+            scoreboard.getTeam(CommonScoreboard.RED_ID).get().removeMember(Texts.of(MTUtils.getPlayer(playerId).getName()));
+            updateTeamSize(CommonScoreboard.RED_ID);
         }
 
-        MTUtils.getPlayer(playerId).setScoreboard(((World) ((List) SpongeMineTanks.getGame().getServer().getWorlds()).get(0)).getScoreboard());
+        Player player = MTUtils.getPlayer(playerId);
+        player.setScoreboard(player.getWorld().getScoreboard());
     }
 
     @Override
     public boolean isOnGreen(UUID playerId)
     {
-        return board.getTeam("green").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName()));
+        return scoreboard.getTeam(CommonScoreboard.GREEN_ID).get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName()));
     }
 
     @Override
     public boolean isOnRed(UUID playerId)
     {
-        return board.getTeam("red").get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName()));
+        return scoreboard.getTeam(CommonScoreboard.RED_ID).get().getMembers().contains(Texts.of(MTUtils.getPlayer(playerId).getName()));
     }
 
     @Override
     public int getGreenTeamSize()
     {
-        return board.getTeam("green").get().getMembers().size();
+        return scoreboard.getTeam(CommonScoreboard.GREEN_ID).get().getMembers().size();
     }
 
     @Override
     public int getRedTeamSize()
     {
-        return board.getTeam("red").get().getMembers().size();
+        return scoreboard.getTeam(CommonScoreboard.RED_ID).get().getMembers().size();
     }
 
     @Override
     public int getPlayerHealth(UUID playerId)
     {
-        return board.getObjective("health").get().getScore(Texts.of(MTUtils.getPlayer(playerId).getName())).getScore();
+        return scoreboard.getObjective(CommonScoreboard.HEALTH_ID).get().getScore(Texts.of(MTUtils.getPlayer(playerId).getName())).getScore();
     }
 
     @Override
     public void setPlayerHealth(UUID playerId, int hp)
     {
-        board.getObjective("health").get().getScore(Texts.of(MTUtils.getPlayer(playerId).getName())).setScore(hp);
+        scoreboard.getObjective(CommonScoreboard.HEALTH_ID).get().getScore(Texts.of(MTUtils.getPlayer(playerId).getName())).setScore(hp);
     }
 
     private void updateTeamSize(String teamName)
     {
-        board.getObjective("team_count").get().getScore(Texts.of(teamName)).setScore(board.getTeam(teamName.equalsIgnoreCase("green") ? "Green Team" : "Red Team").get().getMembers().size());
+        scoreboard.getObjective(CommonScoreboard.TEAM_COUNT_ID).get().getScore(Texts.of(teamName)).setScore(scoreboard.getTeam(teamName.equalsIgnoreCase(CommonScoreboard.GREEN_ID) ? CommonScoreboard.GREEN_NAME : CommonScoreboard.RED_NAME).get().getMembers().size());
     }
 }

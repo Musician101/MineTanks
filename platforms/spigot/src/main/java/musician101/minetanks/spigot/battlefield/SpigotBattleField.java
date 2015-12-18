@@ -82,12 +82,6 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
     }
 
     @Override
-    public boolean isReady()
-    {
-        return getRegion() != null && getGreenSpawn() != null && getRedSpawn() != null && getSpectators() != null && isEnabled();
-    }
-
-    @Override
     public void saveToFile(File battlefields)
     {
         File file = new File(battlefields, CommonConfig.battlefieldFile(this, "yml"));

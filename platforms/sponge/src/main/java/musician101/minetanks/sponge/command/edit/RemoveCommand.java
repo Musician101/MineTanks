@@ -1,42 +1,48 @@
 package musician101.minetanks.sponge.command.edit;
 
-import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
-import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.BattleField;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
-public class RemoveCommand extends AbstractSpigotCommand
+public class RemoveCommand extends AbstractSpongeCommand
 {
-    MineTanks plugin;
-
-    public RemoveCommand(MineTanks plugin)
+    public RemoveCommand()
     {
-        super("remove", "Remove the specified field.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("remove"), new CommandArgument("field", Syntax.REQUIRED, Syntax.REPLACE)), 1, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
-        this.plugin = plugin;
+        super(CommonCommands.REMOVE_NAME, CommonCommands.REMOVE_DESC, Arrays.asList(new SpongeCommandArgument(CommonCommands.MT_CMD), new SpongeCommandArgument(CommonCommands.REMOVE_NAME), new SpongeCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, false, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.PLAYER_ONLY));
     }
 
+    @Nonnull
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
+    public CommandResult process(@Nonnull CommandSource source, @Nonnull String arguments)
     {
-        if (!canSenderUseCommand(sender))
-            return false;
+        String[] args = splitArgs(arguments);
+        if (!testPermission(source))
+            return CommandResult.empty();
 
-        if (minArgsMet(sender, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
-            return false;
+        if (minArgsMet(source, args.length, TextUtils.redText(CommonMessages.FIELD_NOT_SPECIFIED)))
+            return CommandResult.empty();
 
-        BattleField field = plugin.getFieldStorage().getField(args[0]);
-        if (!plugin.getFieldStorage().removeField(field.getName()))
+        SpongeBattleFieldStorage fieldStorage = SpongeMineTanks.getFieldStorage();
+        SpongeBattleField field = fieldStorage.getField(args[0]);
+        if (!fieldStorage.removeField(field.getName()))
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " " + args[1] + " does not exist.");
-            return false;
+            source.sendMessage(TextUtils.redText(CommonMessages.FIELD_DNE));
+            return CommandResult.empty();
         }
 
-        sender.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " " + args[1] + " has been deleted.");
-        return true;
+        source.sendMessage(TextUtils.greenText(CommonMessages.fieldDeleted(field)));
+        return CommandResult.success();
     }
 }

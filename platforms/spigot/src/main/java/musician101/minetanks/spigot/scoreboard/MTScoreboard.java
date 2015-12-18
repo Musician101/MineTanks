@@ -9,7 +9,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 import java.util.UUID;
@@ -25,9 +24,8 @@ public class MTScoreboard extends AbstractScoreboard<Scoreboard>
 
     public MTScoreboard()
     {
-        super(Bukkit.getScoreboardManager().getNewScoreboard());
-        ScoreboardManager sbm = Bukkit.getScoreboardManager();
-        scoreboard = sbm.getNewScoreboard();
+        super();
+        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         green = scoreboard.registerNewTeam(CommonScoreboard.GREEN_ID);
         green.setDisplayName(CommonScoreboard.GREEN_ID);
         green.setPrefix(ChatColor.GREEN + "");

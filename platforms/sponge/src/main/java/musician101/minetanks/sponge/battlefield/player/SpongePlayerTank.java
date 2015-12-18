@@ -5,15 +5,10 @@ import musician101.minetanks.sponge.tank.Tank;
 
 import java.util.UUID;
 
-public class SpongePlayerTank extends AbstractPlayerTank
+public class SpongePlayerTank extends AbstractPlayerTank<Tank>
 {
     public SpongePlayerTank(UUID player, MTTeam team)
     {
         super(player, team);
-    }
-
-    public Tank getTank()
-    {
-        return (Tank) tank;
     }
 }

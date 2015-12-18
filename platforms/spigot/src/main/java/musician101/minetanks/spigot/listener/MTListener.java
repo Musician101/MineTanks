@@ -81,19 +81,11 @@ public class MTListener implements Listener
 
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
+            Player player = event.getPlayer();
             SpigotBattleField field = plugin.getFieldStorage().getField(name);
-            double x = event.getBlock().getX();
-            double y = event.getBlock().getY();
-            double z = event.getBlock().getZ();
-            double minX = field.getRegion().getMinX();
-            double maxX = field.getRegion().getMaxX();
-            double minY = field.getRegion().getMinY();
-            double maxY = field.getRegion().getMaxY();
-            double minZ = field.getRegion().getMinZ();
-            double maxZ = field.getRegion().getMaxZ();
-            if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
+            if (field.getRegion().isInRegion(player.getLocation()))
             {
-                if (event.getPlayer().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
+                if (player.hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
                     return;
 
                 event.setCancelled(true);
@@ -110,19 +102,11 @@ public class MTListener implements Listener
 
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
+            Player player = event.getPlayer();
             SpigotBattleField field = plugin.getFieldStorage().getField(name);
-            double x = event.getBlock().getX();
-            double y = event.getBlock().getY();
-            double z = event.getBlock().getZ();
-            double minX = field.getRegion().getMinX();
-            double maxX = field.getRegion().getMaxX();
-            double minY = field.getRegion().getMinY();
-            double maxY = field.getRegion().getMaxY();
-            double minZ = field.getRegion().getMinZ();
-            double maxZ = field.getRegion().getMaxZ();
-            if ((x >= minX && x <= maxX) && (y >= minY && y <= maxY) && (z >= minZ && z <= maxZ))
+            if (field.getRegion().isInRegion(player.getLocation()))
             {
-                if (event.getPlayer().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
+                if (player.hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
                     return;
 
                 event.setCancelled(true);
@@ -151,7 +135,10 @@ public class MTListener implements Listener
                 return;
 
             if (field.getPlayerTank(event.getPlayer().getUniqueId()) != null)
+            {
                 Bukkit.getPluginManager().callEvent(new AttemptMenuOpenEvent(event.getItem().getType(), field.getName(), field.getPlayerTank(player.getUniqueId()), player.getUniqueId()));
+                return;
+            }
         }
     }
 
@@ -196,7 +183,6 @@ public class MTListener implements Listener
         }
     }
 
-    //TODO rewrite needed
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
@@ -210,26 +196,10 @@ public class MTListener implements Listener
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
-                double minX = field.getRegion().getMinX();
-                double maxX = field.getRegion().getMaxX();
-                double minZ = field.getRegion().getMinZ();
-                double maxZ = field.getRegion().getMaxZ();
-                double x = player.getLocation().getX();
-                double z = player.getLocation().getZ();
-                double correction = 2.0;
-                if (x <= minX || x >= maxX || z <= minZ || z >= maxZ)
+                if (field.getRegion().isInRegion(player.getLocation()))
                 {
-                    if (x <= minX)
-                        x = minX + correction;
-                    else if (x >= maxX)
-                        x = maxX - correction;
-                    if (z <= minZ)
-                        z = minZ + correction;
-                    else if (z >= maxZ)
-                        z = maxZ - correction;
-
                     player.sendMessage(ChatColor.RED + CommonMessages.OUT_OF_BOUNDS);
-                    player.teleport(new Location(player.getLocation().getWorld(), x, player.getLocation().getY(), z));
+                    player.teleport(player.getLocation().subtract(player.getVelocity()));
                     return;
                 }
             }

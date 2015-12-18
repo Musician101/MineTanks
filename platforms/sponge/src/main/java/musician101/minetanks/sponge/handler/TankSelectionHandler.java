@@ -1,18 +1,17 @@
 package musician101.minetanks.sponge.handler;
 
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.sponge.SpongeMineTanks;
-import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
-import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
 import musician101.minetanks.sponge.tank.Tank;
 import musician101.minetanks.sponge.tank.Tanks;
 import musician101.minetanks.sponge.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.sponge.util.IconMenu.OptionClickEventHandler;
 import musician101.minetanks.sponge.util.MTUtils;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
-
-import java.util.Collections;
 
 public class TankSelectionHandler implements OptionClickEventHandler
 {
@@ -33,12 +32,10 @@ public class TankSelectionHandler implements OptionClickEventHandler
         for (String fieldName : fieldStorage.getFields().keySet())
         {
             SpongeBattleField field = fieldStorage.getField(fieldName);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
-                player.getInventory().set(MTUtils.createCustomItem(tank.getType().getItem().getItem(), "Open Hangar", Collections.singletonList("Tank: " + tank.getName())));
-                player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "You have chosen the " + tank.getName() + "."));
-                player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "If you wish to choose another tank, right click with the 'Open Hangar' item."));
-                player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "When you are ready, simply right click the 'Ready' item."));
+                player.getInventory().set(MTUtils.createCustomItem(tank.getType().getItem().getItem(), CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(tank)));
+                player.sendMessages(TextUtils.greenText(CommonMessages.tankSelection1(tank)), TextUtils.greenText(CommonMessages.TANK_SELECTION_2), TextUtils.greenText(CommonMessages.TANK_SELECTION_3));
             }
         }
     }

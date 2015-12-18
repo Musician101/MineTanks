@@ -5,7 +5,6 @@ import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.util.AbstractInventoryStorage;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -75,7 +74,7 @@ public class InventoryStorage extends AbstractInventoryStorage
         }
         catch (IOException e)
         {
-            player.sendMessage(ChatColor.RED + SpigotReference.file(CommonMessages.FILE_CREATE_FAIL, file));
+            player.sendMessage(ChatColor.RED + CommonMessages.fileSaveFailed(file));
             return false;
         }
 
@@ -106,7 +105,7 @@ public class InventoryStorage extends AbstractInventoryStorage
         }
         catch (IOException e)
         {
-            player.sendMessage(ChatColor.RED + SpigotReference.file(CommonMessages.FILE_SAVE_FAIL, file));
+            player.sendMessage(ChatColor.RED + CommonMessages.fileSaveFailed(file));
             file.delete();
             return false;
         }

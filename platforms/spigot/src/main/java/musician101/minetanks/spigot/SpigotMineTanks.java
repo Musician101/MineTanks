@@ -43,7 +43,7 @@ public class SpigotMineTanks extends JavaPlugin
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        return (command.getName().equalsIgnoreCase(CommonReference.ID) || command.getName().equalsIgnoreCase(CommonCommands.MT)) && new MTCommand(this).onCommand(sender, args);
+        return (command.getName().equalsIgnoreCase(CommonReference.ID) || command.getName().equalsIgnoreCase(CommonCommands.MT_CMD.replace("/", ""))) && new MTCommand(this).onCommand(sender, args);
     }
 
     public SpigotBattleFieldStorage getFieldStorage()

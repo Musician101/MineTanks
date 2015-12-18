@@ -1,6 +1,10 @@
 package musician101.minetanks.sponge.listener;
 
+import musician101.common.java.minecraft.sponge.TextUtils;
 import musician101.common.java.util.ListUtil;
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
@@ -11,12 +15,13 @@ import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.sponge.handler.ExplosionTracker;
 import musician101.minetanks.sponge.handler.ReloadHandler;
-import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
 import musician101.minetanks.sponge.tank.module.cannon.SpongeAutoLoader;
 import musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
 import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import musician101.minetanks.sponge.util.SpongeRegion;
-import org.spongepowered.api.block.BlockTransaction;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
@@ -39,7 +44,7 @@ import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent.Move;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent.Teleport;
 import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
-import org.spongepowered.api.event.inventory.DropItemEvent.Dispense;
+import org.spongepowered.api.event.item.inventory.DropItemEvent.Dispense;
 import org.spongepowered.api.event.network.ClientConnectionEvent.Disconnect;
 import org.spongepowered.api.event.network.ClientConnectionEvent.Join;
 import org.spongepowered.api.item.ItemType;
@@ -48,7 +53,7 @@ import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.world.explosion.ExplosionBuilder;
+import org.spongepowered.api.world.explosion.Explosion;
 
 import java.io.File;
 import java.util.Arrays;
@@ -61,7 +66,7 @@ public class MTListener
     private boolean isInField(UUID playerId)
     {
         for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
-            if (SpongeMineTanks.getFieldStorage().getField(name).getPlayer(playerId) != null)
+            if (SpongeMineTanks.getFieldStorage().getField(name).getPlayerTank(playerId) != null)
                 return true;
 
         return false;
@@ -69,27 +74,8 @@ public class MTListener
 
     private boolean isSword(ItemType type)
     {
-        //It's technically a sword without a blade.
         //Stick is the default item if a player hasn't chosen a tank.
-        if (type == ItemTypes.STICK)
-            return true;
-
-        if (type == ItemTypes.WOODEN_SWORD)
-            return true;
-
-        if (type == ItemTypes.STONE_SWORD)
-            return true;
-
-        if (type == ItemTypes.IRON_SWORD)
-            return true;
-
-        if (type == ItemTypes.GOLDEN_SWORD)
-            return true;
-
-        if (type == ItemTypes.DIAMOND_SWORD)
-            return true;
-
-        return false;
+        return type == ItemTypes.STICK || type == ItemTypes.WOODEN_SWORD || type == ItemTypes.STONE_SWORD || type == ItemTypes.IRON_SWORD || type == ItemTypes.GOLDEN_SWORD || type == ItemTypes.DIAMOND_SWORD;
     }
 
     @Listener
@@ -113,14 +99,14 @@ public class MTListener
         for (String name : fieldStorage.getFields().keySet())
         {
             SpongeBattleField field = fieldStorage.getField(name);
-            for (BlockTransaction blockTransaction : event.getTransactions())
+            for (Transaction<BlockSnapshot> transaction : event.getTransactions())
             {
-                if (field.getRegion().isInRegion(blockTransaction.getOriginal().getLocation().get()))
+                if (field.getRegion().isInRegion(transaction.getOriginal().getLocation().get()))
                 {
                     Optional<Player> playerOptional = event.getCause().first(Player.class);
                     if (playerOptional.isPresent())
                     {
-                        if (playerOptional.get().hasPermission("minetanks.edit") && !field.isEnabled())
+                        if (playerOptional.get().hasPermission(CommonPermissions.EDIT_PERM) && !field.isEnabled())
                             return;
 
                         event.setCancelled(true);
@@ -155,8 +141,8 @@ public class MTListener
             if (field.inProgress())
                 return;
 
-            if (field.getPlayer(player.getUniqueId()) != null)
-                SpongeMineTanks.getGame().getEventManager().post(new AttemptMenuOpenEvent(type, field.getName(), field.getPlayer(player.getUniqueId()), player.getUniqueId()));
+            if (field.getPlayerTank(player.getUniqueId()) != null)
+                Sponge.getGame().getEventManager().post(new AttemptMenuOpenEvent(type, field.getName(), field.getPlayerTank(player.getUniqueId()), player.getUniqueId()));
         }
     }
 
@@ -178,7 +164,7 @@ public class MTListener
         if (!file.exists())
             return;
 
-        player.sendMessage(Texts.of(SpongeMessages.POSITIVE_PREFIX + "You logged off with items still stored away. They will now be returned to you."));
+        player.sendMessage(TextUtils.greenText(CommonMessages.LOGGED_OFF_WITH_ITEMS_STORED));
         sis.load(player.getUniqueId());
     }
 
@@ -188,7 +174,7 @@ public class MTListener
         Player player = event.getTargetEntity();
         for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
-            if (SpongeMineTanks.getFieldStorage().getField(name).getPlayer(player.getUniqueId()) != null)
+            if (SpongeMineTanks.getFieldStorage().getField(name).getPlayerTank(player.getUniqueId()) != null)
             {
                 SpongeMineTanks.getFieldStorage().getField(name).removePlayer(player.getUniqueId());
                 return;
@@ -203,9 +189,9 @@ public class MTListener
         for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
             SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
-                SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
+                SpongePlayerTank pt = field.getPlayerTank(player.getUniqueId());
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
@@ -213,7 +199,7 @@ public class MTListener
                 if (!region.isInRegion(player.getLocation()))
                 {
                     event.setCancelled(true);
-                    player.sendMessage(Texts.of(SpongeMessages.NEGATIVE_PREFIX + "Out of bounds!"));
+                    player.sendMessage(TextUtils.redText(CommonMessages.OUT_OF_BOUNDS));
                     return;
                 }
             }
@@ -244,9 +230,9 @@ public class MTListener
         for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
             SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
-                SpongePlayerTank pt = field.getPlayer(player.getUniqueId());
+                SpongePlayerTank pt = field.getPlayerTank(player.getUniqueId());
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
@@ -259,19 +245,21 @@ public class MTListener
                     Inventory inv = player.getInventory();
                     for (Inventory slot : inv.slots())
                     {
-                        Optional<ItemStack> iso = slot.peek();
-                        if (iso.isPresent())
+                        ItemStack item = slot.peek();
+                        pt.setClipSize(pt.getClipSize() - 1);
+                        if (item.getItem() == ItemTypes.ARROW)
+                            item.setQuantity(item.getQuantity() - 1);
+                        else if (item.getItem() == ItemTypes.BOW && cannon instanceof SpongeAutoLoader)
                         {
-                            ItemStack item = iso.get();
-                            pt.setClipSize(pt.getClipSize() - 1);
-                            if (item.getItem() == ItemTypes.ARROW)
-                                item.setQuantity(item.getQuantity() - 1);
-                            else if (item.getItem() == ItemTypes.BOW && cannon instanceof SpongeAutoLoader)
-                            {
-                                LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
-                                lore.set(SpongeMineTanks.getGame().getRegistry().createValueBuilder().createListValue(Keys.ITEM_LORE, new ListUtil<Text>(Texts.of("Your Cannon"), Texts.of("Clip Size: " + pt.getClipSize() + "/" + ((SpongeAutoLoader) cannon).getClipSize()), Texts.of("Clip Reload Time: " + cannon.getReloadTime()))));
-                                item.setRawData(lore.toContainer());
-                            }
+                            SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
+                            LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
+                            lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
+                                    new ListUtil<>(Texts.of(CommonItemText.CANNON),
+                                            Texts.of(CommonItemText.clipSize(pt.getClipSize(), autoLoader.getClipSize())),
+                                            Texts.of(CommonItemText.cycleTime(autoLoader.getCycleTime())),
+                                            Texts.of(CommonItemText.clipReloadTime(autoLoader.getReloadTime())))));
+
+                            item.setRawData(lore.toContainer());
                         }
                     }
                 }
@@ -286,29 +274,29 @@ public class MTListener
         Entity damagedEntity = event.getTargetEntity();
         DamageSource damageSource = event.getCause().first(DamageSource.class).get();
         List<DamageType> validSources = Arrays.asList(DamageTypes.ATTACK, DamageTypes.EXPLOSIVE, DamageTypes.FALL, DamageTypes.PROJECTILE);
-        if (!(damagedEntity instanceof Player) && !(damageSource.isExplosion() || validSources.contains(damageSource.getDamageType())))
+        if (!(damagedEntity instanceof Player) && !(damageSource.isExplosive() || validSources.contains(damageSource.getType())))
             return;
 
         UUID damagedEntityUniqueId = damagedEntity.getUniqueId();
         for (String name : SpongeMineTanks.getFieldStorage().getFields().keySet())
         {
             SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(name);
-            if (field.getPlayer(damagedEntityUniqueId) != null)
+            if (field.getPlayerTank(damagedEntityUniqueId) != null)
             {
                 int damage = (int) event.getBaseDamage() * 2;
-                if (damageSource instanceof Arrow && ((Arrow) damageSource).getShooter() instanceof Player && field.getPlayer(((Player) ((Arrow) damageSource).getShooter()).getUniqueId()) != null)
+                if (damageSource instanceof Arrow && ((Arrow) damageSource).getShooter() instanceof Player && field.getPlayerTank(((Player) ((Arrow) damageSource).getShooter()).getUniqueId()) != null)
                 {
                     Arrow arrow = (Arrow) damageSource;
                     UUID damager = ((Player) arrow.getShooter()).getUniqueId();
-                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, damagedEntityUniqueId, damager, field, damage));
+                    Sponge.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, damagedEntityUniqueId, damager, field, damage));
                     ExplosionTracker.addArrow(arrow);
                 }
-                else if (damageSource instanceof Player && field.getPlayer(((Player) damageSource).getUniqueId()) != null)
+                else if (damageSource instanceof Player && field.getPlayerTank(((Player) damageSource).getUniqueId()) != null)
                 {
                     UUID damager = ((Player) damageSource).getUniqueId();
-                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, damagedEntityUniqueId, damager, field, damage));
+                    Sponge.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, damagedEntityUniqueId, damager, field, damage));
                 }
-                else if (damageSource.isExplosion())
+                else if (damageSource.isExplosive())
                 {
                     Arrow arrow = null;
                     for (Arrow a : ExplosionTracker.getTracker())
@@ -316,11 +304,11 @@ public class MTListener
                             arrow = a;
 
                     UUID damager = ((Arrow) arrow.getShooter()).getUniqueId();
-                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, damagedEntityUniqueId, damager, field, damage));
+                    Sponge.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, damagedEntityUniqueId, damager, field, damage));
                     ExplosionTracker.removeArrow(arrow);
                 }
-                else if (damageSource.getDamageType() == DamageTypes.FALL)
-                    SpongeMineTanks.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, damagedEntityUniqueId, field, damage));
+                else if (damageSource.getType() == DamageTypes.FALL)
+                    Sponge.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.FALL, damagedEntityUniqueId, field, damage));
 
                 event.setBaseDamage(0);
                 return;
@@ -347,7 +335,7 @@ public class MTListener
             return;
 
         ExplosionTracker.addArrow(arrow);
-        ExplosionBuilder eb = SpongeMineTanks.getGame().getRegistry().createExplosionBuilder();
+        Explosion.Builder eb = Explosion.builder();
         eb.canCauseFire(false);
         eb.origin(arrow.getLocation().getPosition());
         eb.radius(1F);

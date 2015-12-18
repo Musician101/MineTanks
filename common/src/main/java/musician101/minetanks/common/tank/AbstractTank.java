@@ -8,7 +8,7 @@ import musician101.minetanks.common.tank.modules.AbstractTurret;
 
 import java.util.List;
 
-public abstract class AbstractTank<Y extends AbstractTankType, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I> extends Info
+public abstract class AbstractTank<Y extends AbstractTankType, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I, P> extends Info
 {
     protected final Armor armor;
     protected final C cannon;
@@ -70,4 +70,6 @@ public abstract class AbstractTank<Y extends AbstractTankType, C extends Abstrac
     {
         return type;
     }
+
+    public abstract P getSpeedEffect();
 }

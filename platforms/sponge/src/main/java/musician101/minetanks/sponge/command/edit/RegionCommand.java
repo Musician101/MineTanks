@@ -1,39 +1,45 @@
 package musician101.minetanks.sponge.command.edit;
 
-import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
-import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.BattleField;
-import musician101.minetanks.spigot.util.SpigotRegion;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.util.SpongeRegion;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
-public class RegionCommand extends AbstractSpigotCommand
+public class RegionCommand extends AbstractSpongeCommand
 {
-    MineTanks plugin;
-
-    public RegionCommand(MineTanks plugin)
+    public RegionCommand()
     {
-        super("region", "Set the region region of the currently selected battlefield.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("region"), new CommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED), new CommandArgument("radius | xradius yradius zradius", Syntax.REPLACE, Syntax.REQUIRED)), 2, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
-        this.plugin = plugin;
+        super(CommonCommands.REGION_NAME, CommonCommands.REGION_DESC, Arrays.asList(new SpongeCommandArgument(CommonCommands.MT_CMD), new SpongeCommandArgument(CommonCommands.REGION_NAME), new SpongeCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED), new SpongeCommandArgument(CommonCommands.RADIUS, Syntax.REPLACE, Syntax.REQUIRED)), 2, CommonPermissions.EDIT_PERM, true, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.PLAYER_ONLY));
     }
 
+    @Nonnull
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
+    public CommandResult process(@Nonnull CommandSource source, @Nonnull String arguments)
     {
-        if (!canSenderUseCommand(sender))
-            return false;
+        String[] args = splitArgs(arguments);
+        if (!testPermission(source))
+            return CommandResult.empty();
 
-        Player player = (Player) sender;
-        BattleField field = plugin.getFieldStorage().getField(args[0]);
+        Player player = (Player) source;
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
-            return false;
+            source.sendMessage(Texts.builder(CommonMessages.FIELD_DNE).color(TextColors.RED).build());
+            return CommandResult.empty();
         }
 
         if (args.length >= 2 && args.length < 4)
@@ -45,13 +51,13 @@ public class RegionCommand extends AbstractSpigotCommand
             }
             catch (NumberFormatException e)
             {
-                player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: " + args[1] + " is not a number.");
-                return false;
+                player.sendMessage(TextUtils.redText(CommonMessages.notANumber(args[1])));
+                return CommandResult.empty();
             }
 
-            field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), radius));
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Region set.");
-            return true;
+            field.setRegion(SpongeRegion.createFromLocationRadius(player.getLocation(), radius));
+            player.sendMessage(TextUtils.greenText(CommonMessages.REGION_SET));
+            return CommandResult.success();
         }
         else if (args.length >= 4)
         {
@@ -66,16 +72,16 @@ public class RegionCommand extends AbstractSpigotCommand
             }
             catch (NumberFormatException e)
             {
-                player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: One or more of the inputted radii is not a number.");
-                return false;
+                player.sendMessage(TextUtils.redText(CommonMessages.NOT_A_NUMBER_MULTI));
+                return CommandResult.empty();
             }
 
-            field.setSpigotRegion(SpigotRegion.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
-            player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Region set.");
-            return true;
+            field.setRegion(SpongeRegion.createFromLocationRadius(player.getLocation(), xRadius, yRadius, zRadius));
+            player.sendMessage(TextUtils.greenText(CommonMessages.REGION_SET));
+            return CommandResult.success();
         }
 
-        player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: Not enough args.");
-        return false;
+        player.sendMessage(TextUtils.redText(CommonMessages.NOT_ENOUGH_ARGS));
+        return CommandResult.empty();
     }
 }

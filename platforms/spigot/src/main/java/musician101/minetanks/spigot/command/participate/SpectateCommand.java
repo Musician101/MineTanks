@@ -21,7 +21,7 @@ public class SpectateCommand extends AbstractSpigotCommand
 
     public SpectateCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.SPECTATE_NAME, CommonCommands.SPECTATE_DESC, Arrays.asList(new SpigotCommandArgument("/" + CommonCommands.MT), new SpigotCommandArgument(CommonCommands.SPECTATE_NAME), new SpigotCommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
+        super(CommonCommands.SPECTATE_NAME, CommonCommands.SPECTATE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.SPECTATE_NAME), new SpigotCommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 

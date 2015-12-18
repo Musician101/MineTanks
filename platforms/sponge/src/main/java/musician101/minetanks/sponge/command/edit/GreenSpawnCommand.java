@@ -1,53 +1,59 @@
 package musician101.minetanks.sponge.command.edit;
 
-import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
-import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.BattleField;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class GreenSpawnCommand extends AbstractSpigotCommand
+public class GreenSpawnCommand extends AbstractSpongeCommand
 {
-    MineTanks plugin;
-
-    public GreenSpawnCommand(MineTanks plugin)
+    public GreenSpawnCommand()
     {
-        super("greenspawn", "Set the green team's spawn point of the currently selected battlefield.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("greenspawn"), new CommandArgument("field", Syntax.REQUIRED, Syntax.REPLACE)), 1, "minetanks.edit", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
-        this.plugin = plugin;
+        super(CommonCommands.GREEN_SPAWN_NAME, CommonCommands.GREEN_SPAWN_NAME, Arrays.asList(new SpongeCommandArgument(CommonCommands.MT_CMD), new SpongeCommandArgument(CommonCommands.GREEN_SPAWN_NAME), new SpongeCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, true, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.NO_PERMISSION));
     }
 
+    @Nonnull
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
+    public CommandResult process(@Nullable CommandSource source, @Nullable String arguments)
     {
-        if (!canSenderUseCommand(sender))
-            return false;
+        String[] args = splitArgs(arguments);
+        if (!testPermission(source))
+            return CommandResult.empty();
 
-        if (minArgsMet(sender, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
-            return false;
+        if (minArgsMet(source, args.length, TextUtils.redText(CommonMessages.FIELD_DNE)))
+            return CommandResult.empty();
 
-        Player player = (Player) sender;
-        BattleField field = plugin.getFieldStorage().getField(args[0]);
+        Player player = (Player) source;
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
-            return false;
+            source.sendMessage(TextUtils.redText(CommonMessages.FIELD_DNE));
+            return CommandResult.empty();
         }
 
-        Location loc = player.getLocation();
-        if (field.getSpigotRegion() == null || !field.getSpigotRegion().isInRegion(loc))
+        Location<World> loc = player.getLocation();
+        if (field.getRegion() == null || !field.getRegion().isInRegion(loc))
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Error: The location is not inside the field's region.");
-            return false;
+            player.sendMessage(TextUtils.redText(CommonMessages.LOCATION_NOT_IN_REGION));
+            return CommandResult.empty();
         }
 
         field.setGreenSpawn(loc);
-        player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " Green Spawn point set.");
-        return true;
+        player.sendMessage(TextUtils.greenText(CommonMessages.GREEN_SPAWN_SET));
+        return CommandResult.success();
     }
 }

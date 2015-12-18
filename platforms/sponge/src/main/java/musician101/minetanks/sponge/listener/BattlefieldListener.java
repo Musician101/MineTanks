@@ -1,5 +1,7 @@
 package musician101.minetanks.sponge.listener;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
@@ -8,9 +10,9 @@ import musician101.minetanks.sponge.event.PlayerTankDamageEvent;
 import musician101.minetanks.sponge.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.sponge.event.PlayerTankDeathEvent;
 import musician101.minetanks.sponge.handler.DamageHandler;
-import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
 import musician101.minetanks.sponge.scoreboard.MTScoreboard;
 import musician101.minetanks.sponge.util.MTUtils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.item.ItemTypes;
@@ -18,7 +20,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.Collections;
 import java.util.UUID;
 
 public class BattlefieldListener
@@ -34,19 +35,19 @@ public class BattlefieldListener
             if (pt.isReady())
             {
                 pt.setReady(false);
-                player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, "Ready Up", Collections.singletonList("You are currently not ready.")));
+                player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, CommonItemText.READY_UP, CommonItemText.NOT_READY));
                 return;
             }
 
             pt.setReady(true);
-            player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, "Unready", Collections.singletonList("You are currently ready.")));
+            player.getInventory().set(MTUtils.createCustomItem(ItemTypes.CLOCK, CommonItemText.UNREADY, CommonItemText.READY));
             field.startMatch();
             return;
         }
 
         if (pt.isReady())
         {
-            player.sendMessage(Texts.of(SpongeMessages.NEGATIVE_PREFIX + "You must unready to change your tank."));
+            player.sendMessage(Texts.of(CommonMessages.MUST_UNREADY));
             return;
         }
 
@@ -60,13 +61,14 @@ public class BattlefieldListener
         Player killed = event.getKilled();
         Player killer = event.getKiller();
         MTScoreboard sb = field.getScoreboard();
-        Text prefix = Texts.builder().append(Texts.of(SpongeMineTanks.getPrefix())).color(TextColors.GREEN).build();
+        Text prefix = Texts.builder().append(Texts.of(CommonMessages.PREFIX)).color(TextColors.GREEN).build();
         Text damagedMsg = (sb.isOnGreen(killed.getUniqueId()) ? Texts.builder().append(Texts.of(killed.getName())).color(TextColors.GREEN).build() : Texts.builder().append(Texts.of(killed.getName())).color(TextColors.RED).build());
         Text damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? Texts.builder().append(Texts.of(killer.getName())).color(TextColors.GREEN).build() : Texts.builder().append(Texts.of(killer.getName())).color(TextColors.RED).build());
         Text damagedBy = Texts.builder().append(Texts.of("was damaged by")).color(TextColors.WHITE).build();
-        for (Player player : SpongeMineTanks.getGame().getServer().getOnlinePlayers())
-            if (field.getPlayer(player.getUniqueId()) != null)
+        Sponge.getGame().getServer().getOnlinePlayers().forEach(player -> {
+            if (field.getPlayerTank(player.getUniqueId()) != null)
                 player.sendMessage(Texts.join(Texts.of(" "), new Text[]{prefix, damagedMsg, damagedBy, damagerMsg}));
+        });
 
         field.playerKilled(killed.getUniqueId());
         field.endMatch();

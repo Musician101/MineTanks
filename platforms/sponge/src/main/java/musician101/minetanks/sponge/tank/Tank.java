@@ -1,28 +1,27 @@
 package musician101.minetanks.sponge.tank;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.AbstractTank;
 import musician101.minetanks.common.tank.Armor;
-import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.tank.module.Engine;
 import musician101.minetanks.sponge.tank.module.Radio;
 import musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
 import musician101.minetanks.sponge.tank.module.tracks.Trackz;
 import musician101.minetanks.sponge.tank.module.turret.Turret;
-import musician101.minetanks.sponge.util.MTUtils;
-import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectType;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
-import org.spongepowered.api.potion.PotionEffect;
-import org.spongepowered.api.potion.PotionEffectBuilder;
-import org.spongepowered.api.potion.PotionEffectType;
-import org.spongepowered.api.potion.PotionEffectTypes;
+import org.spongepowered.api.item.inventory.ItemStack.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 
@@ -30,24 +29,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Tank extends AbstractTank
+public class Tank extends AbstractTank<SpongeTankType, SpongeCannon, Engine, Radio, Trackz, Turret, ItemStack, PotionEffect>
 {
-    Armor armor;
-    SpongeCannon cannon;
-    Engine engine;
-    Radio radio;
-    Trackz tracks;
-    Turret turret;
-
     public Tank(String name, SpongeTankType type, int health, Armor armor, int speed, SpongeCannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
     {
-        super(name, type, health, speed, description);
-        this.cannon = cannon;
-        this.engine = engine;
-        this.radio = radio;
-        this.tracks = tracks;
-        this.turret = turret;
-        this.armor = armor;
+        super(name, type, health, armor, speed, cannon, engine, radio, tracks, turret, description);
     }
 
     private ItemStack parseArmorValue(ItemStack item)
@@ -57,10 +43,10 @@ public class Tank extends AbstractTank
 
     private ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
-        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
-        EnchantmentData enchantments = gr.getManipulatorRegistry().getBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
-        enchantments.set(gr.createValueBuilder().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue())))));
-        ItemStackBuilder isb = gr.createItemBuilder();
+        Game game = Sponge.getGame();
+        EnchantmentData enchantments = game.getDataManager().getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
+        enchantments.set(game.getRegistry().getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue())))));
+        ItemStack.Builder isb = ItemStack.builder();
         isb.fromItemStack(item);
         isb.itemData(enchantments);
         return isb.build();
@@ -68,42 +54,42 @@ public class Tank extends AbstractTank
 
     private ItemStack parseSpeedValue(ItemStack item)
     {
-        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
-        LoreData lore = gr.getManipulatorRegistry().getBuilder(CatalogItemData.LORE_DATA).get().create();
+        Game game = Sponge.getGame();
+        LoreData lore = game.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         List<Text> loreList = lore.lore().get();
-        loreList.add(Texts.of("Speed Value: " + getSpeed()));
-        lore.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, loreList));
-        ItemStackBuilder isb = gr.createItemBuilder();
+        loreList.add(Texts.of(CommonItemText.speedValue(getSpeed())));
+        lore.set(game.getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE, loreList));
+        Builder isb = ItemStack.builder();
         isb.fromItemStack(item);
         isb.itemData(lore);
         return isb.build();
     }
 
+    @Override
     public ItemStack getHelmet()
     {
         return parseArmorValue(turret.getItem(), armor);
     }
 
+    @Override
     public ItemStack getChestplate()
     {
         return parseArmorValue(radio.getItem());
     }
 
+    @Override
     public ItemStack getLeggings()
     {
         return parseArmorValue(parseSpeedValue(engine.getItem()));
     }
 
+    @Override
     public ItemStack getBoots()
     {
         return parseArmorValue(tracks.getItem());
     }
 
-    public SpongeCannon getCannon()
-    {
-        return cannon;
-    }
-
+    @Override
     public List<ItemStack> getWeapons()
     {
         List<ItemStack> items = new ArrayList<>();
@@ -113,16 +99,17 @@ public class Tank extends AbstractTank
         {
             if (ammo > 64)
             {
-                items.add(MTUtils.createCustomItem(ItemTypes.ARROW, 64));
+                items.add(ItemStack.of(ItemTypes.ARROW, 64));
                 ammo =- 64;
             }
             else
-                items.add(MTUtils.createCustomItem(ItemTypes.ARROW, ammo));
+                items.add(ItemStack.of(ItemTypes.ARROW, ammo));
         }
 
         return items;
     }
 
+    @Override
     public PotionEffect getSpeedEffect()
     {
         int amplifier = 0;
@@ -156,16 +143,10 @@ public class Tank extends AbstractTank
                 amplifier = 5;
         }
 
-        PotionEffectBuilder peb = SpongeMineTanks.getGame().getRegistry().createPotionEffectBuilder();
-        peb.potionType(effect);
-        peb.amplifier(amplifier);
-        peb.duration(Integer.MAX_VALUE);
+        PotionEffect.Builder peb = PotionEffect.builder();
+        peb.from(PotionEffect.of(effect, amplifier, Integer.MAX_VALUE));
         peb.ambience(false);
+        peb.particles(false);
         return peb.build();
-    }
-
-    public SpongeTankType getType()
-    {
-        return (SpongeTankType) type;
     }
 }

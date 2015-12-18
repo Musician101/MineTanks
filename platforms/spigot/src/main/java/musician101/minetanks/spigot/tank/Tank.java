@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Tank extends AbstractTank<TankType, Cannon, Engine, Radio, Trackz, Turret, ItemStack>
+public class Tank extends AbstractTank<TankType, Cannon, Engine, Radio, Trackz, Turret, ItemStack, PotionEffect>
 {
     public Tank(String name, TankType type, int health, Armor armor, int speed, Cannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
     {

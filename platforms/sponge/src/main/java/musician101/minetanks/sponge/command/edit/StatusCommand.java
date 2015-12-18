@@ -1,42 +1,52 @@
 package musician101.minetanks.sponge.command.edit;
 
-import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.common.java.minecraft.spigot.command.CommandArgument.Syntax;
-import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.BattleField;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
-public class StatusCommand extends AbstractSpigotCommand
+public class StatusCommand extends AbstractSpongeCommand
 {
-    MineTanks plugin;
-
-    public StatusCommand(MineTanks plugin)
+    public StatusCommand()
     {
-        super("status", "View the status of the specified field.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("status"), new CommandArgument("field", Syntax.REPLACE, Syntax.REQUIRED)), 1, "minetanks.edit", false, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
-        this.plugin = plugin;
+        super(CommonCommands.STATUS_NAME, CommonCommands.STATUS_DESC, Arrays.asList(new SpongeCommandArgument(CommonCommands.MT_CMD), new SpongeCommandArgument(CommonCommands.STATUS_NAME), new SpongeCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, false, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.PLAYER_ONLY));
     }
 
+    @Nonnull
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
+    public CommandResult process(@Nonnull CommandSource source, @Nonnull String arguments)
     {
-        if (!canSenderUseCommand(sender))
-            return false;
+        String[] args = splitArgs(arguments);
+        if (!testPermission(source))
+            return CommandResult.empty();
 
-        if (minArgsMet(sender, args.length, ChatColor.RED + plugin.getPrefix() + " Error: Field not specified."))
-            return false;
+        if (minArgsMet(source, args.length, TextUtils.redText(CommonMessages.FIELD_NOT_SPECIFIED)))
+            return CommandResult.empty();
 
-        BattleField field = plugin.getFieldStorage().getField(args[0]);
+        SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            sender.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, that field doesn't exist.");
-            return false;
+            source.sendMessage(TextUtils.redText(CommonMessages.FIELD_DNE));
+            return CommandResult.empty();
         }
 
-        sender.sendMessage(new String[]{ChatColor.GREEN + plugin.getPrefix() + " Status of " + field.getName(), ChatColor.GREEN + plugin.getPrefix() + " Enabled: " + field.isEnabled(), ChatColor.GREEN + plugin.getPrefix() + " Region: " + (field.getSpigotRegion() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Green Spawn: " + (field.getGreenSpawn() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Red Spawn: " + (field.getRedSpawn() == null ? "Not Set" : "Set"), ChatColor.GREEN + plugin.getPrefix() + " Spectators Spawn: " + (field.getSpectators() == null ? "Not Set" : "Set")});
-        return true;
+        source.sendMessages(TextUtils.greenText(CommonMessages.statusOfField(field)),
+                TextUtils.greenText(CommonMessages.statusOfFieldEnabled(field)),
+                TextUtils.greenText(CommonMessages.statusOfFieldRegion(field)),
+                TextUtils.greenText(CommonMessages.statusOfFieldGreenSpawn(field)),
+                TextUtils.greenText(CommonMessages.statusOfFieldRedSpawn(field)),
+                TextUtils.greenText(CommonMessages.statusOfFieldSpectatorsSpawn(field)));
+
+        return CommandResult.success();
     }
 }

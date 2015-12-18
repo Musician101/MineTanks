@@ -58,7 +58,10 @@ public abstract class AbstractBattleField<P extends AbstractPlayerTank, R extend
 
     public abstract boolean removePlayer(UUID playerId);
 
-    public abstract boolean isReady();
+    public boolean isReady()
+    {
+        return region != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
+    }
 
     public boolean canPlayerExit(UUID playerId)
     {

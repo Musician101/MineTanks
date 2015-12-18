@@ -1,11 +1,14 @@
 package musician101.minetanks.sponge.util;
 
+import musician101.common.java.minecraft.sponge.TextUtils;
 import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
+import musician101.minetanks.common.CommonReference.CommonConfig;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.util.AbstractInventoryStorage;
-import musician101.minetanks.sponge.SpongeMineTanks;
 import org.json.simple.parser.ParseException;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataManager;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
@@ -13,16 +16,12 @@ import org.spongepowered.api.data.manipulator.mutable.entity.ExperienceHolderDat
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.world.Location;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class SpongeInventoryStorage extends AbstractInventoryStorage
@@ -36,41 +35,40 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
     public void load(UUID playerId)
     {
         File file = getPlayerFile(playerId);
-        Game game = SpongeMineTanks.getGame();
+        Game game = Sponge.getGame();
         Player player = game.getServer().getPlayer(playerId).get();
         if (!file.exists())
         {
-            player.sendMessage(Texts.of(SpongeMineTanks.getPrefix() + "Your file could not be found. Please contact an administrator immediately."));
+            player.sendMessage(TextUtils.redText(CommonMessages.fileLoadFailed(file)));
             return;
         }
 
         try
         {
             SpongeJSONConfig sjc = SpongeJSONConfig.load(file);
-            for (ItemStack itemStack : sjc.getItemStackList("inventory"))
+            for (ItemStack itemStack : sjc.getItemStackList(CommonConfig.INVENTORY.replace(".", "")))
                 player.getInventory().set(itemStack);
 
-            if (sjc.containsKey("helmet"))
-                player.setHelmet(sjc.getItemStack("helmet"));
+            if (sjc.containsKey(CommonConfig.HELMET))
+                player.setHelmet(sjc.getItemStack(CommonConfig.HELMET));
 
-            if (sjc.containsKey("chestplate"))
-                player.setChestplate(sjc.getItemStack("chestplate"));
+            if (sjc.containsKey(CommonConfig.CHESTPLATE))
+                player.setChestplate(sjc.getItemStack(CommonConfig.CHESTPLATE));
 
-            if (sjc.containsKey("leggings"))
-                player.setLeggings(sjc.getItemStack("leggings"));
+            if (sjc.containsKey(CommonConfig.LEGGINGS))
+                player.setLeggings(sjc.getItemStack(CommonConfig.LEGGINGS));
 
-            if (sjc.containsKey("boots"))
-                player.setBoots(sjc.getItemStack("boots"));
+            if (sjc.containsKey(CommonConfig.BOOTS))
+                player.setBoots(sjc.getItemStack(CommonConfig.BOOTS));
 
-            GameRegistry gr = game.getRegistry();
-            PotionEffectData data = gr.getManipulatorRegistry().getBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create();
-            data.set(gr.createValueBuilder().createListValue(Keys.POTION_EFFECTS, sjc.getPotionEffectsList("potion_effects")));
+            PotionEffectData data = game.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create();
+            data.set(game.getRegistry().getValueFactory().createListValue(Keys.POTION_EFFECTS, sjc.getPotionEffectsList(CommonConfig.EFFECTS)));
             player.setRawData(data.toContainer());
             file.delete();
         }
         catch (IOException | ParseException e)
         {
-            player.sendMessage(Texts.of(SpongeMineTanks.getPrefix() + "There was an error reading your file. Please contact an administrator immediately."));
+            player.sendMessage(TextUtils.redText(CommonMessages.fileLoadFailed(file)));
         }
     }
 
@@ -82,39 +80,32 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
         SpongeJSONConfig sjc = new SpongeJSONConfig();
         List<ItemStack> items = new ArrayList<>();
         for (Inventory slot : inv.slots())
-            if (slot.peek().isPresent())
-                items.add(slot.peek().get());
+            if (slot.peek() != null)
+                items.add(slot.peek());
 
-        sjc.setItemStackList("items", items);
+        sjc.setItemStackList(CommonConfig.INVENTORY.replace(".", ""), items);
         if (player.getHelmet().isPresent())
-            sjc.setItemStack("helmet", player.getHelmet().get());
+            sjc.setItemStack(CommonConfig.HELMET, player.getHelmet().get());
 
         if (player.getChestplate().isPresent())
-            sjc.setItemStack("chestplate", player.getChestplate().get());
+            sjc.setItemStack(CommonConfig.CHESTPLATE, player.getChestplate().get());
 
         if (player.getLeggings().isPresent())
-            sjc.setItemStack("leggings", player.getLeggings().get());
+            sjc.setItemStack(CommonConfig.LEGGINGS, player.getLeggings().get());
 
         if (player.getBoots().isPresent())
-            sjc.setItemStack("boots", player.getBoots().get());
+            sjc.setItemStack(CommonConfig.BOOTS, player.getBoots().get());
 
         ExperienceHolderData exp = player.get(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get();
-        sjc.set("exp", exp.totalExperience());
+        sjc.set(CommonConfig.XP, exp.totalExperience());
 
         PotionEffectData potions = player.get(CatalogEntityData.POTION_EFFECT_DATA).get();
-        sjc.setPotionEffectsList("potion_effects", potions.effects().get());
+        sjc.setPotionEffectsList(CommonConfig.EFFECTS, potions.effects().get());
+        sjc.set(CommonConfig.LOCATION, player.getLocation().toContainer().toString());
 
-        Location loc = player.getLocation();
-        Map<String, Object> locMap = new HashMap<>();
-        locMap.put("world", player.getWorld().getName());
-        locMap.put("x", loc.getX());
-        locMap.put("y", loc.getY());
-        locMap.put("z", loc.getZ());
-        sjc.set("location", locMap);
-
+        File file = getPlayerFile(playerId);
         try
         {
-            File file = getPlayerFile(playerId);
             if (!file.exists())
                 file.createNewFile();
 
@@ -124,7 +115,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
         }
         catch (IOException e)
         {
-            player.sendMessage(Texts.of(SpongeMineTanks.getPrefix() + " An error occurred while saving your data. You can not join a battlefield at this time."));
+            player.sendMessage(TextUtils.redText(CommonMessages.fileSaveFailed(file)));
             return false;
         }
 
@@ -134,8 +125,9 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
         player.setLeggings(null);
         player.setBoots(null);
 
-        player.setRawData(SpongeMineTanks.getGame().getRegistry().getManipulatorRegistry().getBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
-        player.setRawData(SpongeMineTanks.getGame().getRegistry().getManipulatorRegistry().getBuilder(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get().create().toContainer());
+        DataManager dm = Sponge.getGame().getDataManager();
+        player.setRawData(dm.getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
+        player.setRawData(dm.getManipulatorBuilder(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get().create().toContainer());
         return true;
     }
 }

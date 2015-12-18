@@ -7,7 +7,6 @@ import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.ChatColor;
@@ -22,7 +21,7 @@ public class RegionCommand extends AbstractSpigotCommand
 
     public RegionCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.REGION_NAME, CommonCommands.REGION_DESC, Arrays.asList(new SpigotCommandArgument("/" + CommonCommands.MT), new SpigotCommandArgument(CommonCommands.REGION_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED), new SpigotCommandArgument(CommonCommands.RADIUS, Syntax.REPLACE, Syntax.REQUIRED)), 2, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
+        super(CommonCommands.REGION_NAME, CommonCommands.REGION_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.REGION_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED), new SpigotCommandArgument(CommonCommands.RADIUS, Syntax.REPLACE, Syntax.REQUIRED)), 2, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 
@@ -49,7 +48,7 @@ public class RegionCommand extends AbstractSpigotCommand
             }
             catch (NumberFormatException e)
             {
-                player.sendMessage(ChatColor.RED + SpigotReference.string(CommonMessages.NOT_A_NUMBER, args[1]));
+                player.sendMessage(ChatColor.RED + CommonMessages.notANumber(args[1]));
                 return false;
             }
 

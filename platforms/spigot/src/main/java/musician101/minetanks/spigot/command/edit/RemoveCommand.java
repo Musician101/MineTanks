@@ -7,7 +7,6 @@ import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.SpigotMineTanks;
-import musician101.minetanks.spigot.SpigotReference;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +19,7 @@ public class RemoveCommand extends AbstractSpigotCommand
 
     public RemoveCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.REMOVE_NAME, CommonCommands.REMOVE_DESC, Arrays.asList(new SpigotCommandArgument("/" + CommonCommands.MT), new SpigotCommandArgument(CommonCommands.REMOVE_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, false, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
+        super(CommonCommands.REMOVE_NAME, CommonCommands.REMOVE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.REMOVE_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, false, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 
@@ -40,7 +39,7 @@ public class RemoveCommand extends AbstractSpigotCommand
             return false;
         }
 
-        sender.sendMessage(ChatColor.GREEN + SpigotReference.battleField(CommonMessages.FIELD_DELETED, field));
+        sender.sendMessage(ChatColor.GREEN + CommonMessages.fieldDeleted(field));
         return true;
     }
 }

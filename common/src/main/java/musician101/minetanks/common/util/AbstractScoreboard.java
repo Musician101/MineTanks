@@ -6,9 +6,9 @@ public abstract class AbstractScoreboard<S>
 {
     protected S scoreboard;
 
-    protected AbstractScoreboard(S scoreboard)
+    protected AbstractScoreboard()
     {
-        this.scoreboard = scoreboard;
+
     }
 
     public abstract boolean isOnGreen(UUID playerId);

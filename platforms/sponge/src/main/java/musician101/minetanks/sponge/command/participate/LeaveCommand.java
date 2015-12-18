@@ -1,50 +1,55 @@
 package musician101.minetanks.sponge.command.participate;
 
-import musician101.common.java.minecraft.spigot.command.AbstractSpigotCommand;
-import musician101.common.java.minecraft.spigot.command.CommandArgument;
-import musician101.minetanks.spigot.MineTanks;
-import musician101.minetanks.spigot.battlefield.BattleField;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import musician101.common.java.minecraft.sponge.TextUtils;
+import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
+import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonPermissions;
+import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
-public class LeaveCommand extends AbstractSpigotCommand
+public class LeaveCommand extends AbstractSpongeCommand
 {
-    MineTanks plugin;
-
-    public LeaveCommand(MineTanks plugin)
+    public LeaveCommand()
     {
-        super("leave", "Leave the battlefield you are currently in.", Arrays.asList(new CommandArgument("/mt"), new CommandArgument("leave")), 0, "minetanks.participate", true, ChatColor.RED + "No Permission", ChatColor.RED + "Player Only");
-        this.plugin = plugin;
+        super(CommonCommands.LEAVE_NAME, CommonCommands.LEAVE_DESC, Arrays.asList(new SpongeCommandArgument(CommonCommands.MT_CMD), new SpongeCommandArgument(CommonCommands.LEAVE_NAME)), 0, CommonPermissions.PARTICIPATE_PERM, true, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.PLAYER_ONLY));
     }
 
+    @Nonnull
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
+    public CommandResult process(@Nonnull CommandSource source, @Nonnull String arguments)
     {
-        if (!canSenderUseCommand(sender))
-            return false;
+        if (!testPermission(source))
+            return CommandResult.empty();
 
-        Player player = (Player) sender;
-        if (plugin.getFieldStorage().canPlayerExit(player.getUniqueId()))
+        Player player = (Player) source;
+        SpongeBattleFieldStorage fieldStorage = SpongeMineTanks.getFieldStorage();
+        if (fieldStorage.canPlayerExit(player.getUniqueId()))
         {
-            player.sendMessage(ChatColor.RED + plugin.getPrefix() + " Sorry, but you do not have permission for that.");
-            return false;
+            player.sendMessage(TextUtils.redText(CommonMessages.NO_PERMISSION));
+            return CommandResult.empty();
         }
 
-        for (String name : plugin.getFieldStorage().getFields().keySet())
+        for (String name : fieldStorage.getFields().keySet())
         {
-            BattleField field = plugin.getFieldStorage().getField(name);
-            if (field.getPlayer(player.getUniqueId()) != null)
+            SpongeBattleField field = fieldStorage.getField(name);
+            if (field.getPlayerTank(player.getUniqueId()) != null)
             {
-                player.sendMessage(ChatColor.GREEN + plugin.getPrefix() + " You have left the battlefield.");
+                player.sendMessage(TextUtils.greenText(CommonMessages.LEFT_FIELD));
                 field.removePlayer(player.getUniqueId());
-                return true;
+                return CommandResult.success();
             }
         }
 
-        player.sendMessage(ChatColor.RED + plugin.getPrefix() + " You are not in a battlefield");
-        return false;
+        player.sendMessage(TextUtils.redText(CommonMessages.NOT_IN_A_FIELD));
+        return CommandResult.empty();
     }
 }

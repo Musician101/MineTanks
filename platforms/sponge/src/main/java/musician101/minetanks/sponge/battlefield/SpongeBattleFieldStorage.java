@@ -1,11 +1,16 @@
 package musician101.minetanks.sponge.battlefield;
 
 import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
+import musician101.minetanks.common.CommonReference.CommonConfig;
+import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.util.SpongeRegion;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -14,11 +19,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.UUID;
 
-public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
+public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeBattleField>
 {
     public SpongeBattleFieldStorage(File configDir)
     {
-        super(new File(configDir, "battlefields"));
+        super(new File(configDir, CommonStorage.BATTLEFIELDS));
         loadFromFiles();
     }
 
@@ -46,20 +51,12 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         {
             if (name.equalsIgnoreCase(field))
             {
-                fields.remove(field);
-                return new File(getStorageDir(), field + ".json").delete();
+                fields.remove(name);
+                return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(name), ".json")).delete();
             }
         }
 
         return false;
-    }
-
-    public SpongeBattleField getField(String name)
-    {
-        if (!fields.containsKey(name))
-            return null;
-
-        return (SpongeBattleField) fields.get(name);
     }
 
     @Override
@@ -69,42 +66,45 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         {
             if (file.getName().endsWith(".json"))
             {
+                Logger logger = SpongeMineTanks.getLogger();
                 try
                 {
                     SpongeJSONConfig field = (SpongeJSONConfig) new JSONParser().parse(new FileReader(file));
                     String name = file.getName().replace(".json", "");
-                    boolean enabled = field.getBoolean("enabled");
+                    boolean enabled = field.getBoolean(CommonConfig.ENABLED);
                     SpongeRegion region = null;
                     Location<World> greenSpawn = null;
                     Location<World> redSpawn = null;
                     Location<World> spectators = null;
 
-                    if (field.containsKey("region"))
-                        region = new SpongeRegion(field.getSpongeJSONConfig("region"));
+                    if (field.containsKey(CommonConfig.REGION))
+                        region = new SpongeRegion(field.getSpongeJSONConfig(CommonConfig.REGION));
 
-                    if (field.containsKey("greenSpawn"))
-                        greenSpawn = deserializeLocation(field.getSpongeJSONConfig("greenSpawn"));
+                    if (field.containsKey(CommonConfig.GREEN_SPAWN))
+                        greenSpawn = deserializeLocation(field.getSpongeJSONConfig(CommonConfig.GREEN_SPAWN));
 
-                    if (field.containsKey("redSpawn"))
-                        redSpawn = deserializeLocation(field.getSpongeJSONConfig("redSpawn"));
+                    if (field.containsKey(CommonConfig.RED_SPAWN))
+                        redSpawn = deserializeLocation(field.getSpongeJSONConfig(CommonConfig.RED_SPAWN));
 
-                    if (field.containsKey("spectators"))
-                        spectators = deserializeLocation(field.getSpongeJSONConfig("spectators"));
+                    if (field.containsKey(CommonConfig.SPECTATORS))
+                        spectators = deserializeLocation(field.getSpongeJSONConfig(CommonConfig.SPECTATORS));
 
                     if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
-                        SpongeMineTanks.getLogger().warn("Failed to load " + file.getName());
+                        logger.warn(CommonMessages.fileLoadFailed(file));
                 }
                 catch (IOException | ParseException e)
                 {
-                    SpongeMineTanks.getLogger().warn("Failed to load " + file.getName());
+                    logger.warn(CommonMessages.fileLoadFailed(file));
                 }
             }
         }
     }
 
+    /* Change json storage to HOCON */
+    @Deprecated
     private static Location<World> deserializeLocation(SpongeJSONConfig locJSON)
     {
-        World world = SpongeMineTanks.getGame().getServer().getWorld(locJSON.get("world").toString()).get();
+        World world = Sponge.getGame().getServer().getWorld(locJSON.get(CommonConfig.WORLD).toString()).get();
         return new Location<>(world, locJSON.getInteger("x", 0), locJSON.getInteger("y", 0), locJSON.getInteger("z", 0));
     }
 
@@ -122,7 +122,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage
         {
             SpongeBattleField field = getField(name);
             if (field.getPlayers().containsKey(player))
-                return field.getPlayer(player).getTeam().canExit();
+                return field.getPlayerTank(player).getTeam().canExit();
         }
 
         return false;

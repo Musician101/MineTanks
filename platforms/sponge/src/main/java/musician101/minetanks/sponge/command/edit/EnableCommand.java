@@ -1,15 +1,16 @@
 package musician101.minetanks.sponge.command.edit;
 
+import musician101.common.java.minecraft.command.AbstractCommandArgument.Syntax;
+import musician101.common.java.minecraft.sponge.TextUtils;
 import musician101.common.java.minecraft.sponge.command.AbstractSpongeCommand;
+import musician101.common.java.minecraft.sponge.command.SpongeCommandArgument;
 import musician101.minetanks.common.CommonReference.CommonCommands;
+import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
-import musician101.minetanks.sponge.lib.SpongeReference.SpongeCommands;
-import musician101.minetanks.sponge.lib.SpongeReference.SpongeMessages;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public class EnableCommand extends AbstractSpongeCommand
 {
     public EnableCommand()
     {
-        super(CommonCommands.ENABLE_NAME, SpongeCommands.ENABLE_DESC, Arrays.asList(Texts.of("/mt"), SpongeCommands.ENABLE_NAME, Texts.of("field")), 2, CommonPermissions.EDIT_PERM, false, SpongeMessages.NO_PERMISSION, SpongeMessages.PLAYER_ONLY);
+        super(CommonCommands.ENABLE_NAME, CommonCommands.ENABLE_DESC, Arrays.asList(new SpongeCommandArgument(CommonCommands.MT_CMD), new SpongeCommandArgument(CommonCommands.ENABLE_NAME), new SpongeCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, false, TextUtils.redText(CommonMessages.NO_PERMISSION), TextUtils.redText(CommonMessages.PLAYER_ONLY));
     }
 
     @Nonnull
@@ -29,13 +30,13 @@ public class EnableCommand extends AbstractSpongeCommand
         if (!testPermission(source))
             return CommandResult.empty();
 
-        if (!minArgsMet(source, args.length, SpongeMessages.NOT_ENOUGH_ARGS))
+        if (!minArgsMet(source, args.length, TextUtils.redText(CommonMessages.NOT_ENOUGH_ARGS)))
             return CommandResult.empty();
 
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args[1]);
         if (field == null)
         {
-            source.sendMessage(SpongeMessages.FIELD_DNE);
+            source.sendMessage(TextUtils.redText(CommonMessages.FIELD_DNE));
             return CommandResult.empty();
         }
 
@@ -44,7 +45,7 @@ public class EnableCommand extends AbstractSpongeCommand
         else
             field.setEnabled(true);
 
-        source.sendMessage(SpongeMessages.fieldEnabled(field));
+        source.sendMessage(TextUtils.greenText(CommonMessages.fieldEnabled(field)));
         return CommandResult.success();
     }
 }

@@ -1,14 +1,14 @@
 package musician101.minetanks.sponge.tank.module.cannon;
 
 import musician101.common.java.util.ListUtil;
-import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.common.CommonReference.CommonItemText;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 
 public class SpongeAutoLoader extends SpongeCannon
@@ -21,6 +21,7 @@ public class SpongeAutoLoader extends SpongeCannon
         super(name, ammoCount, reloadTime);
         this.clipSize = clipSize;
         this.cycleTime = cycleTime;
+        parseCannon();
     }
 
     public double getCycleTime()
@@ -33,13 +34,18 @@ public class SpongeAutoLoader extends SpongeCannon
         return clipSize;
     }
 
-    @Override
-    public ItemStack getItem()
+    private void parseCannon()
     {
-        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
-        ItemStackBuilder isb = gr.createItemBuilder().fromItemStack(super.getItem());
-        LoreData lore = gr.getManipulatorRegistry().getBuilder(CatalogItemData.LORE_DATA).get().create();
-        lore.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, new ListUtil<Text>(Texts.of("Your Cannon"), Texts.of("Clip Size: " + clipSize + "/" + clipSize), Texts.of("Clip Reload Time: " + getReloadTime()))));
-        return isb.itemData(lore).build();
+        Game game = Sponge.getGame();
+        GameRegistry gr = game.getRegistry();
+        ItemStack.Builder isb = ItemStack.builder().fromItemStack(super.getItem());
+        LoreData lore = game.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
+        lore.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE,
+                new ListUtil<>(Texts.of(CommonItemText.CANNON),
+                        Texts.of(CommonItemText.clipSize(clipSize, clipSize)),
+                        Texts.of(CommonItemText.cycleTime(cycleTime)),
+                        Texts.of(CommonItemText.reloadTime(getReloadTime())))));
+
+        setItem(isb.itemData(lore).build());
     }
 }

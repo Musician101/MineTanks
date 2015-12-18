@@ -1,25 +1,26 @@
 package musician101.minetanks.sponge.util;
 
-import musician101.minetanks.sponge.SpongeMineTanks;
+import musician101.minetanks.common.CommonReference;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataManager;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.DataManipulatorRegistry;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.inventory.ChangeInventoryEvent.Click;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.inventory.Inventories;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
-import org.spongepowered.api.item.inventory.custom.CustomInventoryBuilder;
+import org.spongepowered.api.item.inventory.custom.CustomInventory;
 import org.spongepowered.api.item.inventory.type.OrderedInventory;
-import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Text.Literal;
 import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.translation.FixedTranslation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,15 +41,16 @@ public class IconMenu
         this.handler = handler;
     }
 
-    public IconMenu setOption(ItemType icon, Text name, String... info)
+    public IconMenu setOption(ItemType icon, Literal name, String... info)
     {
-        options.put(((Literal) name).getContent(), setItemNameAndLore(icon, name, info));
+        options.put(name.getContent(), setItemNameAndLore(icon, name, info));
         return this;
     }
 
     public void open(Player player)
     {
-        CustomInventoryBuilder cib = Inventories.customInventoryBuilder();
+        CustomInventory.Builder cib = CustomInventory.builder();
+        cib.name(new FixedTranslation(name));
         OrderedInventory inventory = cib.build();
         for (String name : options.keySet())
             inventory.set(options.get(name));
@@ -63,16 +65,16 @@ public class IconMenu
     }
 
     @Listener
-    public void onInventoryClick(Click event)
+    public void onInventoryClick(ClickInventoryEvent event)
     {
-        if (!event.getTargetInventory().getName().getTranslation().get(Locale.ENGLISH).equals(name))
+        if (!event.getTargetInventory().getName().get(Locale.ENGLISH).equals(name))
             return;
 
         event.setCancelled(true);
-        if (!event.getOriginalItemStack().isPresent())
+        if (event.getTransactions().size() == 0)
             return;
 
-        String name = ((Literal) event.getOriginalItemStack().get().get(Keys.DISPLAY_NAME).get()).getContent();
+        String name = ((Literal) event.getCursorTransaction().getOriginal().get(Keys.DISPLAY_NAME).get()).getContent();
         if (!options.containsKey(name))
             return;
 
@@ -86,11 +88,11 @@ public class IconMenu
         if (e.willClose())
         {
             final Player p = player;
-            TaskBuilder tb = SpongeMineTanks.getGame().getScheduler().createTaskBuilder();
+            Task.Builder tb = Task.builder();
             tb.execute(task -> p.closeInventory());
             tb.name("SpongeMineTanks-IconMenu(" + name + ")-" + player.getName());
             tb.delayTicks(1L);
-            tb.submit(SpongeMineTanks.getPluginContainer());
+            tb.submit(Sponge.getGame().getPluginManager().getPlugin(CommonReference.ID));
         }
 
         if (e.willDestroy())
@@ -154,15 +156,16 @@ public class IconMenu
         for (String line : lore)
             loreAsText.add(Texts.of(line));
 
-        GameRegistry gr = SpongeMineTanks.getGame().getRegistry();
-        DataManipulatorRegistry dmr = gr.getManipulatorRegistry();
-        LoreData loreData = dmr.getBuilder(CatalogItemData.LORE_DATA).get().create();
-        loreData.set(gr.createValueBuilder().createListValue(Keys.ITEM_LORE, loreAsText));
+        Game game = Sponge.getGame();
+        DataManager dm = game.getDataManager();
+        GameRegistry gr = game.getRegistry();
+        LoreData loreData = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
+        loreData.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, loreAsText));
 
-        DisplayNameData nameData = dmr.getBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
+        DisplayNameData nameData = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
         nameData.set(Keys.DISPLAY_NAME, name);
 
-        ItemStackBuilder isb = SpongeMineTanks.getGame().getRegistry().createItemBuilder();
+        ItemStack.Builder isb = ItemStack.builder();
         return isb.itemType(type).itemData(loreData).itemData(nameData).build();
     }
 }
