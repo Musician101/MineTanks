@@ -2,7 +2,7 @@ package musician101.minetanks.sponge;
 
 import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
-import musician101.minetanks.common.CommonReference.CommonMessages;
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
 import musician101.minetanks.sponge.command.MTCommand;
 import musician101.minetanks.sponge.handler.TankSelectionHandler;
@@ -22,7 +22,6 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -83,9 +82,9 @@ public class SpongeMineTanks
 
     private void initMenu()
     {
-        tankSelection = new IconMenu("Tank Selection", new TankSelectionHandler());
+        tankSelection = new IconMenu(CommonReference.TANK_SELECTION, new TankSelectionHandler());
         for (Tank tank : Tanks.tankList)
-            tankSelection.setOption(ItemTypes.MINECART, Texts.builder().append(Texts.of(tank.getName())).color(TextColors.GREEN).build(), tank.getDescription());
+            tankSelection.setOption(ItemTypes.MINECART, Texts.builder().append(Texts.of(tank.getName())).color(TextColors.GREEN).build(), CommonItemText.tankType(tank.getType()));
     }
 
     public static void openTankMenu(Player player)

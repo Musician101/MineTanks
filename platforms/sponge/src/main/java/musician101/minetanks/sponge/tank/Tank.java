@@ -31,9 +31,9 @@ import java.util.List;
 
 public class Tank extends AbstractTank<SpongeTankType, SpongeCannon, Engine, Radio, Trackz, Turret, ItemStack, PotionEffect>
 {
-    public Tank(String name, SpongeTankType type, int health, Armor armor, int speed, SpongeCannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret, String... description)
+    public Tank(String name, SpongeTankType type, int health, Armor armor, int speed, SpongeCannon cannon, Engine engine, Radio radio, Trackz tracks, Turret turret)
     {
-        super(name, type, health, armor, speed, cannon, engine, radio, tracks, turret, description);
+        super(name, type, health, armor, speed, cannon, engine, radio, tracks, turret);
     }
 
     private ItemStack parseArmorValue(ItemStack item)

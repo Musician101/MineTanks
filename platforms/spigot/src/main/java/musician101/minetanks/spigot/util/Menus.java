@@ -1,6 +1,7 @@
 package musician101.minetanks.spigot.util;
 
 import musician101.minetanks.common.CommonReference;
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.handler.MenuHandlers.TankSelectionHandler;
 import musician101.minetanks.spigot.tank.Tank;
@@ -20,7 +21,7 @@ public class Menus
         //TODO need to implement a page system for the inevitable
         int slot = 0;
         for (final Tank tank : Tanks.tankList)
-            tankSelection.setOption(slot++, new ItemStack(Material.MINECART, 1), "\u00A7a" + tank.getName(), tank.getDescription());
+            tankSelection.setOption(slot++, new ItemStack(Material.MINECART, 1), "\u00A7a" + tank.getName(), CommonItemText.tankType(tank.getType()));
     }
 
     public void openTankMenu(Player player)

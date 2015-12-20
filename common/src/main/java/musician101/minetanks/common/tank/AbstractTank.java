@@ -8,7 +8,7 @@ import musician101.minetanks.common.tank.modules.AbstractTurret;
 
 import java.util.List;
 
-public abstract class AbstractTank<Y extends AbstractTankType, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I, P> extends Info
+public abstract class AbstractTank<Y extends AbstractTankType, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I, P> extends Info<I>
 {
     protected final Armor armor;
     protected final C cannon;
@@ -19,9 +19,8 @@ public abstract class AbstractTank<Y extends AbstractTankType, C extends Abstrac
     protected final T tracks;
     protected final U turret;
     private final Y type;
-    private final String[] description;
 
-    protected AbstractTank(String name, Y type, int health, Armor armor, int speed, C cannon, E engine, R radio, T tracks, U turret, String... description)
+    protected AbstractTank(String name, Y type, int health, Armor armor, int speed, C cannon, E engine, R radio, T tracks, U turret)
     {
         super(name);
         this.type = type;
@@ -33,7 +32,6 @@ public abstract class AbstractTank<Y extends AbstractTankType, C extends Abstrac
         this.radio = radio;
         this.tracks = tracks;
         this.turret = turret;
-        this.description = description;
     }
 
     public C getCannon()
@@ -60,11 +58,6 @@ public abstract class AbstractTank<Y extends AbstractTankType, C extends Abstrac
     public abstract I getBoots();
 
     public abstract List<I> getWeapons();
-
-    public String[] getDescription()
-    {
-        return description;
-    }
 
     public Y getType()
     {

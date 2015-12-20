@@ -1,5 +1,6 @@
 package musician101.minetanks.spigot.handler;
 
+import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import musician101.minetanks.spigot.tank.modules.cannon.AutoLoader;
@@ -69,7 +70,7 @@ public class ReloadHandler
                                 if (item != null && item.getType() == Material.BOW)
                                 {
                                     ItemMeta meta = item.getItemMeta();
-                                    meta.setLore(Arrays.asList("Your Cannon", "Clip Size: " + maxClipSize + "/" + maxClipSize, "Cycle Time: " + cycleTime, "Clip Reload Time: " + reloadTime));
+                                    meta.setLore(Arrays.asList(CommonItemText.CANNON, CommonItemText.clipSize(maxClipSize, maxClipSize), CommonItemText.cycleTime(cycleTime), CommonItemText.reloadTime(reloadTime)));
                                     item.setItemMeta(meta);
                                 }
                             }
@@ -90,6 +91,8 @@ public class ReloadHandler
         }
         catch (NullPointerException e)
         {
+            //TODO debug code
+            plugin.getLogger().info("quack");
         }
         return false;
     }

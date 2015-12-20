@@ -2,6 +2,7 @@ package musician101.minetanks.common;
 
 import musician101.minetanks.common.battlefield.AbstractBattleField;
 import musician101.minetanks.common.tank.AbstractTank;
+import musician101.minetanks.common.tank.AbstractTankType;
 
 import java.io.File;
 import java.util.UUID;
@@ -66,6 +67,47 @@ public class CommonReference
         public static final String STATUS_DESC = "View the status of the specified field.";
     }
 
+    public static class CommonCannons
+    {
+        public static final String _10_5_CM_BORDKANONE_L7A3 = "10,5 cm Bordkanone L7A3";
+        public static final String _10_5_CM_KWK_L52_AUSF_K = "10,5 cm Kw.K. L/52 Ausf. K";
+        public static final String _12_8_CM_KWK_44_L55 = "12,8 cm Kw.K. 44 L/55";
+        public static final String _14_CM_50_3RD_YEAR_TYPE = "14 cm/50 3rd Year Type";
+        public static final String _15_CM_KWK_L38 = "15 cm Kw.K. L/38";
+        public static final String _17_CM_PAK = "17 cm Pak";
+        public static final String _15_CM_PAK_L38 = "15 cm Pak L/38";
+        public static final String _21_CM_MORSER_18_2 = "21 cm Morser 18/2";
+        public static final String _90_MM_F3 = "90 mm F3";
+        public static final String _90_MM_GUN_T185 = "90 mm Gun T185";
+        public static final String _90_MM_RHEINMETALL_DM1 = "90 mm Rheinmetall DM1";
+        public static final String _100_MM_60_100T = "100 mm 60-100T";
+        public static final String _100_MM_D10T = "100 mm D10T mod. 1945";
+        public static final String _100_MM_D_54TS = "100 mm D-54TS";
+        public static final String _100_MM_8TS = "100 mm U-8TS";
+        public static final String _105_MM_GUN_M68 = "105 mm Gun M68";
+        public static final String _105_MM_MLE_57 = "105 mm mle. 57 (D. 1504)";
+        public static final String _105_MM_MLE_F1 = "105 mm mle. F1";
+        public static final String _105_MM_RIFLED_GUN = "105 mm Rifled Gun";
+        public static final String _105_MM_ROYAL_ORDNANCE_L7A1 = "105 mm Royal Ordnance L7A1";
+        public static final String _120_MM_GUN_M58 = "120 mm Gun M58";
+        public static final String _120_MM_GUN_L1A1 = "120 mm Gun L1A1";
+        public static final String _120_MM_GUN_T179 = "120 mm Gun T179";
+        public static final String _120_MM_SA46 = "120 mm SA46";
+        public static final String _122_MM_M62_T2 = "122 mm M62-T2";
+        public static final String _122_MM_60_122T = "122 mm 60-122T";
+        public static final String _122_MM_BL_13_1 = "122 mm BL-13-1";
+        public static final String _130_MM_S_70 = "130 mm S-70";
+        public static final String _130_MM_S_70A = "130 mm S-70A";
+        public static final String _152_MM_M64 = "152 mm M64";
+        public static final String _155_MM_AC_SA58 = "155 mm AC SA58";
+        public static final String _155_MM_AT_GUN_T7E2 = "155 mm AT Gun T7E2";
+        public static final String _180_MM_B_1_P = "183 mm B-1-P";
+        public static final String _183_MM_L4 = "183 mm L4";
+        public static final String _240_MM_HOWITZER = "240 mm Howitzer M1";
+        public static final String BL_9_2_IN_HOWITZER = "B.L. 9.2-in. Howitzer Mk. II";
+        public static final String CANNON_DE_155_MM = "Canon de 155 mm";
+    }
+
     public static class CommonConfig
     {
         public static final String AMPLIFIER = "amplifier";
@@ -102,6 +144,46 @@ public class CommonReference
         {
             return field.getName() + "." + extension;
         }
+    }
+
+    public static class CommonEngines
+    {
+        public static final String _12150L7 = "12150L7";
+        public static final String _2X_V_16 = "2x V-16";
+        public static final String _5TD = "5TD";
+        public static final String _8V135 = "8V135";
+        public static final String DB_603_A2 = "DB 603 A2";
+        public static final String DETROIT_DIESEL_6V53T_S = "Detroit Diesel 6V53T-S";
+        public static final String HISPANO_SUIZA_HS_110 = "Hispano-Suiza HS 110";
+        public static final String CONTINENTAL_AOI_895_5 = "Continental AOI-895-5";
+        public static final String CONTINENTAL_AOI_1490 = "Continental AOI-1490";
+        public static final String CONTINENTAL_AV_1790_5C = "Continental AV-1790-5C";
+        public static final String CONTINENTAL_AV_1790_7B = "Continental AV-1790-7B";
+        public static final String CONTINENTAL_AVDS_1790_2 = "Continental AVDS-1790-2";
+        public static final String FORD_GAF_T92 = "Ford GAF T92";
+        public static final String KAWASAKI_TYPE_98 = "Kawasaki Type 98 V-12 1200 Kai";
+        public static final String M_50T = "M-50T";
+        public static final String MAYBACH_HL_234 = "Maybach HL 234 TRM P45";
+        public static final String MAYBACH_HL_235 = "Maybach HL 235";
+        public static final String MAYBACH_HL_295_F = "Maybach HL 295 F";
+        public static final String MAYBACH_NEUES_PROJEKT = "Maybach Neues Projekt";
+        public static final String MB_517 = "MB 517";
+        public static final String MB_837_EA_600 = "MB 837 Ea 600";
+        public static final String MITSUBISHI_10ZF21WT = "Mitsubishi 10ZF21WT";
+        public static final String MTU_MB_838_CAM_500A = "MTU MB 838 CaM 500A";
+        public static final String ROLLS_ROYCE_GRIFFON = "Rolls-Royce Griffon";
+        public static final String ROLLS_ROYCE_METEOR_MK_12 = "Rolls-Royce Meteor Mk. 12";
+        public static final String ROLLS_ROYCE_METEOR_M120 = "Rolls-Royce Meteor M120";
+        public static final String ROLLS_ROYCE_METEOR_M120A = "Rolls-Royce Meteor M120A";
+        public static final String ROLLS_ROYCE_METEOR_MK_IVB = "Rolls-Royce Meteor Mk. IVB";
+        public static final String SAURER = "Saurer";
+        public static final String TD_12 = "TD-12";
+        public static final String V_12 = "V-12";
+        public static final String V_12_5U = "V-12-5U";
+        public static final String V_14 = "V-14";
+        public static final String V_16FN = "V-16FN";
+        public static final String V_2_54SC = "V-2-54SC";
+        public static final String V_55 = "V-55";
     }
 
     public static class CommonItemText
@@ -147,6 +229,11 @@ public class CommonReference
         {
             return "Speed Value: " + speed;
         }
+
+        public static <T extends AbstractTankType> String tankType(T tankType)
+        {
+            return "Type: " + tankType.getName();
+        }
     }
 
     public static class CommonMessages
@@ -168,7 +255,6 @@ public class CommonReference
         public static final String MATCH_FORCE_ENDED = PREFIX + " The match was forcibly ended by an admin.";
         public static final String MATCH_IN_PROGRESS = PREFIX + "Sorry, but the match has already started.";
         public static final String MATCH_TERMINATED = PREFIX + "Match terminated.";
-        public static final String MISSING_CUBOID = PREFIX + "Error: The battlefield contains no cuboid or the cuboid in another world.";
         public static final String MUST_UNREADY = PREFIX + "You must unready to change your tank.";
         public static final String NO_PERMISSION = PREFIX + "Sorry, but you do not have permission for that.";
         public static final String NOT_A_NUMBER_MULTI = PREFIX + "Error: One or more of the inputted radii is not a number.";
@@ -265,6 +351,30 @@ public class CommonReference
         public static final String PARTICIPATE_PERM = ID + ".participate";
     }
 
+    public static class CommonRadios
+    {
+        public static final String _10RT_26 = "10RT-26";
+        public static final String _10RK_26 = "10RK-26";
+        public static final String _10WSC = "10WSc";
+        public static final String A_220A = "A-220A";
+        public static final String A_220B = "A-220B";
+        public static final String AN_GRC_7 = "AN/GRC-7";
+        public static final String AN_VRC_3 = "AN/VRC-3";
+        public static final String AN_VRC_12 = "AN/VRC-12";
+        public static final String AN_VRC_7 = "AN/VRC-7";
+        public static final String R_113M = "R-113M";
+        public static final String R_123 = "R-123";
+        public static final String SCR_528 = "SCR 528";
+        public static final String SCR_528A = "SCR 528A";
+        public static final String SCR_528F = "SCR 528F";
+        public static final String SCR_619 = "SCR 619";
+        public static final String SEM_25A = "SEM 25A";
+        public static final String SR_C45 = "SR C45";
+        public static final String TRVP_13_A = "TRVP-13-A";
+        public static final String TYPE_3_KO = "Type 3 Ko";
+        public static final String TYPE_67 = "Type 67";
+    }
+
     public static class CommonScoreboard
     {
         public static final String DUMMY = "dummy";
@@ -283,16 +393,7 @@ public class CommonReference
         public static final String BATTLEFIELDS = "battlefields";
         public static final String INVENTORY = "inventorystorage";
     }
-
-    public static class CommonTankTypes
-    {
-        public static final String LIGHT = "Light";
-        public static final String MEDIUM = "Medium";
-        public static final String HEAVY = "Heavy";
-        public static final String TD = "TD";
-        public static final String SPG = "SPG";
-    }
-
+    
     public static class CommonTanks
     {
         public static final String _113 = "113";
@@ -339,6 +440,15 @@ public class CommonReference
         public static final String VK_7201 = "VK 72.01 (K)";
         public static final String WAFFENTRAGER_E_100 = "Waffentrager E 100";
         public static final String WZ_132 = "WZ-132";
+    }
+
+    public static class CommonTankTypes
+    {
+        public static final String LIGHT = "Light";
+        public static final String MEDIUM = "Medium";
+        public static final String HEAVY = "Heavy";
+        public static final String TD = "TD";
+        public static final String SPG = "SPG";
     }
 
     public static class CommonTracks

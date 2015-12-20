@@ -25,12 +25,9 @@ import java.util.Collections;
 
 public class MTCommand extends AbstractSpigotCommand
 {
-    private final SpigotMineTanks plugin;
-
     public MTCommand(SpigotMineTanks plugin)
     {
-        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new SpigotCommandArgument("/" + CommonReference.ID)), 0, "", false, "", "", Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
-        this.plugin = plugin;
+        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new SpigotCommandArgument(CommonCommands.MT_CMD)), 0, "", false, "", "", Arrays.asList(new JoinCommand(plugin), new LeaveCommand(plugin), new RemoveCommand(plugin), new SpectateCommand(plugin), new CreateCommand(plugin), new RegionCommand(plugin), new EnableCommand(plugin), new ForceEndCommand(plugin), new GreenSpawnCommand(plugin), new RedSpawnCommand(plugin), new SpectatorsCommand(plugin), new StatusCommand(plugin)));
     }
 
     @Override
