@@ -36,17 +36,18 @@ public class SpigotTracks
     public static final SpigotTrackz OBJECT_907 = new SpigotTrackz(CommonTracks.OBJECT_907, SpigotTankTypes.MEDIUM);
     public static final SpigotTrackz SPAHPANZER_RU_251_PT_II = new SpigotTrackz(CommonTracks.SPAHPANZER_RU_251_PT_II, SpigotTankTypes.LIGHT);
     public static final SpigotTrackz STB_1 = new SpigotTrackz(CommonTracks.STB_1, SpigotTankTypes.MEDIUM);
+    public static final SpigotTrackz T_54_ENHANCED_LTWT_VERSION = new SpigotTrackz(CommonTracks.T_54_ENHANCED_LTWT_VERSION, SpigotTankTypes.LIGHT);
+    public static final SpigotTrackz T_62A = new SpigotTrackz(CommonTracks.T_62A, SpigotTankTypes.MEDIUM);
+    public static final SpigotTrackz T92_T80E1 = new SpigotTrackz(CommonTracks.T92_T80E1, SpigotTankTypes.ARTY);
+    public static final SpigotTrackz T97 = new SpigotTrackz(CommonTracks.T97, SpigotTankTypes.HEAVY);
     public static final SpigotTrackz T97E2 = new SpigotTrackz(CommonTracks.T97E2, SpigotTankTypes.MEDIUM);
+    public static final SpigotTrackz T110E27 = new SpigotTrackz(CommonTracks.T110E27, SpigotTankTypes.HEAVY);
+    public static final SpigotTrackz T110E3 = new SpigotTrackz(CommonTracks.T110E3, SpigotTankTypes.TD);
+    public static final SpigotTrackz T110E4 = new SpigotTrackz(CommonTracks.T110E4, SpigotTankTypes.TD);
+    public static final SpigotTrackz TVP_T_50_51 = new SpigotTrackz(CommonTracks.TVP_T_50_51, SpigotTankTypes.MEDIUM);
     public static final SpigotTrackz TYPE_5_HEAVY = new SpigotTrackz(CommonTracks.TYPE_5_HEAVY, SpigotTankTypes.HEAVY);
     public static final SpigotTrackz VK_7201 = new SpigotTrackz(CommonTracks.VK_7201, SpigotTankTypes.HEAVY);
     public static final SpigotTrackz WAFFENTRAGER_E_100 = new SpigotTrackz(CommonTracks.WAFFENTRAGER_E_100, SpigotTankTypes.TD);
     public static final SpigotTrackz WZ_132 = new SpigotTrackz(CommonTracks.WZ_132, SpigotTankTypes.LIGHT);
     public static final SpigotTrackz XM551_TEST_BED = new SpigotTrackz(CommonTracks.XM551_TEST_BED, SpigotTankTypes.LIGHT);
-    public static final SpigotTrackz T_54_ENHANCED_LTWT_VERSION = new SpigotTrackz(CommonTracks.T_54_ENHANCED_LTWT_VERSION, SpigotTankTypes.LIGHT);
-    public static final SpigotTrackz T_62A = new SpigotTrackz(CommonTracks.T_62A, SpigotTankTypes.MEDIUM);
-    public static final SpigotTrackz T92_T80E1 = new SpigotTrackz(CommonTracks.T92_T80E1, SpigotTankTypes.ARTY);
-    public static final SpigotTrackz T97 = new SpigotTrackz(CommonTracks.T97, SpigotTankTypes.HEAVY);
-    public static final SpigotTrackz T110E27 = new SpigotTrackz(CommonTracks.T110E27, SpigotTankTypes.HEAVY);
-    public static final SpigotTrackz T110E3 = new SpigotTrackz(CommonTracks.T110E3, SpigotTankTypes.TD);
-    public static final SpigotTrackz T110E4 = new SpigotTrackz(CommonTracks.T110E4, SpigotTankTypes.TD);
 }

@@ -81,6 +81,7 @@ public class CommonReference
         public static final String _90_MM_GUN_T185 = "90 mm Gun T185";
         public static final String _90_MM_RHEINMETALL_DM1 = "90 mm Rheinmetall DM1";
         public static final String _100_MM_60_100T = "100 mm 60-100T";
+        public static final String _100_MM_AK1 = "100 mm AK1";
         public static final String _100_MM_D10T = "100 mm D10T mod. 1945";
         public static final String _100_MM_D_54TS = "100 mm D-54TS";
         public static final String _100_MM_8TS = "100 mm U-8TS";
@@ -171,6 +172,7 @@ public class CommonReference
         public static final String MB_837_EA_600 = "MB 837 Ea 600";
         public static final String MITSUBISHI_10ZF21WT = "Mitsubishi 10ZF21WT";
         public static final String MTU_MB_838_CAM_500A = "MTU MB 838 CaM 500A";
+        public static final String PRAGA_AXK = "Praga AXK";
         public static final String ROLLS_ROYCE_GRIFFON = "Rolls-Royce Griffon";
         public static final String ROLLS_ROYCE_METEOR_MK_12 = "Rolls-Royce Meteor Mk. 12";
         public static final String ROLLS_ROYCE_METEOR_M120 = "Rolls-Royce Meteor M120";
@@ -364,6 +366,7 @@ public class CommonReference
         public static final String AN_VRC_7 = "AN/VRC-7";
         public static final String R_113M = "R-113M";
         public static final String R_123 = "R-123";
+        public static final String RADIOSTANICE_RM_31T = "Radiostanice RM-31T";
         public static final String SCR_528 = "SCR 528";
         public static final String SCR_528A = "SCR 528A";
         public static final String SCR_528F = "SCR 528F";
@@ -436,6 +439,7 @@ public class CommonReference
         public static final String T49 = "T49";
         public static final String T57 = "T57 Heavy Tank";
         public static final String T92 = "T92";
+        public static final String TVP_T_50_51 = "TVP T 50/51";
         public static final String TYPE_5_HEAVY = "Type 5 Heavy";
         public static final String VK_7201 = "VK 72.01 (K)";
         public static final String WAFFENTRAGER_E_100 = "Waffentrager E 100";
@@ -453,6 +457,8 @@ public class CommonReference
 
     public static class CommonTracks
     {
+        public static final String _113 = "113";
+        public static final String _121 = "121";
         public static final String AMX_13_TYPE_2D = "AMX 13 Type 2D";
         public static final String AMX_30_B = "AMX 30 B";
         public static final String AMX_50_B = "AMX 50 B";
@@ -491,12 +497,11 @@ public class CommonReference
         public static final String T110E4 = "T110E4";
         public static final String T110E3 = "T110E3";
         public static final String T110E27 = "T110E27";
+        public static final String TVP_T_50_51 = "TVP T 50/51";
         public static final String VK_7201 = "VK 72.01 (k)";
         public static final String WAFFENTRAGER_E_100 = "Waffentrager auf E 100";
         public static final String WZ_132 = "WZ-132";
         public static final String XM551_TEST_BED = "XM551 test bed";
-        public static final String _113 = "113";
-        public static final String _121 = "121";
     }
 
     public static class CommonTurrets
@@ -532,6 +537,7 @@ public class CommonReference
         public static final String T169 = "T169";
         public static final String T110E4 = "T110E4";
         public static final String TYPE_5_HEAVY = "Type 5 Heavy";
+        public static final String TVP_T_50_51 = "TVP T 50/51";
         public static final String VK_7201 = "VK 72.01 (K)";
         public static final String WAFFENTRAGER_E_100 = "Waffentrager auf E 100";
         public static final String WZ_132 = "WZ-132";

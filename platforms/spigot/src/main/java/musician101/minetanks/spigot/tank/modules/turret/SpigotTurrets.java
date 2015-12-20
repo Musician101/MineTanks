@@ -37,6 +37,7 @@ public class SpigotTurrets
     public static final SpigotTurret T53 = new SpigotTurret(CommonTurrets.T53, SpigotTankTypes.HEAVY, new Armor(203.2, 127, 76.2));
     public static final SpigotTurret T169 = new SpigotTurret(CommonTurrets.T169, SpigotTankTypes.HEAVY, new Armor(127, 137, 50.8));
     public static final SpigotTurret T110E4 = new SpigotTurret(CommonTurrets.T110E4, SpigotTankTypes.TD, new Armor(203, 152, 152));
+    public static final SpigotTurret TVP_T_50_51 = new SpigotTurret(CommonTurrets.TVP_T_50_51, SpigotTankTypes.MEDIUM, new Armor(120, 80, 60));
     public static final SpigotTurret TYPE_5_HEAVY = new SpigotTurret(CommonTurrets.TYPE_5_HEAVY, SpigotTankTypes.HEAVY, new Armor(260, 210, 200));
     public static final SpigotTurret VK_7201 = new SpigotTurret(CommonTurrets.VK_7201, SpigotTankTypes.HEAVY, new Armor(200, 160, 120));
     public static final SpigotTurret WAFFENTRAGER_E_100 = new SpigotTurret(CommonTurrets.WAFFENTRAGER_E_100, SpigotTankTypes.TD, new Armor(20, 10, 8));

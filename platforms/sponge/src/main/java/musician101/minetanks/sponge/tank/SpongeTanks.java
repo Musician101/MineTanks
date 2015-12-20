@@ -23,6 +23,8 @@ public class SpongeTanks
     public static final SpongeTank _121 = new SpongeTank(CommonTanks._121, SpongeTankTypes.MEDIUM, 1950, new Armor(120, 80, 60), 56, new SpongeCannon(CommonCannons._122_MM_60_122T, 40, 9.6), new SpongeEngine(CommonEngines._12150L7, SpongeTankTypes.MEDIUM), new SpongeRadio(CommonRadios.A_220B, SpongeTankTypes.MEDIUM), SpongeTracks._121, SpongeTurrets._121);
     /** China Heavies */
     public static final SpongeTank _113 = new SpongeTank(CommonTanks._113, SpongeTankTypes.HEAVY, 2300, new Armor(120, 90, 70), 50, new SpongeCannon(CommonCannons._122_MM_60_122T, 34, 10.45), new SpongeEngine(CommonEngines.V_2_54SC, SpongeTankTypes.HEAVY), new SpongeRadio(CommonRadios.A_220B, SpongeTankTypes.HEAVY), SpongeTracks._113, SpongeTurrets._113);
+    /** Czechoslovakian Mediums */
+    public static final SpongeTank TVP_T_50_51 = new SpongeTank(CommonTanks.TVP_T_50_51, SpongeTankTypes.MEDIUM, 1800, new Armor(65, 40, 30), 60, new SpongeAutoLoader(CommonCannons._100_MM_AK1, 48, 23.97, 1.5, 4), new SpongeEngine(CommonEngines.PRAGA_AXK, SpongeTankTypes.MEDIUM), new SpongeRadio(CommonRadios.RADIOSTANICE_RM_31T, SpongeTankTypes.MEDIUM), SpongeTracks.TVP_T_50_51, SpongeTurrets.TVP_T_50_51);
     /** France Lights */
     public static final SpongeTank AMX_13_90 = new SpongeTank(CommonTanks.AMX_13_90, SpongeTankTypes.LIGHT, 1100, new Armor(40, 20, 15), 64, new SpongeAutoLoader(CommonCannons._90_MM_F3, 36, 42, 2.73, 6), new SpongeEngine(CommonEngines.DETROIT_DIESEL_6V53T_S, SpongeTankTypes.LIGHT), new SpongeRadio(CommonRadios.SCR_528, SpongeTankTypes.LIGHT), SpongeTracks.AMX_13_TYPE_2D, SpongeTurrets.FL_10);
     /** French Mediums */
@@ -98,6 +100,8 @@ public class SpongeTanks
             _121,
             /** China Heavies */
             _113,
+            /** Czechoslovakian Mediums */
+            TVP_T_50_51,
             /** France Lights */
             AMX_13_90,
             /** French Mediums */

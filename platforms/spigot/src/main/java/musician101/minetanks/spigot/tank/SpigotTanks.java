@@ -23,6 +23,8 @@ public class SpigotTanks
     public static final SpigotTank _121 = new SpigotTank(CommonTanks._121, SpigotTankTypes.MEDIUM, 1950, new Armor(120, 80, 60), 56, new SpigotCannon(CommonCannons._122_MM_60_122T, 40, 9.6), new SpigotEngine(CommonEngines._12150L7, SpigotTankTypes.MEDIUM), new SpigotRadio(CommonRadios.A_220B, SpigotTankTypes.MEDIUM), SpigotTracks._121, SpigotTurrets._121);
     /** China Heavies */
     public static final SpigotTank _113 = new SpigotTank(CommonTanks._113, SpigotTankTypes.HEAVY, 2300, new Armor(120, 90, 70), 50, new SpigotCannon(CommonCannons._122_MM_60_122T, 34, 10.45), new SpigotEngine(CommonEngines.V_2_54SC, SpigotTankTypes.HEAVY), new SpigotRadio(CommonRadios.A_220B, SpigotTankTypes.HEAVY), SpigotTracks._113, SpigotTurrets._113);
+    /** Czechoslovakian Mediums */
+    public static final SpigotTank TVP_T_50_51 = new SpigotTank(CommonTanks.TVP_T_50_51, SpigotTankTypes.MEDIUM, 1800, new Armor(65, 40, 30), 60, new SpigotAutoLoader(CommonCannons._100_MM_AK1, 48, 23.97, 1.5, 4), new SpigotEngine(CommonEngines.PRAGA_AXK, SpigotTankTypes.MEDIUM), new SpigotRadio(CommonRadios.RADIOSTANICE_RM_31T, SpigotTankTypes.MEDIUM), SpigotTracks.TVP_T_50_51, SpigotTurrets.TVP_T_50_51);
     /** France Lights */
     public static final SpigotTank AMX_13_90 = new SpigotTank(CommonTanks.AMX_13_90, SpigotTankTypes.LIGHT, 1100, new Armor(40, 20, 15), 64, new SpigotAutoLoader(CommonCannons._90_MM_F3, 36, 42, 2.73, 6), new SpigotEngine(CommonEngines.DETROIT_DIESEL_6V53T_S, SpigotTankTypes.LIGHT), new SpigotRadio(CommonRadios.SCR_528, SpigotTankTypes.LIGHT), SpigotTracks.AMX_13_TYPE_2D, SpigotTurrets.FL_10);
     /** French Mediums */
@@ -98,6 +100,8 @@ public class SpigotTanks
             _121,
             /** China Heavies */
             _113,
+            /** Czechoslovakian Mediums */
+            TVP_T_50_51,
             /** France Lights */
             AMX_13_90,
             /** French Mediums */
