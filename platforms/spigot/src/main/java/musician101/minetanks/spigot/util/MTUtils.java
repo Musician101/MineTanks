@@ -1,6 +1,6 @@
 package musician101.minetanks.spigot.util;
 
-import musician101.minetanks.spigot.tank.Tanks;
+import musician101.minetanks.spigot.tank.SpigotTanks;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,7 +24,7 @@ public class MTUtils
     public static int getMenuSize()
     {
         int rows = 0;
-        while (rows * 9 < Tanks.tankList.size())
+        while (rows * 9 < SpigotTanks.tankList.size())
             rows++;
 
         return rows * 9;

@@ -13,8 +13,8 @@ import musician101.minetanks.spigot.event.PlayerTankDamageEvent;
 import musician101.minetanks.spigot.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.spigot.handler.ExplosionTracker;
 import musician101.minetanks.spigot.handler.ReloadHandler;
-import musician101.minetanks.spigot.tank.Tank;
-import musician101.minetanks.spigot.tank.modules.cannon.AutoLoader;
+import musician101.minetanks.spigot.tank.SpigotTank;
+import musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -229,7 +229,7 @@ public class MTListener implements Listener
                 if (pt.getTeam() == MTTeam.SPECTATOR)
                     return;
 
-                Tank tank = pt.getTank();
+                SpigotTank tank = pt.getTank();
                 ReloadHandler reload = new ReloadHandler(plugin, player, tank.getCannon());
                 event.setCancelled(reload.isReloading());
                 if (!event.isCancelled())
@@ -242,9 +242,9 @@ public class MTListener implements Listener
 
                         if (item.getType() == Material.ARROW)
                             item.setAmount(item.getAmount() - 1);
-                        else if (item.getType() == Material.BOW && tank.getCannon() instanceof AutoLoader)
+                        else if (item.getType() == Material.BOW && tank.getCannon() instanceof SpigotAutoLoader)
                         {
-                            AutoLoader cannon = (AutoLoader) tank.getCannon();
+                            SpigotAutoLoader cannon = (SpigotAutoLoader) tank.getCannon();
                             ItemMeta meta = item.getItemMeta();
                             meta.setLore(Arrays.asList(CommonItemText.CANNON,
                                     CommonItemText.clipSize(pt.getClipSize(), cannon.getClipSize()),

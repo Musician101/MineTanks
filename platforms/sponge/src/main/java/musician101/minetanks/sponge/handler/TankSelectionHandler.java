@@ -6,8 +6,8 @@ import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
-import musician101.minetanks.sponge.tank.Tank;
-import musician101.minetanks.sponge.tank.Tanks;
+import musician101.minetanks.sponge.tank.SpongeTank;
+import musician101.minetanks.sponge.tank.SpongeTanks;
 import musician101.minetanks.sponge.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.sponge.util.IconMenu.OptionClickEventHandler;
 import musician101.minetanks.sponge.util.MTUtils;
@@ -20,8 +20,8 @@ public class TankSelectionHandler implements OptionClickEventHandler
     {
         String name = event.getName();
         Player player = event.getPlayer();
-        Tank tank = null;
-        for (Tank t : Tanks.tankList)
+        SpongeTank tank = null;
+        for (SpongeTank t : SpongeTanks.tankList)
             if (name.equals(t.getName()))
                 tank = t;
 

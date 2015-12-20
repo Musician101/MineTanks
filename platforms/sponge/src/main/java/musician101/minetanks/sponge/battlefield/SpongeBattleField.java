@@ -10,8 +10,8 @@ import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
 import musician101.minetanks.sponge.handler.ReloadHandler;
-import musician101.minetanks.sponge.scoreboard.MTScoreboard;
-import musician101.minetanks.sponge.tank.Tank;
+import musician101.minetanks.sponge.scoreboard.SpongeMTScoreboard;
+import musician101.minetanks.sponge.tank.SpongeTank;
 import musician101.minetanks.sponge.util.MTUtils;
 import musician101.minetanks.sponge.util.SpongeRegion;
 import org.spongepowered.api.Game;
@@ -31,11 +31,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, SpongeRegion, MTScoreboard, Location<World>>
+public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, SpongeRegion, SpongeMTScoreboard, Location<World>>
 {
     public SpongeBattleField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators)
     {
-        super(name, enabled, region, greenSpawn, redSpawn, spectators, new MTScoreboard());
+        super(name, enabled, region, greenSpawn, redSpawn, spectators, new SpongeMTScoreboard());
     }
 
     @Override
@@ -173,7 +173,7 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
         for (UUID uuid : players)
         {
             final SpongePlayerTank pt = getPlayerTank(uuid);
-            final Tank tank = pt.getTank();
+            final SpongeTank tank = pt.getTank();
             final Player player = MTUtils.getPlayer(uuid);
             if (pt.getTeam() != MTTeam.SPECTATOR)
             {

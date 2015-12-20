@@ -3,7 +3,7 @@ package musician101.minetanks.spigot;
 import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.battlefield.SpigotBattleFieldStorage;
-import musician101.minetanks.spigot.command.MTCommand;
+import musician101.minetanks.spigot.command.MTSpigotCommand;
 import musician101.minetanks.spigot.listener.BattlefieldListener;
 import musician101.minetanks.spigot.listener.MTListener;
 import musician101.minetanks.spigot.util.InventoryStorage;
@@ -43,7 +43,7 @@ public class SpigotMineTanks extends JavaPlugin
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        return (command.getName().equalsIgnoreCase(CommonReference.ID) || command.getName().equalsIgnoreCase(CommonCommands.MT_CMD.replace("/", ""))) && new MTCommand(this).onCommand(sender, args);
+        return (command.getName().equalsIgnoreCase(CommonReference.ID) || command.getName().equalsIgnoreCase(CommonCommands.MT_CMD.replace("/", ""))) && new MTSpigotCommand(this).onCommand(sender, args);
     }
 
     public SpigotBattleFieldStorage getFieldStorage()

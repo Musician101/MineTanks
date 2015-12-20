@@ -4,8 +4,8 @@ import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.player.SpigotPlayerTank;
-import musician101.minetanks.spigot.tank.Tank;
-import musician101.minetanks.spigot.tank.Tanks;
+import musician101.minetanks.spigot.tank.SpigotTank;
+import musician101.minetanks.spigot.tank.SpigotTanks;
 import musician101.minetanks.spigot.util.IconMenu.OptionClickEvent;
 import musician101.minetanks.spigot.util.IconMenu.OptionClickEventHandler;
 import musician101.minetanks.spigot.util.MTUtils;
@@ -29,8 +29,8 @@ public class MenuHandlers
             String optionName = event.getName();
             event.getName();
             Player player = event.getPlayer();
-            Tank tank = null;
-            for (Tank iTank : Tanks.tankList)
+            SpigotTank tank = null;
+            for (SpigotTank iTank : SpigotTanks.tankList)
                 if (optionName.equals(iTank.getName()))
                     tank = iTank;
 

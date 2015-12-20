@@ -10,7 +10,7 @@ import musician101.minetanks.spigot.event.PlayerTankDamageEvent;
 import musician101.minetanks.spigot.event.PlayerTankDamageEvent.PlayerTankDamageCause;
 import musician101.minetanks.spigot.event.PlayerTankDeathEvent;
 import musician101.minetanks.spigot.handler.DamageHandler;
-import musician101.minetanks.spigot.scoreboard.MTScoreboard;
+import musician101.minetanks.spigot.scoreboard.SpigotMTScoreboard;
 import musician101.minetanks.spigot.util.MTUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -66,7 +66,7 @@ public class BattlefieldListener implements Listener
         SpigotBattleField field = plugin.getFieldStorage().getField(event.getField());
         Player killed = event.getKilled();
         Player killer = event.getKiller();
-        MTScoreboard sb = field.getScoreboard();
+        SpigotMTScoreboard sb = field.getScoreboard();
         String damagedMsg = (sb.isOnGreen(killed.getUniqueId()) ? ChatColor.GREEN + killed.getName() : ChatColor.RED + killed.getName());
         String damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
         Bukkit.getOnlinePlayers().forEach(player -> {
@@ -94,7 +94,7 @@ public class BattlefieldListener implements Listener
 
         UUID damager = event.getDamager();
         int damage = event.getDamage();
-        MTScoreboard sb = field.getScoreboard();
+        SpigotMTScoreboard sb = field.getScoreboard();
         if (sb.getPlayerHealth(damaged) <= 0 || sb.getPlayerHealth(damager) <= 0)
             return;
 

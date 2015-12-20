@@ -8,8 +8,8 @@ import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.player.SpigotPlayerTank;
 import musician101.minetanks.spigot.handler.ReloadHandler;
-import musician101.minetanks.spigot.scoreboard.MTScoreboard;
-import musician101.minetanks.spigot.tank.Tank;
+import musician101.minetanks.spigot.scoreboard.SpigotMTScoreboard;
+import musician101.minetanks.spigot.tank.SpigotTank;
 import musician101.minetanks.spigot.util.MTUtils;
 import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.Bukkit;
@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.UUID;
 
 //TODO Rename SpigotBattleField
-public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, SpigotRegion, MTScoreboard, Location>
+public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, SpigotRegion, SpigotMTScoreboard, Location>
 {
     private final SpigotMineTanks plugin;
 
     public SpigotBattleField(SpigotMineTanks plugin, String name, boolean enabled, SpigotRegion region, Location greenSpawn, Location redSpawn, Location spectators)
     {
-        super(name, enabled, region, greenSpawn, redSpawn, spectators, new MTScoreboard());
+        super(name, enabled, region, greenSpawn, redSpawn, spectators, new SpigotMTScoreboard());
         this.plugin = plugin;
     }
 
@@ -164,7 +164,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         for (UUID uuid : players)
         {
             final SpigotPlayerTank pt = getPlayerTank(uuid);
-            final Tank tank = pt.getTank();
+            final SpigotTank tank = pt.getTank();
             final Player player = Bukkit.getPlayer(uuid);
             if (pt.getTeam() != MTTeam.SPECTATOR)
             {

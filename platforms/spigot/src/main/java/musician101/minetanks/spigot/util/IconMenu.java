@@ -14,9 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
 
-/**
- * @author nisovin on BukkitDev
- */
+/** @author nisovin on BukkitDev */
 public class IconMenu implements Listener
 {
 

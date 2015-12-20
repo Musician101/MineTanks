@@ -4,12 +4,12 @@ import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.sponge.battlefield.SpongeBattleFieldStorage;
-import musician101.minetanks.sponge.command.MTCommand;
+import musician101.minetanks.sponge.command.MTSpongeCommand;
 import musician101.minetanks.sponge.handler.TankSelectionHandler;
 import musician101.minetanks.sponge.listener.BattlefieldListener;
 import musician101.minetanks.sponge.listener.MTListener;
-import musician101.minetanks.sponge.tank.Tank;
-import musician101.minetanks.sponge.tank.Tanks;
+import musician101.minetanks.sponge.tank.SpongeTank;
+import musician101.minetanks.sponge.tank.SpongeTanks;
 import musician101.minetanks.sponge.util.IconMenu;
 import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class SpongeMineTanks
         game.getEventManager().registerListeners(this, new MTListener());
         game.getEventManager().registerListeners(this, new BattlefieldListener());
 
-        game.getCommandManager().register(this, new MTCommand(), CommonCommands.MT_CMD.replace("/", ""));
+        game.getCommandManager().register(this, new MTSpongeCommand(), CommonCommands.MT_CMD.replace("/", ""));
 
         logger.info(CommonReference.MOVIN_ON_OUT);
     }
@@ -83,7 +83,7 @@ public class SpongeMineTanks
     private void initMenu()
     {
         tankSelection = new IconMenu(CommonReference.TANK_SELECTION, new TankSelectionHandler());
-        for (Tank tank : Tanks.tankList)
+        for (SpongeTank tank : SpongeTanks.tankList)
             tankSelection.setOption(ItemTypes.MINECART, Texts.builder().append(Texts.of(tank.getName())).color(TextColors.GREEN).build(), CommonItemText.tankType(tank.getType()));
     }
 

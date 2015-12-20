@@ -3,8 +3,8 @@ package musician101.minetanks.spigot.handler;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
-import musician101.minetanks.spigot.tank.modules.cannon.AutoLoader;
-import musician101.minetanks.spigot.tank.modules.cannon.Cannon;
+import musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
+import musician101.minetanks.spigot.tank.modules.cannon.SpigotCannon;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,14 +22,14 @@ public class ReloadHandler
     private final int maxClipSize;
     private int cycleTime;
 
-    public ReloadHandler(SpigotMineTanks plugin, Player player, Cannon cannon)
+    public ReloadHandler(SpigotMineTanks plugin, Player player, SpigotCannon cannon)
     {
         this.plugin = plugin;
         this.player = player;
         this.reloadTime = (int) Math.round(cannon.getReloadTime());
-        if (cannon instanceof AutoLoader)
+        if (cannon instanceof SpigotAutoLoader)
         {
-            AutoLoader al = (AutoLoader) cannon;
+            SpigotAutoLoader al = (SpigotAutoLoader) cannon;
             this.cycleTime = (int) Math.round(al.getCycleTime());
             this.clipSize = al.getClipSize();
             this.maxClipSize = al.getClipSize();

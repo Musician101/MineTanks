@@ -2,7 +2,7 @@ package musician101.minetanks.sponge.handler;
 
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import musician101.minetanks.sponge.event.PlayerTankDeathEvent;
-import musician101.minetanks.sponge.scoreboard.MTScoreboard;
+import musician101.minetanks.sponge.scoreboard.SpongeMTScoreboard;
 import musician101.minetanks.sponge.tank.SpongeTankType;
 import musician101.minetanks.sponge.tank.SpongeTankTypes;
 import musician101.minetanks.sponge.util.MTUtils;
@@ -39,7 +39,7 @@ public class DamageHandler
 
     public void playerHitEnemy(SpongeBattleField field, UUID damaged, UUID damager, int damage)
     {
-        MTScoreboard sb = field.getScoreboard();
+        SpongeMTScoreboard sb = field.getScoreboard();
         sb.setPlayerHealth(damaged, sb.getPlayerHealth(damaged) - (damage * 2 * 20));
         if (sb.getPlayerHealth(damaged) <= 0)
             Sponge.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(damaged), MTUtils.getPlayer(damager)));
@@ -48,7 +48,7 @@ public class DamageHandler
     public void gravityHit(SpongeBattleField field, UUID player, int damage)
     {
         double dmg = damage * 5;
-        MTScoreboard sb = field.getScoreboard();
+        SpongeMTScoreboard sb = field.getScoreboard();
         sb.setPlayerHealth(player, sb.getPlayerHealth(player) - (int) dmg);
         if (sb.getPlayerHealth(player) <= 0)
             Sponge.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(player), null));
