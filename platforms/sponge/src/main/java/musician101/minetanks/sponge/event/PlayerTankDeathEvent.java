@@ -5,9 +5,9 @@ import org.spongepowered.api.event.impl.AbstractEvent;
 
 public class PlayerTankDeathEvent extends AbstractEvent
 {
-    String field;
-    Player killed;
-    Player killer;
+    private final String field;
+    private final Player killed;
+    private final Player killer;
 
     public PlayerTankDeathEvent(String field, Player killed, Player killer)
     {

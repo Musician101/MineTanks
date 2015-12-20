@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public class PlayerTankDamageEvent extends AbstractEvent
 {
-    int damage;
-    PlayerTankDamageCause cause;
-    UUID damaged;
-    UUID damager;
-    String field;
+    private final int damage;
+    private final PlayerTankDamageCause cause;
+    private final UUID damaged;
+    private final UUID damager;
+    private final String field;
 
     public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, SpongeBattleField field, int damage)
     {

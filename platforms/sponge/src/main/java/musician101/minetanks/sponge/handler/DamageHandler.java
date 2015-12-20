@@ -53,23 +53,4 @@ public class DamageHandler
         if (sb.getPlayerHealth(player) <= 0)
             Sponge.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(player), null));
     }
-
-    /*public void meleeHitFriendly(SpongeBattleField field, UUID rammed, UUID rammer, int damage)
-    {
-        double rammerDmg = damage * 20;
-        double rammedDmg = damage * 15;
-        if (rammerDmg > 0)
-            playerHitEnemy(field, rammed, rammer, (int) rammerDmg);
-
-        if (rammedDmg > 0)
-            playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
-    }
-
-    public void playerHitFriendly(SpongeBattleField field, UUID dmgd, UUID dmgr, int damage)
-    {
-        MTScoreboard sb = field.getScoreboard();
-        sb.setPlayerHealth(dmgd, sb.getPlayerHealth(dmgd) - ((int) (damage * 2) * 20));
-        if (sb.getPlayerHealth(dmgd) <= 0)
-            Sponge.getGame().getEventManager().post(new PlayerTankDeathEvent(field.getName(), MTUtils.getPlayer(dmgd), MTUtils.getPlayer(dmgr)));
-    }*/
 }

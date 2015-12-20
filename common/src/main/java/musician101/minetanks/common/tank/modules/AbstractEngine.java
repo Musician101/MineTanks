@@ -4,7 +4,7 @@ import musician101.minetanks.common.tank.Info;
 
 public abstract class AbstractEngine<I> extends Info<I>
 {
-    public AbstractEngine(String name)
+    protected AbstractEngine(String name)
     {
         super(name);
     }

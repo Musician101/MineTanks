@@ -32,10 +32,10 @@ public class SpongeMineTanks
 {
     private static SpongeBattleFieldStorage fieldStorage;
     private static SpongeInventoryStorage inventoryStorage;
-    static IconMenu tankSelection;
-    static Logger logger;
+    private static IconMenu tankSelection;
+    private static Logger logger;
     @ConfigDir(sharedRoot = false)
-    File configDir = new File(CommonReference.NAME);
+    private final File configDir = new File(CommonReference.NAME);
 
     @Listener
     public void onServerStart(GameStartedServerEvent event)

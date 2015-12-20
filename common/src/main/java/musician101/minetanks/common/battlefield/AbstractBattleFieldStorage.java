@@ -11,7 +11,7 @@ public abstract class AbstractBattleFieldStorage<B extends AbstractBattleField> 
 {
     protected final Map<String, B> fields = new HashMap<>();
 
-    public AbstractBattleFieldStorage(File file)
+    protected AbstractBattleFieldStorage(File file)
     {
         super(file);
     }

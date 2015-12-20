@@ -9,11 +9,11 @@ import java.util.UUID;
 
 public class AttemptMenuOpenEvent extends AbstractEvent implements Cancellable
 {
-    boolean isCancelled = false;
-    ItemType material;
-    String field;
-    SpongePlayerTank pt;
-    UUID player;
+    private boolean isCancelled = false;
+    private final ItemType material;
+    private final String field;
+    private final SpongePlayerTank pt;
+    private final UUID player;
 
     public AttemptMenuOpenEvent(ItemType type, String field, SpongePlayerTank pt, UUID player)
     {
