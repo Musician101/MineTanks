@@ -5,7 +5,6 @@ import musician101.minetanks.common.tank.AbstractTank;
 import musician101.minetanks.common.tank.AbstractTankType;
 
 import java.io.File;
-import java.util.UUID;
 
 public class CommonReference
 {
@@ -136,14 +135,9 @@ public class CommonReference
         public static final String TYPE = "type";
         public static final String WORLD = "world";
 
-        public static String playerFileYAML(UUID uuid)
+        public static String battlefieldFile(AbstractBattleField field)
         {
-            return uuid.toString() + ".yml";
-        }
-
-        public static String battlefieldFile(AbstractBattleField field, String extension)
-        {
-            return field.getName() + "." + extension;
+            return field.getName() + ".cfg";
         }
     }
 

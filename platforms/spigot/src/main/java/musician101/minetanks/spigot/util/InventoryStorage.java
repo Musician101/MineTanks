@@ -122,10 +122,4 @@ public class InventoryStorage extends AbstractInventoryStorage
 
         return true;
     }
-
-    @Override
-    public File getPlayerFile(UUID playerId)
-    {
-        return new File(getStorageDir(), CommonConfig.playerFileYAML(playerId));
-    }
 }

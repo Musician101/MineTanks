@@ -84,7 +84,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
     @Override
     public void saveToFile(File battlefields)
     {
-        File file = new File(battlefields, CommonConfig.battlefieldFile(this, "yml"));
+        File file = new File(battlefields, CommonConfig.battlefieldFile(this));
         try
         {
             file.createNewFile();

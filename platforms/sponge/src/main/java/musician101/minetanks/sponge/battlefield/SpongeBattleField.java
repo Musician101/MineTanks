@@ -93,7 +93,7 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
     @Override
     public void saveToFile(File storageDir)
     {
-        File file = new File(storageDir, CommonConfig.battlefieldFile(this, "cfg"));
+        File file = new File(storageDir, CommonConfig.battlefieldFile(this));
         ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
         ConfigurationNode field;
         try

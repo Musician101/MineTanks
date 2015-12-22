@@ -59,7 +59,7 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
             return false;
 
         fields.remove(field);
-        return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(field), "yml")).delete();
+        return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(field))).delete();
     }
 
     @Override

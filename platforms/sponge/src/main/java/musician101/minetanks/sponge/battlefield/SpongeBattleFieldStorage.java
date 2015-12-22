@@ -56,7 +56,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
             if (name.equalsIgnoreCase(field))
             {
                 fields.remove(name);
-                return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(name), ".cfg")).delete();
+                return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(name))).delete();
             }
         }
 
