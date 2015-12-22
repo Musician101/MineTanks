@@ -1,6 +1,5 @@
 package musician101.minetanks.sponge.util;
 
-import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataManager;
@@ -21,10 +20,9 @@ public class MTUtils
 {
     public static ItemStack createCustomItem(ItemType type, String displayName, String description)
     {
-        Game game = Sponge.getGame();
-        DataManager dm = game.getDataManager();
+        DataManager dm = Sponge.getDataManager();
         LoreData loreData = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
-        GameRegistry gr = game.getRegistry();
+        GameRegistry gr = Sponge.getGame().getRegistry();
         loreData.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, Collections.singletonList(Texts.of(description))));
         DisplayNameData nameData = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
         nameData.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.of(displayName)));

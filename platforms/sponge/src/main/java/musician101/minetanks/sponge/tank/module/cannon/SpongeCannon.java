@@ -3,7 +3,6 @@ package musician101.minetanks.sponge.tank.module.cannon;
 import musician101.common.java.util.ListUtil;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractCannon;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataManager;
@@ -31,9 +30,8 @@ public class SpongeCannon extends AbstractCannon<ItemStack>
 
     private void parseCannon()
     {
-        Game game = Sponge.getGame();
-        DataManager dm = game.getDataManager();
-        GameRegistry gr = game.getRegistry();
+        DataManager dm = Sponge.getDataManager();
+        GameRegistry gr = Sponge.getGame().getRegistry();
 
         DisplayNameData name = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
         name.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.builder(getName()).color(TextColors.GREEN).build()));

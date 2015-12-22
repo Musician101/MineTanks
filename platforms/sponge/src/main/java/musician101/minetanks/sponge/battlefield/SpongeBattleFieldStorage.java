@@ -111,7 +111,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
         DataView dv = ct.translateFrom(node);
         /** It complains about raw types despite the method currently not relying on it. */
         @SuppressWarnings("unchecked")
-        Optional<Location<World>> olw = Sponge.getGame().getDataManager().getBuilder(LocateableSnapshot.class).get().build(dv).get().getLocation();
+        Optional<Location<World>> olw = Sponge.getDataManager().getBuilder(LocateableSnapshot.class).get().build(dv).get().getLocation();
         return olw.get();
     }
 

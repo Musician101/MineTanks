@@ -5,7 +5,6 @@ import musician101.minetanks.common.tank.Armor;
 import musician101.minetanks.common.tank.modules.AbstractTurret;
 import musician101.minetanks.sponge.tank.SpongeTankType;
 import musician101.minetanks.sponge.tank.SpongeTankTypes;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataManager;
@@ -46,17 +45,16 @@ public class SpongeTurret extends AbstractTurret<ItemStack>
         else if (type == SpongeTankTypes.ARTY)
             itemType = ItemTypes.GOLDEN_HELMET;
 
-        Game game = Sponge.getGame();
-        DataManager dmr = game.getDataManager();
-        GameRegistry gr = game.getRegistry();
+        DataManager dm = Sponge.getDataManager();
+        GameRegistry gr = Sponge.getGame().getRegistry();
 
-        DisplayNameData name = dmr.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
+        DisplayNameData name = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
         name.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.builder(getName()).color(TextColors.GREEN).build()));
 
-        EnchantmentData enchantments = dmr.getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
+        EnchantmentData enchantments = dm.getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
         enchantments.set(gr.getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, 10))));
 
-        LoreData lore = dmr.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
+        LoreData lore = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         lore.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, Collections.singletonList(Texts.of(CommonItemText.TURRET))));
 
         ItemStack.Builder isb = ItemStack.builder();

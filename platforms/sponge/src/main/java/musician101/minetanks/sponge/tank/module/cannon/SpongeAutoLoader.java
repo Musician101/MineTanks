@@ -2,8 +2,6 @@ package musician101.minetanks.sponge.tank.module.cannon;
 
 import musician101.common.java.util.ListUtil;
 import musician101.minetanks.common.CommonReference.CommonItemText;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
@@ -36,11 +34,9 @@ public class SpongeAutoLoader extends SpongeCannon
 
     private void parseCannon()
     {
-        Game game = Sponge.getGame();
-        GameRegistry gr = game.getRegistry();
         ItemStack.Builder isb = ItemStack.builder().fromItemStack(super.getItem());
-        LoreData lore = game.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
-        lore.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE,
+        LoreData lore = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
+        lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
                 new ListUtil<>(Texts.of(CommonItemText.CANNON),
                         Texts.of(CommonItemText.clipSize(clipSize, clipSize)),
                         Texts.of(CommonItemText.cycleTime(cycleTime)),

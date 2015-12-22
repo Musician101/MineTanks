@@ -1,7 +1,6 @@
 package musician101.minetanks.sponge.util;
 
 import musician101.minetanks.common.CommonReference;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataManager;
@@ -156,9 +155,8 @@ public class IconMenu
         for (String line : lore)
             loreAsText.add(Texts.of(line));
 
-        Game game = Sponge.getGame();
-        DataManager dm = game.getDataManager();
-        GameRegistry gr = game.getRegistry();
+        DataManager dm = Sponge.getDataManager();
+        GameRegistry gr = Sponge.getGame().getRegistry();
         LoreData loreData = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         loreData.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, loreAsText));
 

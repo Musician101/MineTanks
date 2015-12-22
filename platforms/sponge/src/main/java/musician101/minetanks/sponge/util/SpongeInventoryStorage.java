@@ -10,7 +10,6 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataManager;
@@ -43,8 +42,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
     public void load(UUID playerId)
     {
         File file = getPlayerFile(playerId);
-        Game game = Sponge.getGame();
-        Player player = game.getServer().getPlayer(playerId).get();
+        Player player = MTUtils.getPlayer(playerId);
         if (!file.exists())
         {
             player.sendMessage(TextUtils.redText(CommonMessages.fileLoadFailed(file)));
@@ -70,11 +68,11 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
                 player.setBoots(getItem(node.getNode(CommonConfig.BOOTS)));
 
             ConfigurateTranslator ct = ConfigurateTranslator.instance();
-            PotionEffectData potionEffectData = game.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create();
+            PotionEffectData potionEffectData = Sponge.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create();
             List<PotionEffect> effects = new ArrayList<>();
             node.getNode(CommonConfig.EFFECTS).getList(TypeToken.of(ConfigurationNode.class)).forEach(effect -> effects.add(PotionEffect.builder().build(ct.translateFrom(effect)).get()));
-            potionEffectData.set(game.getRegistry().getValueFactory().createListValue(Keys.POTION_EFFECTS, effects));
-            ExperienceHolderData experienceHolderData = game.getDataManager().getManipulatorBuilder(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get().create();
+            potionEffectData.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.POTION_EFFECTS, effects));
+            ExperienceHolderData experienceHolderData = Sponge.getDataManager().getManipulatorBuilder(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get().create();
             experienceHolderData.from((DataContainer) ct.translateFrom(node.getNode(CommonConfig.XP)));
             DataContainer data = new MemoryDataContainer();
             data.set(DataQuery.of(), potionEffectData);
@@ -142,7 +140,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
         player.setLeggings(null);
         player.setBoots(null);
 
-        DataManager dm = Sponge.getGame().getDataManager();
+        DataManager dm = Sponge.getDataManager();
         player.setRawData(dm.getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
         player.setRawData(dm.getManipulatorBuilder(CatalogEntityData.EXPERIENCE_HOLDER_DATA).get().create().toContainer());
         return true;

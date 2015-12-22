@@ -8,7 +8,6 @@ import musician101.minetanks.sponge.tank.module.SpongeRadio;
 import musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
 import musician101.minetanks.sponge.tank.module.tracks.SpongeTrackz;
 import musician101.minetanks.sponge.tank.module.turret.SpongeTurret;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
@@ -43,9 +42,8 @@ public class SpongeTank extends AbstractTank<SpongeTankType, SpongeCannon, Spong
 
     private ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
-        Game game = Sponge.getGame();
-        EnchantmentData enchantments = game.getDataManager().getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
-        enchantments.set(game.getRegistry().getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue())))));
+        EnchantmentData enchantments = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
+        enchantments.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue())))));
         ItemStack.Builder isb = ItemStack.builder();
         isb.fromItemStack(item);
         isb.itemData(enchantments);
@@ -54,11 +52,10 @@ public class SpongeTank extends AbstractTank<SpongeTankType, SpongeCannon, Spong
 
     private ItemStack parseSpeedValue(ItemStack item)
     {
-        Game game = Sponge.getGame();
-        LoreData lore = game.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
+        LoreData lore = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         List<Text> loreList = lore.lore().get();
         loreList.add(Texts.of(CommonItemText.speedValue(getSpeed())));
-        lore.set(game.getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE, loreList));
+        lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE, loreList));
         Builder isb = ItemStack.builder();
         isb.fromItemStack(item);
         isb.itemData(lore);

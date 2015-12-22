@@ -17,7 +17,6 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -66,13 +65,12 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
     @Override
     public boolean removePlayer(UUID playerId)
     {
-        Game game = Sponge.getGame();
         Player player = MTUtils.getPlayer(playerId);
         SpongePlayerTank pt = getPlayerTank(playerId);
         if (pt == null)
             return false;
 
-        player.setRawData(game.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
+        player.setRawData(Sponge.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
         player.getInventory().clear();
         player.setHelmet(null);
         player.setChestplate(null);
@@ -222,15 +220,14 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
             setInProgress(false);
             for (UUID uuid : players.keySet())
             {
-                Game game = Sponge.getGame();
-                Player player = game.getServer().getPlayer(uuid).get();
+                Player player = Sponge.getGame().getServer().getPlayer(uuid).get();
                 player.setLocation(getSpectators());
                 player.setHelmet(null);
                 player.setChestplate(null);
                 player.setLeggings(null);
                 player.setBoots(null);
                 player.getInventory().clear();
-                player.setRawData(game.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
+                player.setRawData(Sponge.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).get().create().toContainer());
 
                 SpongePlayerTank pt = getPlayerTank(uuid);
                 pt.setTeam(MTTeam.SPECTATOR);

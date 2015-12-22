@@ -4,7 +4,6 @@ import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.tank.modules.AbstractRadio;
 import musician101.minetanks.sponge.tank.SpongeTankType;
 import musician101.minetanks.sponge.tank.SpongeTankTypes;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataManager;
@@ -45,9 +44,8 @@ public class SpongeRadio extends AbstractRadio<ItemStack>
         else if (type == SpongeTankTypes.ARTY)
             itemType = ItemTypes.GOLDEN_CHESTPLATE;
 
-        Game game = Sponge.getGame();
-        DataManager dm = game.getDataManager();
-        GameRegistry gr = game.getRegistry();
+        DataManager dm = Sponge.getDataManager();
+        GameRegistry gr = Sponge.getGame().getRegistry();
 
         DisplayNameData name = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
         name.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.builder(getName()).color(TextColors.GREEN).build()));
