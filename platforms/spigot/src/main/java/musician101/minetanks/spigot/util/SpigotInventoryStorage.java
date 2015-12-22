@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class InventoryStorage extends AbstractInventoryStorage
+public class SpigotInventoryStorage extends AbstractInventoryStorage
 {
-    public InventoryStorage(SpigotMineTanks plugin)
+    public SpigotInventoryStorage(SpigotMineTanks plugin)
     {
         super(new File(plugin.getDataFolder(), CommonStorage.INVENTORY));
     }
