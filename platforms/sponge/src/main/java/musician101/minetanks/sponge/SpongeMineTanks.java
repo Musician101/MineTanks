@@ -15,6 +15,7 @@ import musician101.minetanks.sponge.util.SpongeInventoryStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -49,7 +50,7 @@ public class SpongeMineTanks
 
         initMenu();
 
-        Game game = event.getGame();
+        Game game = Sponge.getGame();
         game.getEventManager().registerListeners(this, new MTListener());
         game.getEventManager().registerListeners(this, new BattlefieldListener());
 

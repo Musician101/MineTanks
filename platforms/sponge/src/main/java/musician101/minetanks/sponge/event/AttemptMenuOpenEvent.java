@@ -1,47 +1,30 @@
 package musician101.minetanks.sponge.event;
 
 import musician101.minetanks.sponge.battlefield.player.SpongePlayerTank;
+import musician101.minetanks.sponge.util.MTUtils;
 import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
 import org.spongepowered.api.item.ItemType;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class AttemptMenuOpenEvent extends AbstractEvent implements Cancellable
 {
     private boolean isCancelled = false;
-    private final ItemType material;
+    private final ItemType itemType;
     private final String field;
     private final SpongePlayerTank pt;
-    private final UUID player;
+    private final UUID playerId;
 
-    public AttemptMenuOpenEvent(ItemType type, String field, SpongePlayerTank pt, UUID player)
+    public AttemptMenuOpenEvent(ItemType itemType, String field, SpongePlayerTank pt, UUID playerId)
     {
         super();
-        this.material = type;
+        this.itemType = itemType;
         this.field = field;
         this.pt = pt;
-        this.player = player;
-    }
-
-    public ItemType getItemType()
-    {
-        return material;
-    }
-
-    public String getField()
-    {
-        return field;
-    }
-
-    public SpongePlayerTank getPlayerTank()
-    {
-        return pt;
-    }
-
-    public UUID getPlayer()
-    {
-        return player;
+        this.playerId = playerId;
     }
 
     @Override
@@ -54,5 +37,32 @@ public class AttemptMenuOpenEvent extends AbstractEvent implements Cancellable
     public void setCancelled(boolean isCancelled)
     {
         this.isCancelled = isCancelled;
+    }
+
+    @Nonnull
+    @Override
+    public Cause getCause()
+    {
+        return Cause.of(MTUtils.getPlayer(playerId), itemType);
+    }
+
+    public ItemType getItemType()
+    {
+        return itemType;
+    }
+
+    public String getField()
+    {
+        return field;
+    }
+
+    public SpongePlayerTank getPlayerTank()
+    {
+        return pt;
+    }
+
+    public UUID getPlayerId()
+    {
+        return playerId;
     }
 }

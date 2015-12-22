@@ -28,7 +28,7 @@ public class BattlefieldListener
     public void onAttemptMenuOpen(AttemptMenuOpenEvent event)
     {
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
-        Player player = MTUtils.getPlayer(event.getPlayer());
+        Player player = MTUtils.getPlayer(event.getPlayerId());
         SpongePlayerTank pt = event.getPlayerTank();
         if (event.getItemType() == ItemTypes.CLOCK)
         {
@@ -80,7 +80,7 @@ public class BattlefieldListener
         DamageHandler dh = new DamageHandler();
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(event.getField());
         UUID damagedPlayer = event.getDamagedPlayer();
-        if (event.getCause() == PlayerTankDamageCause.FALL)
+        if (event.getDamageType() == PlayerTankDamageCause.FALL)
             dh.gravityHit(field, damagedPlayer, event.getDamage());
 
         UUID damager = event.getDamager();
@@ -89,13 +89,13 @@ public class BattlefieldListener
         if (sb.getPlayerHealth(damagedPlayer) <= 0 || sb.getPlayerHealth(damager) <= 0)
             return;
 
-        if (event.getCause() == PlayerTankDamageCause.RAM)
+        if (event.getDamageType() == PlayerTankDamageCause.RAM)
             dh.meleeHitEnemy(field, damagedPlayer, damager, damage);
 
-        if (event.getCause() == PlayerTankDamageCause.SPLASH)
+        if (event.getDamageType() == PlayerTankDamageCause.SPLASH)
             dh.playerHitEnemy(field, damagedPlayer, damager, damage);
 
-        if (event.getCause() == PlayerTankDamageCause.PENETRATION)
+        if (event.getDamageType() == PlayerTankDamageCause.PENETRATION)
             dh.playerHitEnemy(field, damagedPlayer, damager, damage);
     }
 }

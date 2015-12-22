@@ -148,7 +148,7 @@ public class MTListener
     @Listener
     public void onItemDrop(Dispense event)
     {
-        if (!event.getCause().any(Player.class))
+        if (!event.getCause().containsType(Player.class))
             return;
 
         event.setCancelled(isInField(event.getCause().first(Player.class).get().getUniqueId()));
@@ -208,10 +208,10 @@ public class MTListener
     @Listener
     public void onPlayerTeleport(Teleport.TargetPlayer event)
     {
-        if (!(event.getCause() instanceof TeleportCause))
+        if (event.getCause().containsType(TeleportCause.class))
             return;
 
-        TeleportCause cause = (TeleportCause) event.getCause();
+        TeleportCause cause = event.getCause().first(TeleportCause.class).get();
         if (cause.getTeleportType() != TeleportTypes.PLUGIN)
             return;
 

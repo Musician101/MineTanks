@@ -1,36 +1,51 @@
 package musician101.minetanks.sponge.event;
 
 import musician101.minetanks.sponge.battlefield.SpongeBattleField;
+import musician101.minetanks.sponge.util.MTUtils;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class PlayerTankDamageEvent extends AbstractEvent
 {
     private final int damage;
-    private final PlayerTankDamageCause cause;
+    private final PlayerTankDamageCause damageType;
     private final UUID damaged;
     private final UUID damager;
     private final String field;
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, SpongeBattleField field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause damageType, UUID damaged, SpongeBattleField field, int damage)
     {
-        this(cause, damaged, null, field, damage);
+        this(damageType, damaged, null, field, damage);
     }
 
-    public PlayerTankDamageEvent(PlayerTankDamageCause cause, UUID damaged, UUID damager, SpongeBattleField field, int damage)
+    public PlayerTankDamageEvent(PlayerTankDamageCause damageType, UUID damaged, UUID damager, SpongeBattleField field, int damage)
     {
         super();
         this.damaged = damaged;
         this.damager = damager;
         this.field = field.getName();
         this.damage = damage;
-        this.cause = cause;
+        this.damageType = damageType;
     }
 
-    public PlayerTankDamageCause getCause()
+    @Nonnull
+    @Override
+    public Cause getCause()
     {
-        return cause;
+        return Cause.of(MTUtils.getPlayer(damaged), damageType, MTUtils.getPlayer(damaged));
+    }
+
+    public int getDamage()
+    {
+        return damage;
+    }
+
+    public PlayerTankDamageCause getDamageType()
+    {
+        return damageType;
     }
 
     public UUID getDamagedPlayer()
@@ -46,11 +61,6 @@ public class PlayerTankDamageEvent extends AbstractEvent
     public String getField()
     {
         return field;
-    }
-
-    public int getDamage()
-    {
-        return damage;
     }
 
     public enum PlayerTankDamageCause

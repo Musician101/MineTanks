@@ -1,7 +1,10 @@
 package musician101.minetanks.sponge.event;
 
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
+
+import javax.annotation.Nonnull;
 
 public class PlayerTankDeathEvent extends AbstractEvent
 {
@@ -15,6 +18,13 @@ public class PlayerTankDeathEvent extends AbstractEvent
         this.field = field;
         this.killed = killed;
         this.killer = killer;
+    }
+
+    @Nonnull
+    @Override
+    public Cause getCause()
+    {
+        return Cause.of(killed, killer);
     }
 
     public String getField()
