@@ -1,8 +1,8 @@
 package musician101.minetanks.sponge.util;
 
-import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
 import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.util.AbstractRegion;
+import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -13,12 +13,12 @@ public class SpongeRegion extends AbstractRegion<Location<World>>
 {
     private String worldName = "";
 
-    public SpongeRegion(Location<World> location)
+    private SpongeRegion(Location<World> location)
     {
         this(location, location);
     }
 
-    public SpongeRegion(Location<World> location, Location<World> location2)
+    private SpongeRegion(Location<World> location, Location<World> location2)
     {
         super(Math.min((int) location.getPosition().getX(), (int) location2.getPosition().getX()),
                 Math.min((int) location.getPosition().getY(), (int) location2.getPosition().getY()),
@@ -30,16 +30,16 @@ public class SpongeRegion extends AbstractRegion<Location<World>>
         this.worldName = location.getExtent().getName();
     }
 
-    public SpongeRegion(SpongeJSONConfig json)
+    public SpongeRegion(ConfigurationNode node)
     {
-        super(json.getInteger(CommonConfig.MIN_X, 0),
-                json.getInteger(CommonConfig.MIN_Y, 0),
-                json.getInteger(CommonConfig.MIN_Z, 0),
-                json.getInteger(CommonConfig.MAX_X, 0),
-                json.getInteger(CommonConfig.MAX_Y, 0),
-                json.getInteger(CommonConfig.MAX_Z, 0));
+        super(node.getNode(CommonConfig.MIN_X).getInt(0),
+                node.getNode(CommonConfig.MIN_Y).getInt(0),
+                node.getNode(CommonConfig.MIN_Z).getInt(0),
+                node.getNode(CommonConfig.MAX_X).getInt(0),
+                node.getNode(CommonConfig.MAX_Y).getInt(0),
+                node.getNode(CommonConfig.MAX_Z).getInt(0));
 
-        this.worldName = json.containsKey(CommonConfig.WORLD) ? (String) json.get(CommonConfig.WORLD) : "";
+        this.worldName = !node.getNode(CommonConfig.WORLD).isVirtual() ? node.getNode(CommonConfig.WORLD).getString() : "";
     }
 
     public World getWorld()

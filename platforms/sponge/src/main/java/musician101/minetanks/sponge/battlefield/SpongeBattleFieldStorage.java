@@ -1,22 +1,26 @@
 package musician101.minetanks.sponge.battlefield;
 
-import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
 import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonStorage;
 import musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import musician101.minetanks.sponge.SpongeMineTanks;
 import musician101.minetanks.sponge.util.SpongeRegion;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataView;
+import org.spongepowered.api.data.LocateableSnapshot;
+import org.spongepowered.api.data.translator.ConfigurateTranslator;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeBattleField>
@@ -52,7 +56,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
             if (name.equalsIgnoreCase(field))
             {
                 fields.remove(name);
-                return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(name), ".json")).delete();
+                return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(name), ".cfg")).delete();
             }
         }
 
@@ -64,35 +68,36 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
     {
         for (File file : getStorageDir().listFiles())
         {
-            if (file.getName().endsWith(".json"))
+            if (file.getName().endsWith(".cfg"))
             {
                 Logger logger = SpongeMineTanks.getLogger();
                 try
                 {
-                    SpongeJSONConfig field = (SpongeJSONConfig) new JSONParser().parse(new FileReader(file));
-                    String name = file.getName().replace(".json", "");
-                    boolean enabled = field.getBoolean(CommonConfig.ENABLED);
+                    ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
+                    ConfigurationNode field = cl.load();
+                    String name = file.getName().replace(".cfg", "");
+                    boolean enabled = field.getNode(CommonConfig.ENABLED).getBoolean();
                     SpongeRegion region = null;
                     Location<World> greenSpawn = null;
                     Location<World> redSpawn = null;
                     Location<World> spectators = null;
 
-                    if (field.containsKey(CommonConfig.REGION))
-                        region = new SpongeRegion(field.getSpongeJSONConfig(CommonConfig.REGION));
+                    if (!field.getNode(CommonConfig.REGION).isVirtual())
+                        region = new SpongeRegion(field.getNode(CommonConfig.REGION));
 
-                    if (field.containsKey(CommonConfig.GREEN_SPAWN))
-                        greenSpawn = deserializeLocation(field.getSpongeJSONConfig(CommonConfig.GREEN_SPAWN));
+                    if (!field.getNode(CommonConfig.GREEN_SPAWN).isVirtual())
+                        greenSpawn = deserializeLocation(field.getNode(CommonConfig.GREEN_SPAWN));
 
-                    if (field.containsKey(CommonConfig.RED_SPAWN))
-                        redSpawn = deserializeLocation(field.getSpongeJSONConfig(CommonConfig.RED_SPAWN));
+                    if (!field.getNode(CommonConfig.RED_SPAWN).isVirtual())
+                        redSpawn = deserializeLocation(field.getNode(CommonConfig.RED_SPAWN));
 
-                    if (field.containsKey(CommonConfig.SPECTATORS))
-                        spectators = deserializeLocation(field.getSpongeJSONConfig(CommonConfig.SPECTATORS));
+                    if (!field.getNode(CommonConfig.SPECTATORS).isVirtual())
+                        spectators = deserializeLocation(field.getNode(CommonConfig.SPECTATORS));
 
                     if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
                         logger.warn(CommonMessages.fileLoadFailed(file));
                 }
-                catch (IOException | ParseException e)
+                catch (IOException e)
                 {
                     logger.warn(CommonMessages.fileLoadFailed(file));
                 }
@@ -100,12 +105,14 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
         }
     }
 
-    /* Change json storage to HOCON */
-    @Deprecated
-    private static Location<World> deserializeLocation(SpongeJSONConfig locJSON)
+    private static Location<World> deserializeLocation(ConfigurationNode node)
     {
-        World world = Sponge.getGame().getServer().getWorld(locJSON.get(CommonConfig.WORLD).toString()).get();
-        return new Location<>(world, locJSON.getInteger("x", 0), locJSON.getInteger("y", 0), locJSON.getInteger("z", 0));
+        ConfigurateTranslator ct = ConfigurateTranslator.instance();
+        DataView dv = ct.translateFrom(node);
+        /** It complains about raw types despite the method currently not relying on it. */
+        @SuppressWarnings("unchecked")
+        Optional<Location<World>> olw = Sponge.getGame().getDataManager().getBuilder(LocateableSnapshot.class).get().build(dv).get().getLocation();
+        return olw.get();
     }
 
     @Override

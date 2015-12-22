@@ -1,7 +1,6 @@
 package musician101.minetanks.sponge.battlefield;
 
 import musician101.common.java.minecraft.sponge.TextUtils;
-import musician101.common.java.minecraft.sponge.config.SpongeJSONConfig;
 import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.CommonReference.CommonMessages;
@@ -14,6 +13,10 @@ import musician101.minetanks.sponge.scoreboard.SpongeMTScoreboard;
 import musician101.minetanks.sponge.tank.SpongeTank;
 import musician101.minetanks.sponge.util.MTUtils;
 import musician101.minetanks.sponge.util.SpongeRegion;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
@@ -24,7 +27,6 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,10 +93,13 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
     @Override
     public void saveToFile(File storageDir)
     {
-        File file = new File(storageDir, CommonConfig.battlefieldFile(this, "json"));
+        File file = new File(storageDir, CommonConfig.battlefieldFile(this, "cfg"));
+        ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
+        ConfigurationNode field;
         try
         {
             file.createNewFile();
+            field = cl.load();
         }
         catch (IOException e)
         {
@@ -102,25 +107,22 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
             return;
         }
 
-        SpongeJSONConfig field = new SpongeJSONConfig();
         if (getRegion() != null)
-            field.set(CommonConfig.REGION, getRegion().serialize());
+            field.getNode(CommonConfig.REGION).setValue(getRegion().serialize());
 
         if (getGreenSpawn() != null)
-            field.set(CommonConfig.GREEN_SPAWN, getGreenSpawn().toContainer().toString());
+            field.getNode(CommonConfig.GREEN_SPAWN).setValue(getGreenSpawn().toContainer().toString());
 
         if (getRedSpawn() != null)
-            field.set(CommonConfig.RED_SPAWN, getRedSpawn().toContainer().toString());
+            field.getNode(CommonConfig.RED_SPAWN).setValue(getRedSpawn().toContainer().toString());
 
         if (getSpectators() != null)
-            field.set(CommonConfig.SPECTATORS, getSpectators().toContainer().toString());
+            field.getNode(CommonConfig.SPECTATORS).setValue(getSpectators().toContainer().toString());
 
-        field.set(CommonConfig.ENABLED, isEnabled());
+        field.getNode(CommonConfig.ENABLED).setValue(isEnabled());
         try
         {
-            FileWriter fw = new FileWriter(file);
-            fw.write(field.toJSONString());
-            fw.close();
+            cl.save(field);
         }
         catch (IOException e)
         {
