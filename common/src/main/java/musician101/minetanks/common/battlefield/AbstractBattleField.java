@@ -10,20 +10,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class AbstractBattleField<P extends AbstractPlayerTank, R extends AbstractRegion, S extends AbstractScoreboard, L>
+public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank, Region extends AbstractRegion, Scoreboard extends AbstractScoreboard, Location>
 {
     private boolean enabled;
     private boolean inProgress = false;
-    protected final Map<UUID, P> players = new HashMap<>();
-    private final S scoreboard;
+    protected final Map<UUID, PlayerTank> players = new HashMap<>();
+    private final Scoreboard scoreboard;
     protected int unassigned = 0;
-    private L greenSpawn;
-    private L redSpawn;
-    private L spectators;
-    private R region;
+    private Location greenSpawn;
+    private Location redSpawn;
+    private Location spectators;
+    private Region region;
     private final String name;
 
-    protected AbstractBattleField(String name, boolean enabled, R region, L greenSpawn, L redSpawn, L spectators, S scoreboard)
+    protected AbstractBattleField(String name, boolean enabled, Region region, Location greenSpawn, Location redSpawn, Location spectators, Scoreboard scoreboard)
     {
         this.name = name;
         this.enabled = enabled;
@@ -68,57 +68,57 @@ public abstract class AbstractBattleField<P extends AbstractPlayerTank, R extend
         return getPlayerTank(playerId).getTeam().canExit();
     }
 
-    public L getGreenSpawn()
+    public Location getGreenSpawn()
     {
         return greenSpawn;
     }
 
-    public void setGreenSpawn(L greenSpawn)
+    public void setGreenSpawn(Location greenSpawn)
     {
         this.greenSpawn = greenSpawn;
     }
 
-    public L getRedSpawn()
+    public Location getRedSpawn()
     {
         return redSpawn;
     }
 
-    public void setRedSpawn(L redSpawn)
+    public void setRedSpawn(Location redSpawn)
     {
         this.redSpawn = redSpawn;
     }
 
-    public L getSpectators()
+    public Location getSpectators()
     {
         return spectators;
     }
 
-    public void setSpectators(L spectators)
+    public void setSpectators(Location spectators)
     {
         this.spectators = spectators;
     }
     
-    public Map<UUID, P> getPlayers()
+    public Map<UUID, PlayerTank> getPlayers()
     {
         return players;
     }
 
-    public P getPlayerTank(UUID playerId)
+    public PlayerTank getPlayerTank(UUID playerId)
     {
         return players.get(playerId);
     }
 
-    public R getRegion()
+    public Region getRegion()
     {
         return region;
     }
 
-    public void setRegion(R region)
+    public void setRegion(Region region)
     {
         this.region = region;
     }
 
-    public S getScoreboard()
+    public Scoreboard getScoreboard()
     {
         return scoreboard;
     }

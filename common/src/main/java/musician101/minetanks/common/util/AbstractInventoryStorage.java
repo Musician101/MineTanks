@@ -16,6 +16,6 @@ public abstract class AbstractInventoryStorage extends AbstractStorage
 
     public File getPlayerFile(UUID playerId)
     {
-        return new File(getStorageDir(), playerId.toString() + ".json");
+        return new File(getStorageDir(), playerId.toString() + ".cfg");
     }
 }

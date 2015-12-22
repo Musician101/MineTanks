@@ -1,8 +1,8 @@
 package musician101.minetanks.common.tank;
 
-public abstract class Info<I>
+public abstract class Info<ItemStack>
 {
-    private I item;
+    private ItemStack item;
     private final String name;
 
     protected Info(String name)
@@ -10,12 +10,12 @@ public abstract class Info<I>
         this.name = name;
     }
 
-    public I getItem()
+    public ItemStack getItem()
     {
         return item;
     }
 
-    protected void setItem(I item)
+    protected void setItem(ItemStack item)
     {
         this.item = item;
     }

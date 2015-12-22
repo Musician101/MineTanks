@@ -2,7 +2,7 @@ package musician101.minetanks.common.tank.modules;
 
 import musician101.minetanks.common.tank.Info;
 
-public abstract class AbstractCannon<I> extends Info<I>
+public abstract class AbstractCannon<ItemStack> extends Info<ItemStack>
 {
     private final double reloadTime;
     private final int ammoCount;

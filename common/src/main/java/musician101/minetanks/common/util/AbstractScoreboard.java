@@ -2,9 +2,9 @@ package musician101.minetanks.common.util;
 
 import java.util.UUID;
 
-public abstract class AbstractScoreboard<S>
+public abstract class AbstractScoreboard<Scoreboard>
 {
-    protected S scoreboard;
+    protected Scoreboard scoreboard;
 
     protected AbstractScoreboard()
     {
@@ -21,7 +21,7 @@ public abstract class AbstractScoreboard<S>
 
     public abstract int getPlayerHealth(UUID playerId);
 
-    public S getScoreboard()
+    public Scoreboard getScoreboard()
     {
         return scoreboard;
     }

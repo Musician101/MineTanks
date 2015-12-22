@@ -7,21 +7,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class AbstractBattleFieldStorage<B extends AbstractBattleField> extends AbstractStorage
+public abstract class AbstractBattleFieldStorage<Battlefield extends AbstractBattleField> extends AbstractStorage
 {
-    protected final Map<String, B> fields = new HashMap<>();
+    protected final Map<String, Battlefield> fields = new HashMap<>();
 
     protected AbstractBattleFieldStorage(File file)
     {
         super(file);
     }
 
-    public B getField(String fieldName)
+    public Battlefield getField(String fieldName)
     {
         return fields.get(fieldName);
     }
 
-    public Map<String, B> getFields()
+    public Map<String, Battlefield> getFields()
     {
         return fields;
     }

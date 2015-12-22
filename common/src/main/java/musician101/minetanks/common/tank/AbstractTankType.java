@@ -1,8 +1,8 @@
 package musician101.minetanks.common.tank;
 
-public abstract class AbstractTankType<I> extends Info<I>
+public abstract class AbstractTankType<ItemStack> extends Info<ItemStack>
 {
-    protected AbstractTankType(String name, I item)
+    protected AbstractTankType(String name, ItemStack item)
     {
         super(name);
         setItem(item);

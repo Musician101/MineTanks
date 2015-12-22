@@ -8,19 +8,19 @@ import musician101.minetanks.common.tank.modules.AbstractTurret;
 
 import java.util.List;
 
-public abstract class AbstractTank<Y extends AbstractTankType, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I, P> extends Info<I>
+public abstract class AbstractTank<TankType extends AbstractTankType, Cannon extends AbstractCannon, Engine extends AbstractEngine, Radio extends AbstractRadio, Tracks extends AbstractTrackz, Turret extends AbstractTurret, ItemStack, PotionEffect> extends Info<ItemStack>
 {
     protected final Armor armor;
-    protected final C cannon;
-    protected final E engine;
+    protected final Cannon cannon;
+    protected final Engine engine;
     private final int health;
     private final int speed;
-    protected final R radio;
-    protected final T tracks;
-    protected final U turret;
-    private final Y type;
+    protected final Radio radio;
+    protected final Tracks tracks;
+    protected final Turret turret;
+    private final TankType type;
 
-    protected AbstractTank(String name, Y type, int health, Armor armor, int speed, C cannon, E engine, R radio, T tracks, U turret)
+    protected AbstractTank(String name, TankType type, int health, Armor armor, int speed, Cannon cannon, Engine engine, Radio radio, Tracks tracks, Turret turret)
     {
         super(name);
         this.type = type;
@@ -34,7 +34,7 @@ public abstract class AbstractTank<Y extends AbstractTankType, C extends Abstrac
         this.turret = turret;
     }
 
-    public C getCannon()
+    public Cannon getCannon()
     {
         return cannon;
     }
@@ -49,20 +49,20 @@ public abstract class AbstractTank<Y extends AbstractTankType, C extends Abstrac
         return speed;
     }
 
-    public abstract I getHelmet();
+    public abstract ItemStack getHelmet();
 
-    public abstract I getChestplate();
+    public abstract ItemStack getChestplate();
 
-    public abstract I getLeggings();
+    public abstract ItemStack getLeggings();
 
-    public abstract I getBoots();
+    public abstract ItemStack getBoots();
 
-    public abstract List<I> getWeapons();
+    public abstract List<ItemStack> getWeapons();
 
-    public Y getType()
+    public TankType getType()
     {
         return type;
     }
 
-    public abstract P getSpeedEffect();
+    public abstract PotionEffect getSpeedEffect();
 }
