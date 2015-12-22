@@ -68,10 +68,10 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
         getStorageDir().mkdirs();
         for (File file : getStorageDir().listFiles())
         {
-            if (file.getName().endsWith(".yml"))
+            if (file.getName().endsWith(".cfg"))
             {
                 YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
-                String name = file.getName().replace(".yml", "");
+                String name = file.getName().replace(".cfg", "");
                 boolean enabled = field.getBoolean(CommonConfig.ENABLED);
                 SpigotRegion spigotRegion = null;
                 Location greenSpawn = null;

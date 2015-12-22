@@ -1,6 +1,5 @@
 package musician101.minetanks.spigot.listener;
 
-import musician101.minetanks.common.CommonReference.CommonConfig;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
@@ -17,10 +16,8 @@ import musician101.minetanks.spigot.tank.SpigotTank;
 import musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -157,17 +154,7 @@ public class MTListener implements Listener
             return;
 
         player.sendMessage(ChatColor.GREEN + CommonMessages.LOGGED_OFF_WITH_ITEMS_STORED);
-        YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-        for (int slot = 0; slot < player.getInventory().getSize(); slot++)
-            player.getInventory().setItem(slot, yml.getItemStack(CommonConfig.INVENTORY + slot));
-
-        ItemStack[] armor = new ItemStack[4];
-        for (int slot = 0; slot < player.getInventory().getArmorContents().length; slot++)
-            armor[slot] = yml.getItemStack(CommonConfig.ARMOR + slot);
-
-        player.getInventory().setArmorContents(armor);
-        player.teleport(Location.deserialize(yml.getValues(true)));
-        file.delete();
+        plugin.getInventoryStorage().load(player.getUniqueId());
     }
 
     @EventHandler
