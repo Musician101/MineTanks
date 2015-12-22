@@ -21,11 +21,6 @@ public class MTUtils
 {
     public static ItemStack createCustomItem(ItemType type, String displayName, String description)
     {
-        return createCustomItem(type, 1, displayName, description);
-    }
-
-    public static ItemStack createCustomItem(ItemType type, int quantity, String displayName, String description)
-    {
         Game game = Sponge.getGame();
         DataManager dm = game.getDataManager();
         LoreData loreData = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
@@ -35,7 +30,6 @@ public class MTUtils
         nameData.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.of(displayName)));
         Builder isb = ItemStack.builder();
         isb.itemType(type);
-        isb.quantity(quantity);
         return isb.build();
     }
 
