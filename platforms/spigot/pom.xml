@@ -50,8 +50,10 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
+                                    <include>musician101:common</include>
                                     <include>musician101.minetanks:common</include>
                                 </includes>
                             </artifactSet>
@@ -59,7 +61,7 @@
                                 <filter>
                                     <artifact>musician101:common</artifact>
                                     <includes>
-                                        <include>musician101/common/java/minecraft/spigot/AbstractSpigotCommand.java</include>
+                                        <include>musician101/common/java/minecraft/spigot/command/**</include>
                                     </includes>
                                 </filter>
                             </filters>
