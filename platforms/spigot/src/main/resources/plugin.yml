@@ -1,9 +1,8 @@
-name: MineTanks
-main: musician101.minetanks.spigot.MineTanks
-version: 0.1
-description: PVP minigame heavily based on World of Tanks.
+name: ${project.name}
+main: musician101.minetanks.spigot.SpigotMineTanks
+version: ${project.version}
+description: ${project.description}
 author: Musician101
-prefix: MineTanks
 
 commands:
     minetanks:
