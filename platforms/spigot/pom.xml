@@ -62,6 +62,7 @@
                                     <artifact>musician101:common</artifact>
                                     <includes>
                                         <include>musician101/common/java/minecraft/spigot/command/**</include>
+                                        <include>musician101/common/java/minecraft/command/**</include>
                                     </includes>
                                 </filter>
                             </filters>
