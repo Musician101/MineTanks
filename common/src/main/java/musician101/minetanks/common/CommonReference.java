@@ -8,10 +8,10 @@ import java.io.File;
 
 public class CommonReference
 {
-    public static final String DESCRIPTION = "${project.description}";
+    public static final String DESCRIPTION = "Minecraft PvP plugin heavily based on World of Tanks.";
     public static final String ID = "minetanks";
     public static final String NAME = "MineTanks";
-    public static final String VERSION = "${project.version}";
+    public static final String VERSION = "2.0";
 
     public static final String MOVIN_ON_OUT = "Movin' on out. Shuck 'em up!";
     public static final String PACK_IT_UP = "Pack it up, boys. We're heading home.";
