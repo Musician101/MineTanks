@@ -32,7 +32,7 @@ public class JoinSpigotCommand extends AbstractSpigotCommand
             return false;
 
         Player player = (Player) sender;
-        if (minArgsMet(player, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
+        if (!minArgsMet(player, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
         SpigotBattleField field = plugin.getFieldStorage().getField(args[0]);

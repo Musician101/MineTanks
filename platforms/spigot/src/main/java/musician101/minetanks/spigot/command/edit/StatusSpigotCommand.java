@@ -29,7 +29,7 @@ public class StatusSpigotCommand extends AbstractSpigotCommand
         if (!canSenderUseCommand(sender))
             return false;
 
-        if (minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
+        if (!minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
         SpigotBattleField field = plugin.getFieldStorage().getField(args[0]);

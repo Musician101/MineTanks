@@ -31,7 +31,7 @@ public class RedSpawnSpigotCommand extends AbstractSpigotCommand
         if (!canSenderUseCommand(sender))
             return false;
 
-        if (minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
+        if (!minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
         Player player = (Player) sender;
