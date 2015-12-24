@@ -135,7 +135,7 @@ public class CommonReference
         public static final String TYPE = "type";
         public static final String WORLD = "world";
 
-        public static String battlefieldFile(AbstractBattleField field)
+        public static <BattleField extends AbstractBattleField> String battlefieldFile(BattleField field)
         {
             return field.getName() + ".cfg";
         }
@@ -254,7 +254,7 @@ public class CommonReference
         public static final String MUST_UNREADY = PREFIX + "You must unready to change your tank.";
         public static final String NO_PERMISSION = PREFIX + "Sorry, but you do not have permission for that.";
         public static final String NOT_A_NUMBER_MULTI = PREFIX + "Error: One or more of the inputted radii is not a number.";
-        public static final String NOT_ENOUGH_ARGS = PREFIX + "Error: Field not specified.";
+        public static final String NOT_ENOUGH_ARGS = PREFIX + "Error: Not enough arguments.";
         public static final String NOT_IN_A_FIELD = PREFIX + "You are not in a battlefield.";
         public static final String OUT_OF_BOUNDS = PREFIX + "Out of bounds!";
         public static final String PLAYER_ONLY = PREFIX + "Sorry, but this command is a player command only.";

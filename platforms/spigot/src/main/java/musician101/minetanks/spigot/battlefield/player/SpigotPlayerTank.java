@@ -6,7 +6,6 @@ import musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
 
 import java.util.UUID;
 
-//TODO change this to SpigotPlayerTank
 public class SpigotPlayerTank extends AbstractPlayerTank<SpigotTank>
 {
     public SpigotPlayerTank(UUID player, MTTeam team)
@@ -18,6 +17,12 @@ public class SpigotPlayerTank extends AbstractPlayerTank<SpigotTank>
     public void setTank(SpigotTank tank)
     {
         super.setTank(tank);
+        if (tank == null)
+        {
+            clipSize = 0;
+            return;
+        }
+
         if (tank.getCannon() instanceof SpigotAutoLoader)
             this.clipSize = ((SpigotAutoLoader) tank.getCannon()).getClipSize();
         else

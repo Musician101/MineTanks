@@ -31,8 +31,14 @@ public class MenuHandlers
             Player player = event.getPlayer();
             SpigotTank tank = null;
             for (SpigotTank iTank : SpigotTanks.tankList)
-                if (optionName.equals(iTank.getName()))
+                if (optionName.contains(iTank.getName()))
                     tank = iTank;
+
+            if (tank == null)
+            {
+                player.sendMessage(ChatColor.RED + CommonMessages.INVALID_TANK);
+                event.setWillClose(false);
+            }
 
             for (String name : plugin.getFieldStorage().getFields().keySet())
             {
@@ -48,9 +54,6 @@ public class MenuHandlers
                     return;
                 }
             }
-
-            player.sendMessage(ChatColor.RED + CommonMessages.INVALID_TANK);
-            event.setWillClose(false);
         }
     }
 }

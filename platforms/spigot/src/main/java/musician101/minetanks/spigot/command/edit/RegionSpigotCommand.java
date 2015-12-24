@@ -31,6 +31,9 @@ public class RegionSpigotCommand extends AbstractSpigotCommand
         if (!canSenderUseCommand(sender))
             return false;
 
+        if (!minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.NOT_ENOUGH_ARGS))
+            return false;
+
         Player player = (Player) sender;
         SpigotBattleField field = plugin.getFieldStorage().getField(args[0]);
         if (field == null)

@@ -22,10 +22,10 @@ public class SpigotRegion extends AbstractRegion<Location>
     private SpigotRegion(Location location, Location location2)
     {
         super(Math.min((int) location.getX(), (int) location2.getX()),
-                Math.min((int) location.getY(), (int) location2.getY()),
-                Math.min((int) location.getZ(), (int) location2.getZ()),
                 Math.max((int) location.getX(), (int) location2.getX()),
+                Math.min((int) location.getY(), (int) location2.getY()),
                 Math.max((int) location.getY(), (int) location2.getY()),
+                Math.min((int) location.getZ(), (int) location2.getZ()),
                 Math.max((int) location.getZ(), (int) location2.getZ()));
 
         this.worldName = location.getWorld().getName();
@@ -34,13 +34,13 @@ public class SpigotRegion extends AbstractRegion<Location>
     public SpigotRegion(Map<String, Object> map)
     {
         super(map.containsKey(CommonConfig.MIN_X) ? (Integer) map.get(CommonConfig.MIN_X) : 0,
-            map.containsKey(CommonConfig.MIN_Y) ? (Integer) map.get(CommonConfig.MIN_Y) : 0,
-            map.containsKey(CommonConfig.MIN_Z) ? (Integer) map.get(CommonConfig.MIN_Z) : 0,
                 map.containsKey(CommonConfig.MAX_X) ? (Integer) map.get(CommonConfig.MAX_X) : 0,
+                map.containsKey(CommonConfig.MIN_Y) ? (Integer) map.get(CommonConfig.MIN_Y) : 0,
                 map.containsKey(CommonConfig.MAX_Y) ? (Integer) map.get(CommonConfig.MAX_Y) : 0,
+                map.containsKey(CommonConfig.MIN_Z) ? (Integer) map.get(CommonConfig.MIN_Z) : 0,
                 map.containsKey(CommonConfig.MAX_Z) ? (Integer) map.get(CommonConfig.MAX_Z) : 0);
 
-        this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
+                this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
     }
 
     @Override

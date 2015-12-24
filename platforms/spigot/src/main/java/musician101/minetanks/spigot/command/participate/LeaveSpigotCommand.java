@@ -30,24 +30,23 @@ public class LeaveSpigotCommand extends AbstractSpigotCommand
             return false;
 
         Player player = (Player) sender;
-        if (plugin.getFieldStorage().canPlayerExit(player.getUniqueId()))
-        {
-            player.sendMessage(ChatColor.RED + CommonMessages.NO_PERMISSION);
-            return false;
-        }
-
         for (String name : plugin.getFieldStorage().getFields().keySet())
         {
             SpigotBattleField field = plugin.getFieldStorage().getField(name);
             if (field.getPlayerTank(player.getUniqueId()) != null)
             {
+                if (!plugin.getFieldStorage().canPlayerExit(player.getUniqueId()))
+                {
+                    player.sendMessage(ChatColor.RED + CommonMessages.NO_PERMISSION);
+                    return false;
+                }
+
                 player.sendMessage(ChatColor.GREEN + CommonMessages.LEFT_FIELD);
                 field.removePlayer(player.getUniqueId());
                 return true;
             }
         }
 
-        //TODO need to check if the player is in a field or not first.
         player.sendMessage(ChatColor.RED + CommonMessages.NOT_IN_A_FIELD);
         return false;
     }

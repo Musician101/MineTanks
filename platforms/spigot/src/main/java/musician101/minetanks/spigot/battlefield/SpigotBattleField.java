@@ -47,10 +47,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
             return false;
 
         if (team == MTTeam.SPECTATOR)
-        {
-            player.teleport(getSpectators());
             player.sendMessage(CommonMessages.fieldSpectating(this));
-        }
         else
         {
             player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(null)));
@@ -58,6 +55,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
             unassigned++;
         }
 
+        player.teleport(getSpectators());
         players.put(player.getUniqueId(), new SpigotPlayerTank(player.getUniqueId(), team));
         return true;
     }

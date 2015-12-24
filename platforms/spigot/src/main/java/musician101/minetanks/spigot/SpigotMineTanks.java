@@ -11,7 +11,7 @@ import musician101.minetanks.spigot.util.Menus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-//TODO need to change spawn related commands to check for region
+
 public class SpigotMineTanks extends JavaPlugin
 {
     private SpigotBattleFieldStorage fieldStorage;

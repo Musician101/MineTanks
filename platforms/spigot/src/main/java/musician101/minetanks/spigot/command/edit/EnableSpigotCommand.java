@@ -32,7 +32,7 @@ public class EnableSpigotCommand extends AbstractSpigotCommand
         if (!minArgsMet(sender, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
-        SpigotBattleField field = plugin.getFieldStorage().getField(args[1]);
+        SpigotBattleField field = plugin.getFieldStorage().getField(args[0]);
         if (field == null)
         {
             sender.sendMessage(ChatColor.RED + CommonMessages.FIELD_DNE);
@@ -44,7 +44,7 @@ public class EnableSpigotCommand extends AbstractSpigotCommand
         else
             field.setEnabled(true);
 
-        sender.sendMessage(ChatColor.RED + CommonMessages.fieldEnabled(field));
+        sender.sendMessage(ChatColor.GREEN + CommonMessages.fieldEnabled(field));
         return true;
     }
 }

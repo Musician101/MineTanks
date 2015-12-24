@@ -14,8 +14,10 @@ import musician101.minetanks.spigot.handler.ExplosionTracker;
 import musician101.minetanks.spigot.handler.ReloadHandler;
 import musician101.minetanks.spigot.tank.SpigotTank;
 import musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
+import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -41,6 +43,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.Arrays;
@@ -180,13 +183,25 @@ public class MTListener implements Listener
             if (field.getPlayerTank(player.getUniqueId()) != null)
             {
                 SpigotPlayerTank pt = field.getPlayerTank(player.getUniqueId());
-                if (pt.getTeam() == MTTeam.SPECTATOR)
+                if (pt.getTeam() != MTTeam.ASSIGNED)
                     return;
 
-                if (field.getRegion().isInRegion(player.getLocation()))
+                SpigotRegion region = field.getRegion();
+                if (!region.isInRegion(player.getLocation()))
                 {
                     player.sendMessage(ChatColor.RED + CommonMessages.OUT_OF_BOUNDS);
-                    player.teleport(player.getLocation().subtract(player.getVelocity()));
+                    int x = 0, z = 0;
+                    Location location = player.getLocation();
+                    if (location.getX() > region.getMaxX())
+                        x = -1;
+                    if (location.getX() < region.getMinX())
+                        x = 1;
+                    if (location.getZ() > region.getMaxZ())
+                        z = -1;
+                    if (location.getZ() < region.getMinZ())
+                        z = 1;
+
+                    player.setVelocity(new Vector(x, 0, z));
                     return;
                 }
             }

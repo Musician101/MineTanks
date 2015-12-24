@@ -18,7 +18,11 @@ public abstract class AbstractBattleFieldStorage<Battlefield extends AbstractBat
 
     public Battlefield getField(String fieldName)
     {
-        return fields.get(fieldName);
+        for (String field : fields.keySet())
+            if (field.equalsIgnoreCase(fieldName))
+                return fields.get(field);
+
+        return null;
     }
 
     public Map<String, Battlefield> getFields()
