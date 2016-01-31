@@ -7,7 +7,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 public class SpongeAutoLoader extends SpongeCannon
 {
@@ -37,10 +37,10 @@ public class SpongeAutoLoader extends SpongeCannon
         ItemStack.Builder isb = ItemStack.builder().fromItemStack(super.getItem());
         LoreData lore = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
-                new ListUtil<>(Texts.of(CommonItemText.CANNON),
-                        Texts.of(CommonItemText.clipSize(clipSize, clipSize)),
-                        Texts.of(CommonItemText.cycleTime(cycleTime)),
-                        Texts.of(CommonItemText.reloadTime(getReloadTime())))));
+                new ListUtil<>(Text.of(CommonItemText.CANNON),
+                        Text.of(CommonItemText.clipSize(clipSize, clipSize)),
+                        Text.of(CommonItemText.cycleTime(cycleTime)),
+                        Text.of(CommonItemText.reloadTime(getReloadTime())))));
 
         setItem(isb.itemData(lore).build());
     }

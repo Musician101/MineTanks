@@ -22,7 +22,6 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStack.Builder;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +53,7 @@ public class SpongeTank extends AbstractTank<SpongeTankType, SpongeCannon, Spong
     {
         LoreData lore = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         List<Text> loreList = lore.lore().get();
-        loreList.add(Texts.of(CommonItemText.speedValue(getSpeed())));
+        loreList.add(Text.of(CommonItemText.speedValue(getSpeed())));
         lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE, loreList));
         Builder isb = ItemStack.builder();
         isb.fromItemStack(item);

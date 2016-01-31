@@ -23,7 +23,8 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.LiteralText;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
@@ -85,7 +86,7 @@ public class SpongeMineTanks
     {
         tankSelection = new IconMenu(CommonReference.TANK_SELECTION, new TankSelectionHandler());
         for (SpongeTank tank : SpongeTanks.tankList)
-            tankSelection.setOption(ItemTypes.MINECART, Texts.builder().append(Texts.of(tank.getName())).color(TextColors.GREEN).build(), CommonItemText.tankType(tank.getType()));
+            tankSelection.setOption(ItemTypes.MINECART, (LiteralText) Text.builder().append(Text.of(tank.getName())).color(TextColors.GREEN).build(), CommonItemText.tankType(tank.getType()));
     }
 
     public static void openTankMenu(Player player)

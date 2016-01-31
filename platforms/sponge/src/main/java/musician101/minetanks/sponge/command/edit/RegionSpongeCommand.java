@@ -13,7 +13,7 @@ import musician101.minetanks.sponge.util.SpongeRegion;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ public class RegionSpongeCommand extends AbstractSpongeCommand
         SpongeBattleField field = SpongeMineTanks.getFieldStorage().getField(args[0]);
         if (field == null)
         {
-            source.sendMessage(Texts.builder(CommonMessages.FIELD_DNE).color(TextColors.RED).build());
+            source.sendMessage(Text.builder(CommonMessages.FIELD_DNE).color(TextColors.RED).build());
             return CommandResult.empty();
         }
 

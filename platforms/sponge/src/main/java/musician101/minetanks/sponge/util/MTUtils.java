@@ -11,7 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStack.Builder;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -23,9 +23,9 @@ public class MTUtils
         DataManager dm = Sponge.getDataManager();
         LoreData loreData = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         GameRegistry gr = Sponge.getGame().getRegistry();
-        loreData.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, Collections.singletonList(Texts.of(description))));
+        loreData.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, Collections.singletonList(Text.of(description))));
         DisplayNameData nameData = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
-        nameData.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.of(displayName)));
+        nameData.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Text.of(displayName)));
         Builder isb = ItemStack.builder();
         isb.itemType(type);
         return isb.build();

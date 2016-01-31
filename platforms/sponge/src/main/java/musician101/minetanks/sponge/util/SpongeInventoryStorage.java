@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpongeInventoryStorage extends AbstractInventoryStorage
@@ -78,6 +79,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
             data.set(DataQuery.of(), potionEffectData);
             data.set(DataQuery.of(), experienceHolderData);
             player.setRawData(data);
+            //noinspection ResultOfMethodCallIgnored
             file.delete();
         }
         catch (IOException | ObjectMappingException e)
@@ -104,8 +106,11 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
             ConfigurateTranslator ct = ConfigurateTranslator.instance();
             List<ConfigurationNode> items = new ArrayList<>();
             for (Inventory slot : inv.slots())
-                if (slot.peek() != null)
-                    items.add(ct.translateData(slot.peek().toContainer()));
+            {
+                Optional<ItemStack> itemStackOptional = slot.peek();
+                if (itemStackOptional.isPresent())
+                    items.add(ct.translateData(itemStackOptional.get().toContainer()));
+            }
 
             node.getNode(CommonConfig.INVENTORY.replace(".", "")).setValue(items);
             if (player.getHelmet().isPresent())

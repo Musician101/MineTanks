@@ -85,6 +85,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         File file = new File(battlefields, CommonConfig.battlefieldFile(this));
         try
         {
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         }
         catch (IOException e)

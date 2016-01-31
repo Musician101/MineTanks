@@ -58,6 +58,7 @@ public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank,
 
     public abstract boolean removePlayer(UUID playerId);
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isReady()
     {
         return region != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();

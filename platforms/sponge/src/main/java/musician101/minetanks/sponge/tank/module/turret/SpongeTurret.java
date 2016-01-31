@@ -18,7 +18,7 @@ import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class SpongeTurret extends AbstractTurret<ItemStack>
 
     private void parseTurret(SpongeTankType type)
     {
-        ItemType itemType = null;
+        ItemType itemType = ItemTypes.STICK;
         if (type == SpongeTankTypes.LIGHT)
             itemType = ItemTypes.LEATHER_HELMET;
         else if (type == SpongeTankTypes.MEDIUM)
@@ -49,13 +49,13 @@ public class SpongeTurret extends AbstractTurret<ItemStack>
         GameRegistry gr = Sponge.getGame().getRegistry();
 
         DisplayNameData name = dm.getManipulatorBuilder(CatalogItemData.DISPLAY_NAME_DATA).get().create();
-        name.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Texts.builder(getName()).color(TextColors.GREEN).build()));
+        name.set(gr.getValueFactory().createValue(Keys.DISPLAY_NAME, Text.builder(getName()).color(TextColors.GREEN).build()));
 
         EnchantmentData enchantments = dm.getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
         enchantments.set(gr.getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, 10))));
 
         LoreData lore = dm.getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
-        lore.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, Collections.singletonList(Texts.of(CommonItemText.TURRET))));
+        lore.set(gr.getValueFactory().createListValue(Keys.ITEM_LORE, Collections.singletonList(Text.of(CommonItemText.TURRET))));
 
         ItemStack.Builder isb = ItemStack.builder();
         isb.itemType(itemType);

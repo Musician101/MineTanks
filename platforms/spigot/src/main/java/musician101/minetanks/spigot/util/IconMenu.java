@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.Arrays;
 
 /** @author nisovin on BukkitDev */
+@SuppressWarnings("ALL")
 public class IconMenu implements Listener
 {
 

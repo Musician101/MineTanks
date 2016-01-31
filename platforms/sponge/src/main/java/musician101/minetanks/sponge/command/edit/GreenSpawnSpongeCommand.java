@@ -16,7 +16,6 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class GreenSpawnSpongeCommand extends AbstractSpongeCommand
@@ -28,7 +27,7 @@ public class GreenSpawnSpongeCommand extends AbstractSpongeCommand
 
     @Nonnull
     @Override
-    public CommandResult process(@Nullable CommandSource source, @Nullable String arguments)
+    public CommandResult process(@Nonnull CommandSource source, @Nonnull String arguments)
     {
         String[] args = splitArgs(arguments);
         if (!testPermission(source))

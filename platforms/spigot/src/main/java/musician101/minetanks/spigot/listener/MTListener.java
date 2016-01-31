@@ -294,6 +294,9 @@ public class MTListener implements Listener
                         if (event.getDamager().getUniqueId() == a.getUniqueId())
                             arrow = a;
 
+                    if (arrow == null)
+                        return;
+
                     UUID damager = ((Arrow) arrow.getShooter()).getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, damaged, damager, field, damage));
                     ExplosionTracker.removeArrow(arrow);

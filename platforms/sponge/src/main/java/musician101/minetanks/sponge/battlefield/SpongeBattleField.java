@@ -96,6 +96,7 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
         ConfigurationNode field;
         try
         {
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
             field = cl.load();
         }

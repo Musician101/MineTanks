@@ -51,7 +51,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.explosion.Explosion;
 
 import java.io.File;
@@ -244,21 +244,25 @@ public class MTListener
                     Inventory inv = player.getInventory();
                     for (Inventory slot : inv.slots())
                     {
-                        ItemStack item = slot.peek();
-                        pt.setClipSize(pt.getClipSize() - 1);
-                        if (item.getItem() == ItemTypes.ARROW)
-                            item.setQuantity(item.getQuantity() - 1);
-                        else if (item.getItem() == ItemTypes.BOW && cannon instanceof SpongeAutoLoader)
+                        Optional<ItemStack> itemStackOptional = slot.peek();
+                        if (itemStackOptional.isPresent())
                         {
-                            SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
-                            LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
-                            lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
-                                    new ListUtil<>(Texts.of(CommonItemText.CANNON),
-                                            Texts.of(CommonItemText.clipSize(pt.getClipSize(), autoLoader.getClipSize())),
-                                            Texts.of(CommonItemText.cycleTime(autoLoader.getCycleTime())),
-                                            Texts.of(CommonItemText.clipReloadTime(autoLoader.getReloadTime())))));
+                            ItemStack item = slot.peek().get();
+                            pt.setClipSize(pt.getClipSize() - 1);
+                            if (item.getItem() == ItemTypes.ARROW)
+                                item.setQuantity(item.getQuantity() - 1);
+                            else if (item.getItem() == ItemTypes.BOW && cannon instanceof SpongeAutoLoader)
+                            {
+                                SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
+                                LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
+                                lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
+                                        new ListUtil<>(Text.of(CommonItemText.CANNON),
+                                                Text.of(CommonItemText.clipSize(pt.getClipSize(), autoLoader.getClipSize())),
+                                                Text.of(CommonItemText.cycleTime(autoLoader.getCycleTime())),
+                                                Text.of(CommonItemText.clipReloadTime(autoLoader.getReloadTime())))));
 
-                            item.setRawData(lore.toContainer());
+                                item.setRawData(lore.toContainer());
+                            }
                         }
                     }
                 }
@@ -299,8 +303,12 @@ public class MTListener
                 {
                     Arrow arrow = null;
                     for (Arrow a : ExplosionTracker.getTracker())
-                        if (((Arrow) damageSource).getUniqueId() == a.getUniqueId())
-                            arrow = a;
+                        for (Entity entity : damagedEntity.getNearbyEntities(1))
+                            if (entity.getUniqueId() == a.getUniqueId())
+                                arrow = a;
+
+                    if (arrow == null)
+                        return;
 
                     UUID damager = ((Arrow) arrow.getShooter()).getUniqueId();
                     Sponge.getGame().getEventManager().post(new PlayerTankDamageEvent(PlayerTankDamageCause.SPLASH, damagedEntityUniqueId, damager, field, damage));

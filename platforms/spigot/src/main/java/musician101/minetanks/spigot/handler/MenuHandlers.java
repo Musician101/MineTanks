@@ -38,6 +38,7 @@ public class MenuHandlers
             {
                 player.sendMessage(ChatColor.RED + CommonMessages.INVALID_TANK);
                 event.setWillClose(false);
+                return;
             }
 
             for (String name : plugin.getFieldStorage().getFields().keySet())

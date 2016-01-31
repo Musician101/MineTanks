@@ -16,9 +16,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.custom.CustomInventory;
 import org.spongepowered.api.item.inventory.type.OrderedInventory;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Text.Literal;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.translation.FixedTranslation;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings("ALL")
 public class IconMenu
 {
     private String name;
@@ -40,7 +40,7 @@ public class IconMenu
         this.handler = handler;
     }
 
-    public IconMenu setOption(ItemType icon, Literal name, String... info)
+    public IconMenu setOption(ItemType icon, LiteralText name, String... info)
     {
         options.put(name.getContent(), setItemNameAndLore(icon, name, info));
         return this;
@@ -73,7 +73,7 @@ public class IconMenu
         if (event.getTransactions().size() == 0)
             return;
 
-        String name = ((Literal) event.getCursorTransaction().getOriginal().get(Keys.DISPLAY_NAME).get()).getContent();
+        String name = ((LiteralText) event.getCursorTransaction().getOriginal().get(Keys.DISPLAY_NAME).get()).getContent();
         if (!options.containsKey(name))
             return;
 
@@ -153,7 +153,7 @@ public class IconMenu
     {
         List<Text> loreAsText = new ArrayList<>();
         for (String line : lore)
-            loreAsText.add(Texts.of(line));
+            loreAsText.add(Text.of(line));
 
         DataManager dm = Sponge.getDataManager();
         GameRegistry gr = Sponge.getGame().getRegistry();

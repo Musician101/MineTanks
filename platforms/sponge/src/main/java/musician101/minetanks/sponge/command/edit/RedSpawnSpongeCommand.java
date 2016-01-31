@@ -12,7 +12,7 @@ import musician101.minetanks.sponge.battlefield.SpongeBattleField;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -34,7 +34,7 @@ public class RedSpawnSpongeCommand extends AbstractSpongeCommand
         if (!testPermission(source))
             return CommandResult.empty();
 
-        if (minArgsMet(source, args.length, Texts.of(CommonMessages.FIELD_NOT_SPECIFIED)))
+        if (minArgsMet(source, args.length, Text.of(CommonMessages.FIELD_NOT_SPECIFIED)))
             return CommandResult.empty();
 
         Player player = (Player) source;

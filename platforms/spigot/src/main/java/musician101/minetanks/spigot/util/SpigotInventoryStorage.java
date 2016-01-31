@@ -59,6 +59,7 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage
 
             player.teleport(Location.deserialize(yml.getConfigurationSection(CommonConfig.LOCATION).getValues(true)));
             player.setExp(Float.parseFloat(yml.getString(CommonConfig.XP)));
+            //noinspection ResultOfMethodCallIgnored
             file.delete();
         }
     }
@@ -70,6 +71,7 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage
         File file = getPlayerFile(playerId);
         try
         {
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         }
         catch (IOException e)
@@ -106,6 +108,7 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage
         catch (IOException e)
         {
             player.sendMessage(ChatColor.RED + CommonMessages.fileSaveFailed(file));
+            //noinspection ResultOfMethodCallIgnored
             file.delete();
             return false;
         }

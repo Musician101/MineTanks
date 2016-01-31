@@ -18,9 +18,10 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class ReloadHandler
@@ -69,22 +70,26 @@ public class ReloadHandler
                 player.setRawData(expData1.toContainer());
                 if (level1 == 0)
                 {
-                    if (cannon instanceof SpongeCannon && clipSize == 0)
+                    if (cannon instanceof SpongeAutoLoader && clipSize == 0)
                     {
                         for (Inventory slot : player.getInventory().slots())
                         {
-                            ItemStack item = slot.peek();
-                            if (item != null && item.getItem() == ItemTypes.BOW)
+                            Optional<ItemStack> itemStackOptional = slot.peek();
+                            if (itemStackOptional.isPresent())
                             {
-                                SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
-                                LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
-                                lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
-                                        Arrays.asList(Texts.of(CommonItemText.CANNON),
-                                                Texts.of(CommonItemText.clipSize(autoLoader.getClipSize(), autoLoader.getClipSize())),
-                                                Texts.of(CommonItemText.cycleTime(autoLoader.getCycleTime())),
-                                                Texts.of(CommonItemText.clipReloadTime(autoLoader.getClipSize())))));
+                                ItemStack item = slot.peek().get();
+                                if (item.getItem() == ItemTypes.BOW)
+                                {
+                                    SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
+                                    LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
+                                    lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
+                                            Arrays.asList(Text.of(CommonItemText.CANNON),
+                                                    Text.of(CommonItemText.clipSize(autoLoader.getClipSize(), autoLoader.getClipSize())),
+                                                    Text.of(CommonItemText.cycleTime(autoLoader.getCycleTime())),
+                                                    Text.of(CommonItemText.clipReloadTime(autoLoader.getClipSize())))));
 
-                                item.setRawData(lore.toContainer());
+                                    item.setRawData(lore.toContainer());
+                                }
                             }
                         }
 
@@ -94,7 +99,7 @@ public class ReloadHandler
                             if (field.getPlayerTank(player.getUniqueId()) != null)
                             {
                                 SpongePlayerTank pt = field.getPlayerTank(player.getUniqueId());
-                                pt.setClipSize(cannon instanceof SpongeAutoLoader ? ((SpongeAutoLoader) cannon).getClipSize() : 1);
+                                pt.setClipSize(((SpongeAutoLoader) cannon).getClipSize());
                             }
                         }
                     }

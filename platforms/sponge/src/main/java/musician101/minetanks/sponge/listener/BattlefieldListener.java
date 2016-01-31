@@ -17,7 +17,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.UUID;
@@ -47,7 +46,7 @@ public class BattlefieldListener
 
         if (pt.isReady())
         {
-            player.sendMessage(Texts.of(CommonMessages.MUST_UNREADY));
+            player.sendMessage(Text.of(CommonMessages.MUST_UNREADY));
             return;
         }
 
@@ -61,13 +60,13 @@ public class BattlefieldListener
         Player killed = event.getKilled();
         Player killer = event.getKiller();
         SpongeMTScoreboard sb = field.getScoreboard();
-        Text prefix = Texts.builder().append(Texts.of(CommonMessages.PREFIX)).color(TextColors.GREEN).build();
-        Text damagedMsg = (sb.isOnGreen(killed.getUniqueId()) ? Texts.builder().append(Texts.of(killed.getName())).color(TextColors.GREEN).build() : Texts.builder().append(Texts.of(killed.getName())).color(TextColors.RED).build());
-        Text damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? Texts.builder().append(Texts.of(killer.getName())).color(TextColors.GREEN).build() : Texts.builder().append(Texts.of(killer.getName())).color(TextColors.RED).build());
-        Text damagedBy = Texts.builder().append(Texts.of("was damaged by")).color(TextColors.WHITE).build();
+        Text prefix = Text.builder().append(Text.of(CommonMessages.PREFIX)).color(TextColors.GREEN).build();
+        Text damagedMsg = (sb.isOnGreen(killed.getUniqueId()) ? Text.builder().append(Text.of(killed.getName())).color(TextColors.GREEN).build() : Text.builder().append(Text.of(killed.getName())).color(TextColors.RED).build());
+        Text damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? Text.builder().append(Text.of(killer.getName())).color(TextColors.GREEN).build() : Text.builder().append(Text.of(killer.getName())).color(TextColors.RED).build());
+        Text damagedBy = Text.builder().append(Text.of("was damaged by")).color(TextColors.WHITE).build();
         Sponge.getGame().getServer().getOnlinePlayers().forEach(player -> {
             if (field.getPlayerTank(player.getUniqueId()) != null)
-                player.sendMessage(Texts.join(Texts.of(" "), new Text[]{prefix, damagedMsg, damagedBy, damagerMsg}));
+                player.sendMessage(Text.join(Text.of(" "), prefix, damagedMsg, damagedBy, damagerMsg));
         });
 
         field.playerKilled(killed.getUniqueId());
