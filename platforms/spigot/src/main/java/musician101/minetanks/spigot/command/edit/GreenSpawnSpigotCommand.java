@@ -15,14 +15,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class GreenSpawnSpigotCommand extends AbstractSpigotCommand
+public class GreenSpawnSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
 {
-    private final SpigotMineTanks plugin;
-
     public GreenSpawnSpigotCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.GREEN_SPAWN_NAME, CommonCommands.GREEN_SPAWN_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.GREEN_SPAWN_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
-        this.plugin = plugin;
+        super(plugin, CommonCommands.GREEN_SPAWN_NAME, CommonCommands.GREEN_SPAWN_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.GREEN_SPAWN_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
     }
 
     @Override

@@ -14,13 +14,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class CreateSpigotCommand extends AbstractSpigotCommand
+public class CreateSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
 {
-    private final SpigotMineTanks plugin;
-
     public CreateSpigotCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.CREATE_NAME, CommonCommands.CREATE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.CREATE_NAME), new SpigotCommandArgument(CommonCommands.NAME, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
+        super(plugin, CommonCommands.CREATE_NAME, CommonCommands.CREATE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.CREATE_NAME), new SpigotCommandArgument(CommonCommands.NAME, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
         this.plugin = plugin;
     }
 

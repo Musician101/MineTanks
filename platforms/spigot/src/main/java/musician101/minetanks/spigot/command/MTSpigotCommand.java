@@ -23,11 +23,11 @@ import org.bukkit.command.CommandSender;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class MTSpigotCommand extends AbstractSpigotCommand
+public class MTSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
 {
     public MTSpigotCommand(SpigotMineTanks plugin)
     {
-        super(CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new SpigotCommandArgument(CommonCommands.MT_CMD)), 0, "", false, "", "", Arrays.asList(new JoinSpigotCommand(plugin), new LeaveSpigotCommand(plugin), new RemoveSpigotCommand(plugin), new SpectateSpigotCommand(plugin), new CreateSpigotCommand(plugin), new RegionSpigotCommand(plugin), new EnableSpigotCommand(plugin), new ForceEndSpigotCommand(plugin), new GreenSpawnSpigotCommand(plugin), new RedSpawnSpigotCommand(plugin), new SpectatorsSpigotCommand(plugin), new StatusSpigotCommand(plugin)));
+        super(plugin, CommonReference.ID, CommonReference.DESCRIPTION, Collections.singletonList(new SpigotCommandArgument(CommonCommands.MT_CMD)), 0, "", false, "", "", Arrays.asList(new JoinSpigotCommand(plugin), new LeaveSpigotCommand(plugin), new RemoveSpigotCommand(plugin), new SpectateSpigotCommand(plugin), new CreateSpigotCommand(plugin), new RegionSpigotCommand(plugin), new EnableSpigotCommand(plugin), new ForceEndSpigotCommand(plugin), new GreenSpawnSpigotCommand(plugin), new RedSpawnSpigotCommand(plugin), new SpectatorsSpigotCommand(plugin), new StatusSpigotCommand(plugin)));
     }
 
     @Override
@@ -36,14 +36,14 @@ public class MTSpigotCommand extends AbstractSpigotCommand
         if (args.length > 0)
         {
             if (args[0].equalsIgnoreCase(CommonCommands.HELP))
-                return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
+                return new SpigotHelpCommand<>(plugin, this).onCommand(sender, moveArguments(args));
 
             for (AbstractSpigotCommand command : getSubCommands())
                 if (command.getName().equalsIgnoreCase(args[0]))
                     return command.onCommand(sender, moveArguments(args));
         }
 
-        sender.sendMessage(new SpigotHelpCommand(this).getCommandHelpInfo());
+        sender.sendMessage(new SpigotHelpCommand<>(plugin, this).getCommandHelpInfo());
         return true;
     }
 }

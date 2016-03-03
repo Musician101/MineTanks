@@ -15,14 +15,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class JoinSpigotCommand extends AbstractSpigotCommand
+public class JoinSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
 {
-    private final SpigotMineTanks plugin;
-
     public JoinSpigotCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.JOIN_NAME, CommonCommands.JOIN_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.JOIN_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
-        this.plugin = plugin;
+        super(plugin, CommonCommands.JOIN_NAME, CommonCommands.JOIN_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.JOIN_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
     }
 
     @Override

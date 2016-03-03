@@ -13,14 +13,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class LeaveSpigotCommand extends AbstractSpigotCommand
+public class LeaveSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
 {
-    private final SpigotMineTanks plugin;
-
     public LeaveSpigotCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.LEAVE_NAME, CommonCommands.LEAVE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.LEAVE_NAME)), 0, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
-        this.plugin = plugin;
+        super(plugin, CommonCommands.LEAVE_NAME, CommonCommands.LEAVE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.LEAVE_NAME)), 0, CommonPermissions.PARTICIPATE_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
     }
 
     @Override

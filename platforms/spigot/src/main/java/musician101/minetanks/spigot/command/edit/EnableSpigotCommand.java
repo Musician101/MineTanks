@@ -13,14 +13,11 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 
-public class EnableSpigotCommand extends AbstractSpigotCommand
+public class EnableSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
 {
-    private final SpigotMineTanks plugin;
-
     public EnableSpigotCommand(SpigotMineTanks plugin)
     {
-        super(CommonCommands.ENABLE_NAME, CommonCommands.ENABLE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.ENABLE_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, false, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
-        this.plugin = plugin;
+        super(plugin, CommonCommands.ENABLE_NAME, CommonCommands.ENABLE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.ENABLE_NAME), new SpigotCommandArgument(CommonCommands.FIELD, Syntax.REQUIRED, Syntax.REPLACE)), 1, CommonPermissions.EDIT_PERM, false, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
     }
 
     @Override
