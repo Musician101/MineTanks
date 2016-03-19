@@ -19,7 +19,6 @@ public class CreateSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
     public CreateSpigotCommand(SpigotMineTanks plugin)
     {
         super(plugin, CommonCommands.CREATE_NAME, CommonCommands.CREATE_DESC, Arrays.asList(new SpigotCommandArgument(CommonCommands.MT_CMD), new SpigotCommandArgument(CommonCommands.CREATE_NAME), new SpigotCommandArgument(CommonCommands.NAME, Syntax.REPLACE, Syntax.REQUIRED)), 1, CommonPermissions.EDIT_PERM, true, ChatColor.RED + CommonMessages.NO_PERMISSION, ChatColor.RED + CommonMessages.PLAYER_ONLY);
-        this.plugin = plugin;
     }
 
     @Override

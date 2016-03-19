@@ -1,7 +1,6 @@
 package musician101.minetanks.sponge.listener;
 
 import musician101.common.java.minecraft.sponge.TextUtils;
-import musician101.common.java.util.ListUtil;
 import musician101.minetanks.common.CommonReference.CommonItemText;
 import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
@@ -23,8 +22,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
-import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.Arrow;
@@ -247,25 +244,19 @@ public class MTListener
                         Optional<ItemStack> itemStackOptional = slot.peek();
                         if (itemStackOptional.isPresent())
                         {
-                            ItemStack item = slot.peek().get();
+                            ItemStack item = itemStackOptional.get();
                             pt.setClipSize(pt.getClipSize() - 1);
                             if (item.getItem() == ItemTypes.ARROW)
                                 item.setQuantity(item.getQuantity() - 1);
                             else if (item.getItem() == ItemTypes.BOW && cannon instanceof SpongeAutoLoader)
                             {
                                 SpongeAutoLoader autoLoader = (SpongeAutoLoader) cannon;
-                                LoreData lore = item.get(CatalogItemData.LORE_DATA).get();
-                                lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE,
-                                        new ListUtil<>(Text.of(CommonItemText.CANNON),
-                                                Text.of(CommonItemText.clipSize(pt.getClipSize(), autoLoader.getClipSize())),
-                                                Text.of(CommonItemText.cycleTime(autoLoader.getCycleTime())),
-                                                Text.of(CommonItemText.clipReloadTime(autoLoader.getReloadTime())))));
-
-                                item.setRawData(lore.toContainer());
+                                item.offer(Keys.ITEM_LORE, Arrays.asList(Text.of(CommonItemText.CANNON), Text.of(CommonItemText.clipSize(pt.getClipSize(), autoLoader.getClipSize())), Text.of(CommonItemText.cycleTime(autoLoader.getCycleTime())), Text.of(CommonItemText.clipReloadTime(autoLoader.getReloadTime()))));
                             }
                         }
                     }
                 }
+
                 return;
             }
         }
