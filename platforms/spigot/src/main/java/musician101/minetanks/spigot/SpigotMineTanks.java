@@ -1,18 +1,19 @@
 package musician101.minetanks.spigot;
 
+import musician101.common.java.minecraft.spigot.AbstractSpigotConfig;
+import musician101.common.java.minecraft.spigot.AbstractSpigotPlugin;
 import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.battlefield.SpigotBattleFieldStorage;
 import musician101.minetanks.spigot.command.MTSpigotCommand;
 import musician101.minetanks.spigot.listener.BattlefieldListener;
 import musician101.minetanks.spigot.listener.MTListener;
-import musician101.minetanks.spigot.util.SpigotInventoryStorage;
 import musician101.minetanks.spigot.util.Menus;
+import musician101.minetanks.spigot.util.SpigotInventoryStorage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpigotMineTanks extends JavaPlugin
+public class SpigotMineTanks extends AbstractSpigotPlugin<SpigotMineTanks, AbstractSpigotConfig<SpigotMineTanks>>
 {
     private SpigotBattleFieldStorage fieldStorage;
     private SpigotInventoryStorage inventoryStorage;
