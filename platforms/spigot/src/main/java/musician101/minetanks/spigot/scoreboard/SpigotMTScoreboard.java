@@ -64,22 +64,20 @@ public class SpigotMTScoreboard extends AbstractScoreboard<Scoreboard>
             greenPlayerDeath(player);
         else if (red.getEntries().contains(player.getName()))
             redPlayerDeath(player);
+
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
     private void greenPlayerDeath(Player player)
     {
         green.removeEntry(player.getName());
         greenScore.setScore(green.getSize());
-        player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-        player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
     }
 
     private void redPlayerDeath(Player player)
     {
         red.removeEntry(player.getName());
         redScore.setScore(red.getSize());
-        player.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-        player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
     }
 
     @Override

@@ -32,11 +32,11 @@ public class DamageHandler
 
     public void meleeHitEnemy(SpigotBattleField field, UUID rammed, UUID rammer, int damage)
     {
-        double rammerDmg = damage * getModifier(field.getPlayerTank(rammed).getTank().getType());
-        double rammedDmg = damage * getModifier(field.getPlayerTank(rammer).getTank().getType());
+        double rammerDmg = damage * getModifier(field.getPlayerTank(rammer).getTank().getType());
+        double rammedDmg = damage * getModifier(field.getPlayerTank(rammed).getTank().getType());
         if (rammerDmg > 0)
             playerHitEnemy(field, rammed, rammer, (int) rammerDmg);
-
+        //TODO arrow number not working
         if (rammedDmg > 0)
             playerHitEnemy(field, rammer, rammed, (int) rammedDmg);
     }

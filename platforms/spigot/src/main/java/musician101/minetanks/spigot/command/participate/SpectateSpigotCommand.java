@@ -32,7 +32,7 @@ public class SpectateSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks
         if (!minArgsMet(player, args.length, ChatColor.RED + CommonMessages.FIELD_NOT_SPECIFIED))
             return false;
 
-        SpigotBattleField field = plugin.getFieldStorage().getField(args[1]);
+        SpigotBattleField field = plugin.getFieldStorage().getField(args[0]);
         if (field == null)
         {
             player.sendMessage(ChatColor.RED + CommonMessages.FIELD_DNE);

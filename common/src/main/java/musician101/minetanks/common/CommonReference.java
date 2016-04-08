@@ -282,7 +282,7 @@ public class CommonReference
 
         public static <B extends AbstractBattleField> String fieldSpectating(B battlefield)
         {
-            return PREFIX + "You are now spectating in " + battlefield + ".";
+            return PREFIX + "You are now spectating in " + battlefield.getName() + ".";
         }
 
         public static String fileCreateFailed(File file)
@@ -380,7 +380,7 @@ public class CommonReference
         public static final String HEALTH_ID = "health";
         public static final String HEALTH_NAME = "Health";
         public static final String RED_ID = "red";
-        public static final String RED_NAME = "Read Team";
+        public static final String RED_NAME = "Red Team";
         public static final String TEAM_COUNT_ID = "teamcount";
         public static final String TEAM_COUNT_NAME = "Team Count";
     }

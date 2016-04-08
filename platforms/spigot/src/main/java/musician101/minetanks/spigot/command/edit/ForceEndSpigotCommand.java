@@ -8,6 +8,7 @@ import musician101.minetanks.common.CommonReference.CommonMessages;
 import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -36,8 +37,7 @@ public class ForceEndSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks
             return false;
         }
 
-        field.endMatch(true);
-        field.setInProgress(false);
+        plugin.getFieldStorage().getField(args[0]).endMatch(true);
         sender.sendMessage(ChatColor.GREEN + CommonMessages.MATCH_TERMINATED);
         return true;
     }

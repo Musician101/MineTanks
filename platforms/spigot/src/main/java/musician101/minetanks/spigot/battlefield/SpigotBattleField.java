@@ -14,6 +14,7 @@ import musician101.minetanks.spigot.util.MTUtils;
 import musician101.minetanks.spigot.util.SpigotRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,8 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-//TODO Rename SpigotBattleField
+//TODO check when arrows leave the region and despawn and unregister the arrow
 public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, SpigotRegion, SpigotMTScoreboard, Location>
 {
     private final SpigotMineTanks plugin;
@@ -43,11 +43,12 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
     public boolean addPlayer(UUID playerId, MTTeam team)
     {
         Player player = Bukkit.getPlayer(playerId);
-        if (!plugin.getInventoryStorage().save(playerId))
-            return false;
+        if (!players.containsKey(playerId))
+            if (!plugin.getInventoryStorage().save(playerId))
+                return false;
 
         if (team == MTTeam.SPECTATOR)
-            player.sendMessage(CommonMessages.fieldSpectating(this));
+            player.sendMessage(ChatColor.GREEN + CommonMessages.fieldSpectating(this));
         else
         {
             player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(null)));
@@ -56,6 +57,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         }
 
         player.teleport(getSpectators());
+        player.setGameMode(GameMode.SURVIVAL);
         players.put(player.getUniqueId(), new SpigotPlayerTank(player.getUniqueId(), team));
         return true;
     }
@@ -68,12 +70,11 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
             return false;
 
         plugin.getInventoryStorage().load(playerId);
-
         if (getScoreboard().isOnGreen(playerId) || getScoreboard().isOnRed(playerId))
             getScoreboard().playerDeath(playerId);
 
         players.remove(playerId);
-        if (unassigned > 0)
+        if (unassigned > 0 && pt.getTeam() != MTTeam.SPECTATOR)
             unassigned--;
 
         return true;
@@ -124,14 +125,15 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
         List<UUID> players = new ArrayList<>();
         for (UUID player : this.players.keySet())
         {
-            if (!getPlayerTank(player).isReady())
+            SpigotPlayerTank pt = getPlayerTank(player);
+            if (pt.getTeam() != MTTeam.SPECTATOR && !pt.isReady())
                 return;
 
-            players.add(player);
+            if (pt.getTeam() != MTTeam.SPECTATOR)
+                players.add(player);
         }
 
         Collections.shuffle(players);
-
         for (UUID uuid : players)
         {
             SpigotPlayerTank pt = getPlayerTank(uuid);
@@ -180,6 +182,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
                     @Override
                     public void run()
                     {
+                        player.getInventory().clear();
                         tank.getWeapons().forEach(item -> player.getInventory().addItem(item));
                         player.getInventory().setHelmet(tank.getHelmet());
                         player.getInventory().setChestplate(tank.getChestplate());
@@ -187,13 +190,20 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
                         player.getInventory().setBoots(tank.getBoots());
                     }
                 }.runTaskLater(plugin, 1L);
-                new ReloadHandler(plugin, player, tank.getCannon()).isReloading();
+                new ReloadHandler(plugin, player, tank.getCannon()).isReloading(pt);
             }
             else
             {
                 pt.setTank(null);
                 player.getInventory().clear();
             }
+        }
+
+        for (UUID uuid : this.players.keySet())
+        {
+            SpigotPlayerTank pt = this.players.get(uuid);
+            if (pt.getTeam() == MTTeam.SPECTATOR)
+                Bukkit.getPlayer(uuid).setScoreboard(getScoreboard().getScoreboard());
         }
     }
 
@@ -206,7 +216,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
     @Override
     public void endMatch(boolean forced)
     {
-        if ((getScoreboard().getGreenTeamSize() != 0 && getScoreboard().getRedTeamSize() != 0) || !inProgress())
+        if (!inProgress())
             return;
 
         if (forced || getScoreboard().getGreenTeamSize() == 0 || getScoreboard().getRedTeamSize() == 0)
@@ -215,7 +225,6 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
             for (UUID uuid : players.keySet())
             {
                 Player player = Bukkit.getPlayer(uuid);
-                player.teleport(getSpectators());
                 player.getInventory().setHelmet(null);
                 player.getInventory().setChestplate(null);
                 player.getInventory().setLeggings(null);
@@ -224,6 +233,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotPlayerTank, Spi
                 player.removePotionEffect(PotionEffectType.SLOW);
                 player.removePotionEffect(PotionEffectType.SPEED);
                 SpigotPlayerTank pt = getPlayerTank(uuid);
+                player.teleport(getSpectators());
                 pt.setTeam(MTTeam.SPECTATOR);
                 pt.setTank(null);
                 getScoreboard().playerDeath(uuid);

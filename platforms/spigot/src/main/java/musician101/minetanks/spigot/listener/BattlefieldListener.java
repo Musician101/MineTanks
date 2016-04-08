@@ -71,7 +71,7 @@ public class BattlefieldListener implements Listener
         String damagerMsg = (sb.isOnGreen(killer.getUniqueId()) ? ChatColor.GREEN + killer.getName() : ChatColor.RED + killer.getName());
         Bukkit.getOnlinePlayers().forEach(player -> {
             if (field.getPlayerTank(player.getUniqueId()) != null)
-                player.sendMessage(ChatColor.GREEN + CommonMessages.PREFIX + " " + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
+                player.sendMessage(ChatColor.GREEN + CommonMessages.PREFIX + damagedMsg + ChatColor.RESET + " was killed by " + damagerMsg + ChatColor.RESET + ".");
         });
 
         killed.getInventory().clear();

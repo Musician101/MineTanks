@@ -6,6 +6,7 @@ import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
+import musician101.minetanks.spigot.battlefield.SpigotBattleFieldStorage;
 import musician101.minetanks.spigot.battlefield.player.SpigotPlayerTank;
 import musician101.minetanks.spigot.event.AttemptMenuOpenEvent;
 import musician101.minetanks.spigot.event.PlayerTankDamageEvent;
@@ -19,17 +20,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -233,7 +234,7 @@ public class MTListener implements Listener
 
                 SpigotTank tank = pt.getTank();
                 ReloadHandler reload = new ReloadHandler(plugin, player, tank.getCannon());
-                event.setCancelled(reload.isReloading());
+                event.setCancelled(reload.isReloading(pt));
                 if (!event.isCancelled())
                 {
                     Inventory inv = player.getInventory();
@@ -265,7 +266,8 @@ public class MTListener implements Listener
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event)
     {
-        if (!(event.getEntity() instanceof Player) && (!(event.getDamager() instanceof Arrow) || !(event.getDamager() instanceof Player || event.getCause() != DamageCause.BLOCK_EXPLOSION) || event.getCause() != DamageCause.FALL))
+        Entity entityDamager = event.getDamager();
+        if (!(event.getEntity() instanceof Player) && (!(entityDamager instanceof Arrow) || !(entityDamager instanceof Player || event.getCause() != DamageCause.BLOCK_EXPLOSION) || event.getCause() != DamageCause.FALL))
             return;
 
         UUID damaged = event.getEntity().getUniqueId();
@@ -275,24 +277,24 @@ public class MTListener implements Listener
             if (field.getPlayerTank(damaged) != null)
             {
                 int damage = (int) event.getDamage() * 2;
-                if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player && field.getPlayerTank(((Player) ((Arrow) event.getDamager()).getShooter()).getUniqueId()) != null)
+                if (entityDamager instanceof Arrow && ((Arrow) entityDamager).getShooter() instanceof Player && field.getPlayerTank(((Player) ((Arrow) entityDamager).getShooter()).getUniqueId()) != null)
                 {
-                    Arrow arrow = (Arrow) event.getDamager();
+                    Arrow arrow = (Arrow) entityDamager;
                     UUID damager = ((Player) arrow.getShooter()).getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.PENETRATION, damaged, damager, field, damage));
                     ExplosionTracker.addArrow(arrow);
                 }
-                else if (event.getDamager() instanceof Player && field.getPlayerTank(event.getDamager().getUniqueId()) != null)
+                else if (entityDamager instanceof Player && field.getPlayerTank(entityDamager.getUniqueId()) != null)
                 {
-                    UUID damager = event.getDamager().getUniqueId();
+                    UUID damager = entityDamager.getUniqueId();
                     Bukkit.getPluginManager().callEvent(new PlayerTankDamageEvent(PlayerTankDamageCause.RAM, damaged, damager, field, damage));
                 }
                 else if (event.getCause() == DamageCause.ENTITY_EXPLOSION)
                 {
                     Arrow arrow = null;
-                    for (Arrow a : ExplosionTracker.getTracker())
-                        if (event.getDamager().getUniqueId() == a.getUniqueId())
-                            arrow = a;
+                    for (UUID uuid : ExplosionTracker.getTracker())
+                        if (event.getDamager().getUniqueId().equals(uuid))
+                            arrow = (Arrow) event.getDamager();
 
                     if (arrow == null)
                         return;
@@ -324,34 +326,31 @@ public class MTListener implements Listener
                 if (!(event.getEntity() instanceof Arrow))
                     return;
 
-                Player player = (Player) event.getEntity().getShooter();
+                Arrow arrow = (Arrow) event.getEntity();
+                Player player = (Player) arrow.getShooter();
                 if (!isInField(player.getUniqueId()))
                     return;
 
-                Arrow arrow = (Arrow) event.getEntity();
                 ExplosionTracker.addArrow(arrow);
-                event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 1F);
-                event.getEntity().remove();
+                //TODO need to test
+                arrow.getWorld().createExplosion(arrow.getLocation(), 0F);
+                arrow.remove();
             }
         }.runTaskLater(plugin, 1L);
     }
 
     @EventHandler
-    public void onExplosion(EntityExplodeEvent event)
+    public void onExplosion(BlockExplodeEvent event)
     {
         if (event.isCancelled())
             return;
 
-        for (Block block : event.blockList())
+        SpigotBattleFieldStorage fieldStorage = plugin.getFieldStorage();
+        for (String name : fieldStorage.getFields().keySet())
         {
-            for (String name : plugin.getFieldStorage().getFields().keySet())
-            {
-                if (plugin.getFieldStorage().getField(name).getRegion().isInRegion(block.getLocation()))
-                {
-                    event.blockList().clear();
-                    return;
-                }
-            }
+            SpigotBattleField field = fieldStorage.getField(name);
+            if (field.getRegion().isInRegion(event.getBlock().getLocation()))
+                event.blockList().clear();
         }
     }
 }

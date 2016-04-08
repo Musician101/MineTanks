@@ -55,7 +55,7 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage
 
             player.getInventory().setArmorContents(armor);
             for (Map pe : yml.getMapList(CommonConfig.EFFECTS))
-                player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(pe.get(CommonConfig.TYPE).toString().toUpperCase()), Integer.parseInt(pe.get(CommonConfig.DURATION).toString()), Integer.parseInt(pe.get(CommonConfig.AMPLIFIER).toString()), true), true);
+                player.addPotionEffect(PotionEffectType.getByName(pe.get(CommonConfig.TYPE).toString().toUpperCase()).createEffect(Integer.parseInt(pe.get(CommonConfig.DURATION).toString()), Integer.parseInt(pe.get(CommonConfig.AMPLIFIER).toString())), true);
 
             player.teleport(Location.deserialize(yml.getConfigurationSection(CommonConfig.LOCATION).getValues(true)));
             player.setExp(Float.parseFloat(yml.getString(CommonConfig.XP)));
@@ -92,7 +92,7 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage
         for (PotionEffect effect : player.getActivePotionEffects())
         {
             Map<String, Object> pe = new HashMap<>();
-            pe.put(CommonConfig.TYPE, effect.getType().toString());
+            pe.put(CommonConfig.TYPE, effect.getType().getName());
             pe.put(CommonConfig.DURATION, effect.getDuration());
             pe.put(CommonConfig.AMPLIFIER, effect.getAmplifier());
             effects.add(pe);

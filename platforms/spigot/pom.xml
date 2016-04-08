@@ -51,21 +51,13 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
-                                    <include>musician101:common</include>
+                                    <include>musician101.common.java.minecraft:spigot</include>
                                     <include>musician101.minetanks:common</include>
                                 </includes>
                             </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>musician101:common</artifact>
-                                    <includes>
-                                        <include>musician101/common/java/minecraft/spigot/command/**</include>
-                                        <include>musician101/common/java/minecraft/command/**</include>
-                                    </includes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>

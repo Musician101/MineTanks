@@ -116,6 +116,6 @@ public class SpigotTank extends AbstractTank<SpigotTankType, SpigotCannon, Spigo
                 amplifier = 5;
         }
 
-        return new PotionEffect(effect, amplifier, Integer.MAX_VALUE, false);
+        return new PotionEffect(effect, Integer.MAX_VALUE, amplifier, false);
     }
 }

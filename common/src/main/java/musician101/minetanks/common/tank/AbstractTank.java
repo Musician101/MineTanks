@@ -26,7 +26,7 @@ public abstract class AbstractTank<TankType extends AbstractTankType, Cannon ext
         this.type = type;
         this.health = health;
         this.armor = armor;
-        this.speed = speed / 5;
+        this.speed = speed / 10;
         this.cannon = cannon;
         this.engine = engine;
         this.radio = radio;
