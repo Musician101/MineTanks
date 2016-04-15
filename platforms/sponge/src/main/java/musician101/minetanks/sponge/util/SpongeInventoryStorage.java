@@ -79,7 +79,6 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage
             data.set(DataQuery.of(), potionEffectData);
             data.set(DataQuery.of(), experienceHolderData);
             player.setRawData(data);
-            //noinspection ResultOfMethodCallIgnored
             file.delete();
         }
         catch (IOException | ObjectMappingException e)

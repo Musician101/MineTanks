@@ -40,7 +40,7 @@ public class SpigotRegion extends AbstractRegion<Location>
                 map.containsKey(CommonConfig.MIN_Z) ? (Integer) map.get(CommonConfig.MIN_Z) : 0,
                 map.containsKey(CommonConfig.MAX_Z) ? (Integer) map.get(CommonConfig.MAX_Z) : 0);
 
-                this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
+        this.worldName = map.containsKey(CommonConfig.WORLD) ? (String) map.get(CommonConfig.WORLD) : "";
     }
 
     @Override

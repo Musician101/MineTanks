@@ -16,6 +16,7 @@ import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayMo
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpongeMTScoreboard extends AbstractScoreboard<Scoreboard>
@@ -81,6 +82,7 @@ public class SpongeMTScoreboard extends AbstractScoreboard<Scoreboard>
     @Override
     public void playerDeath(UUID playerId)
     {
+        //TODO use Scoreboard#getMemberTeam()
         if (scoreboard.getTeam(CommonScoreboard.GREEN_ID).get().getMembers().contains(Text.of(MTUtils.getPlayer(playerId).getName())))
         {
             scoreboard.getTeam(CommonScoreboard.GREEN_ID).get().removeMember(Text.of(MTUtils.getPlayer(playerId).getName()));
@@ -127,9 +129,9 @@ public class SpongeMTScoreboard extends AbstractScoreboard<Scoreboard>
     }
 
     @Override
-    public void setPlayerHealth(UUID playerId, int hp)
+    public void setPlayerHealth(UUID playerId, double hp)
     {
-        scoreboard.getObjective(CommonScoreboard.HEALTH_ID).get().getScore(Text.of(MTUtils.getPlayer(playerId).getName())).get().setScore(hp);
+        scoreboard.getObjective(CommonScoreboard.HEALTH_ID).get().getScore(Text.of(MTUtils.getPlayer(playerId).getName())).get().setScore((int) hp);
     }
 
     private void updateTeamSize(String teamName)

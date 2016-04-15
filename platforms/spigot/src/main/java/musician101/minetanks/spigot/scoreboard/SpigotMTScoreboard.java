@@ -18,7 +18,6 @@ public class SpigotMTScoreboard extends AbstractScoreboard<Scoreboard>
     private final Team green;
     private final Team red;
     private final Objective health;
-    private final Objective teamCount;
     private final Score greenScore;
     private final Score redScore;
 
@@ -32,7 +31,7 @@ public class SpigotMTScoreboard extends AbstractScoreboard<Scoreboard>
         red = scoreboard.registerNewTeam(CommonScoreboard.RED_ID);
         red.setDisplayName(CommonScoreboard.RED_NAME);
         red.setPrefix(ChatColor.RED + "");
-        teamCount = scoreboard.registerNewObjective(CommonScoreboard.TEAM_COUNT_ID, CommonScoreboard.DUMMY);
+        Objective teamCount = scoreboard.registerNewObjective(CommonScoreboard.TEAM_COUNT_ID, CommonScoreboard.DUMMY);
         teamCount.setDisplaySlot(DisplaySlot.SIDEBAR);
         teamCount.setDisplayName(CommonScoreboard.TEAM_COUNT_NAME);
         greenScore = teamCount.getScore(ChatColor.GREEN + CommonScoreboard.GREEN_NAME);
@@ -105,9 +104,9 @@ public class SpigotMTScoreboard extends AbstractScoreboard<Scoreboard>
     }
 
     @Override
-    public void setPlayerHealth(UUID player, int hp)
+    public void setPlayerHealth(UUID player, double hp)
     {
-        health.getScore(Bukkit.getOfflinePlayer(player).getName()).setScore(hp);
+        health.getScore(Bukkit.getOfflinePlayer(player).getName()).setScore((int) hp);
     }
 
     @Override

@@ -6,9 +6,6 @@ import musician101.minetanks.common.CommonReference;
 import musician101.minetanks.common.CommonReference.CommonCommands;
 import musician101.minetanks.spigot.battlefield.SpigotBattleFieldStorage;
 import musician101.minetanks.spigot.command.MTSpigotCommand;
-import musician101.minetanks.spigot.listener.BattlefieldListener;
-import musician101.minetanks.spigot.listener.MTListener;
-import musician101.minetanks.spigot.util.Menus;
 import musician101.minetanks.spigot.util.SpigotInventoryStorage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,18 +22,12 @@ public class SpigotMineTanks extends AbstractSpigotPlugin<SpigotMineTanks, Abstr
 {
     private SpigotBattleFieldStorage fieldStorage;
     private SpigotInventoryStorage inventoryStorage;
-    private Menus menus;
 
     @Override
     public void onEnable()
     {
         fieldStorage = new SpigotBattleFieldStorage(this);
         inventoryStorage = new SpigotInventoryStorage(this);
-
-        menus = new Menus(this);
-
-        getServer().getPluginManager().registerEvents(new MTListener(this), this);
-        getServer().getPluginManager().registerEvents(new BattlefieldListener(this), this);
 
         getLogger().info(CommonReference.MOVIN_ON_OUT);
     }
@@ -63,10 +54,5 @@ public class SpigotMineTanks extends AbstractSpigotPlugin<SpigotMineTanks, Abstr
     public SpigotInventoryStorage getInventoryStorage()
     {
         return inventoryStorage;
-    }
-
-    public Menus getMenuHandler()
-    {
-        return menus;
     }
 }

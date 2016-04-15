@@ -24,7 +24,7 @@ public class MTUtils
     public static int getMenuSize()
     {
         int rows = 0;
-        while (rows * 9 < SpigotTanks.tankList.size())
+        while (rows * 9 < SpigotTanks.tanks.size())
             rows++;
 
         return rows * 9;

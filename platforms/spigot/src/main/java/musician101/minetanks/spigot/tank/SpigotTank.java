@@ -20,19 +20,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SpigotTank extends AbstractTank<SpigotTankType, SpigotCannon, SpigotEngine, SpigotRadio, SpigotTrackz, SpigotTurret, ItemStack, PotionEffect>
+public class SpigotTank extends AbstractTank<SpigotCountry, SpigotTankType, SpigotCannon, SpigotEngine, SpigotRadio, SpigotTrackz, SpigotTurret, ItemStack, PotionEffect>
 {
-    public SpigotTank(String name, SpigotTankType type, int health, Armor armor, int speed, SpigotCannon cannon, SpigotEngine engine, SpigotRadio radio, SpigotTrackz tracks, SpigotTurret turret)
+    public SpigotTank(String name, SpigotCountry country, SpigotTankType type, int health, Armor armor, int speed, SpigotCannon cannon, SpigotEngine engine, SpigotRadio radio, SpigotTrackz tracks, SpigotTurret turret)
     {
-        super(name, type, health, armor, speed, cannon, engine, radio, tracks, turret);
+        super(name, country, type, health, armor, speed, cannon, engine, radio, tracks, turret);
+        setItem(MTUtils.createCustomItem(Material.MINECART, name, CommonItemText.tankType(type)));
     }
 
-    private ItemStack parseArmorValue(ItemStack item)
+    @Override
+    protected ItemStack parseArmorValue(ItemStack item)
     {
         return parseArmorValue(item, armor);
     }
 
-    private ItemStack parseArmorValue(ItemStack item, Armor armor)
+    @Override
+    protected ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.DURABILITY, (int) Math.round(armor.getArmorValue()), true);
@@ -40,7 +43,8 @@ public class SpigotTank extends AbstractTank<SpigotTankType, SpigotCannon, Spigo
         return item;
     }
 
-    private ItemStack parseSpeedValue(ItemStack item)
+    @Override
+    protected ItemStack parseSpeedValue(ItemStack item)
     {
         ItemMeta meta = item.getItemMeta();
         meta.setLore(Arrays.asList(meta.getLore().get(0), CommonItemText.speedValue(getSpeed())));
@@ -83,6 +87,7 @@ public class SpigotTank extends AbstractTank<SpigotTankType, SpigotCannon, Spigo
         return items;
     }
 
+    @Override
     public PotionEffect getSpeedEffect()
     {
         int amplifier = 0;

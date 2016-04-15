@@ -9,6 +9,7 @@ import musician101.minetanks.common.CommonReference.CommonPermissions;
 import musician101.minetanks.common.battlefield.player.AbstractPlayerTank.MTTeam;
 import musician101.minetanks.spigot.SpigotMineTanks;
 import musician101.minetanks.spigot.battlefield.SpigotBattleField;
+import musician101.minetanks.spigot.menu.MainSelectionMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -58,7 +59,7 @@ public class JoinSpigotCommand extends AbstractSpigotCommand<SpigotMineTanks>
         }
 
         field.addPlayer(player.getUniqueId(), MTTeam.UNASSIGNED);
-        plugin.getMenuHandler().openTankMenu(player);
+        new MainSelectionMenu(plugin, field, player.getUniqueId()).open(player);
         return true;
     }
 }

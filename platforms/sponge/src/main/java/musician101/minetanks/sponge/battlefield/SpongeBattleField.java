@@ -20,6 +20,26 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.catalog.CatalogEntityData;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.block.ChangeBlockEvent.Break;
+import org.spongepowered.api.event.block.ChangeBlockEvent.Place;
+import org.spongepowered.api.event.block.CollideBlockEvent;
+import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.block.InteractBlockEvent.Secondary;
+import org.spongepowered.api.event.entity.CollideEntityEvent;
+import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.entity.DisplaceEntityEvent.Move;
+import org.spongepowered.api.event.entity.DisplaceEntityEvent.Move.TargetPlayer;
+import org.spongepowered.api.event.entity.DisplaceEntityEvent.Teleport;
+import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent.Dispense;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent.Disconnect;
+import org.spongepowered.api.event.network.ClientConnectionEvent.Join;
+import org.spongepowered.api.event.world.ExplosionEvent;
+import org.spongepowered.api.event.world.ExplosionEvent.Detonate;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.Location;
@@ -32,20 +52,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, SpongeRegion, SpongeMTScoreboard, Location<World>>
+public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, SpongeRegion, SpongeMTScoreboard, ItemType, Location<World>, ChangeBlockEvent.Break, ChangeBlockEvent.Place, InteractBlockEvent.Secondary, DropItemEvent.Dispense, ClientConnectionEvent.Join, ClientConnectionEvent.Disconnect, Move.TargetPlayer, Teleport.TargetPlayer, LaunchProjectileEvent, DamageEntityEvent, CollideBlockEvent, ExplosionEvent.Detonate>
 {
     public SpongeBattleField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators)
     {
         super(name, enabled, region, greenSpawn, redSpawn, spectators, new SpongeMTScoreboard());
     }
 
+    //TODO need to merge listeners
     @Override
-    public boolean addPlayer(UUID playerId, MTTeam team)
+    protected boolean isSword(ItemType itemType)
     {
-        if (!SpongeMineTanks.getInventoryStorage().save(playerId))
+        return false;
+    }
+
+    @Override
+    public boolean addPlayer(UUID uuid, MTTeam team)
+    {
+        if (!SpongeMineTanks.getInventoryStorage().save(uuid))
             return false;
 
-        Player player = MTUtils.getPlayer(playerId);
+        Player player = MTUtils.getPlayer(uuid);
         if (team == MTTeam.SPECTATOR)
         {
             player.setLocation(getSpectators());
@@ -58,15 +85,15 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
             unassigned++;
         }
 
-        players.put(playerId, new SpongePlayerTank(playerId, team));
+        players.put(uuid, new SpongePlayerTank(uuid, team));
         return true;
     }
 
     @Override
-    public boolean removePlayer(UUID playerId)
+    public boolean removePlayer(UUID uuid)
     {
-        Player player = MTUtils.getPlayer(playerId);
-        SpongePlayerTank pt = getPlayerTank(playerId);
+        Player player = MTUtils.getPlayer(uuid);
+        SpongePlayerTank pt = getPlayerTank(uuid);
         if (pt == null)
             return false;
 
@@ -78,8 +105,8 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
         player.setBoots(null);
 
         SpongeMineTanks.getInventoryStorage().load(player.getUniqueId());
-        if (getScoreboard().isOnGreen(playerId) || getScoreboard().isOnRed(playerId))
-            getScoreboard().playerDeath(playerId);
+        if (getScoreboard().isOnGreen(uuid) || getScoreboard().isOnRed(uuid))
+            getScoreboard().playerDeath(uuid);
 
         players.remove(player.getUniqueId());
         if (unassigned > 0)
@@ -96,7 +123,6 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
         ConfigurationNode field;
         try
         {
-            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
             field = cl.load();
         }
@@ -256,5 +282,101 @@ public class SpongeBattleField extends AbstractBattleField<SpongePlayerTank, Spo
         player.setChestplate(null);
         player.setLeggings(null);
         player.setBoots(null);
+    }
+
+    @Override
+    public void onBlockBreak(Break event)
+    {
+
+    }
+
+    @Override
+    public void onBlockPlace(Place event)
+    {
+
+    }
+
+    @Override
+    public void onBlockInteract(Secondary event)
+    {
+
+    }
+
+    @Override
+    public void onItemDrop(Dispense event)
+    {
+
+    }
+
+    @Override
+    public void onPlayerJoin(Join event)
+    {
+
+    }
+
+    @Override
+    public void onPlayerQuit(Disconnect event)
+    {
+
+    }
+
+    @Override
+    public void onPlayerMove(TargetPlayer event)
+    {
+
+    }
+
+    @Override
+    public void onPlayerTeleport(Teleport.TargetPlayer event)
+    {
+
+    }
+
+    @Override
+    public void onBowShoot(LaunchProjectileEvent event)
+    {
+
+    }
+
+    @Override
+    public void onEntityDamage(DamageEntityEvent event)
+    {
+
+    }
+
+    @Override
+    public void onProjectileHit(CollideBlockEvent event)
+    {
+
+    }
+
+    @Override
+    public void onBlockExplode(Detonate event)
+    {
+
+    }
+
+    @Override
+    protected void gravityHit(UUID uuid, double damage)
+    {
+
+    }
+
+    @Override
+    protected void meleeHit(UUID rammed, UUID rammer, double damage)
+    {
+
+    }
+
+    @Override
+    protected void playerHit(UUID rammed, UUID rammer, double damage)
+    {
+
+    }
+
+    @Override
+    protected void triggerPlayerDeath(UUID killerId, UUID killedId)
+    {
+
     }
 }

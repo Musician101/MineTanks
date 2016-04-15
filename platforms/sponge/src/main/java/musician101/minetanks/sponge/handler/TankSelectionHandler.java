@@ -21,7 +21,7 @@ public class TankSelectionHandler implements OptionClickEventHandler
         String name = event.getName();
         Player player = event.getPlayer();
         SpongeTank tank = null;
-        for (SpongeTank t : SpongeTanks.tankList)
+        for (SpongeTank t : SpongeTanks.ALL)
             if (name.equals(t.getName()))
                 tank = t;
 

@@ -9,7 +9,6 @@ public abstract class AbstractStorage
     protected AbstractStorage(File storageDir)
     {
         this.storageDir = storageDir;
-        //noinspection ResultOfMethodCallIgnored
         storageDir.mkdirs();
     }
 

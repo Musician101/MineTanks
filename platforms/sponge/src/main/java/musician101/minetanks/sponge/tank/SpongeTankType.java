@@ -6,8 +6,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 public class SpongeTankType extends AbstractTankType<ItemStack>
 {
-    public SpongeTankType(String name, ItemType type)
+    public SpongeTankType(String name, ItemType type, int ramModifier)
     {
-        super(name, ItemStack.of(type, 1));
+        super(name, ItemStack.of(type, 1), ramModifier);
     }
 }

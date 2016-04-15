@@ -27,19 +27,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SpongeTank extends AbstractTank<SpongeTankType, SpongeCannon, SpongeEngine, SpongeRadio, SpongeTrackz, SpongeTurret, ItemStack, PotionEffect>
+public class SpongeTank extends AbstractTank<SpongeCountry, SpongeTankType, SpongeCannon, SpongeEngine, SpongeRadio, SpongeTrackz, SpongeTurret, ItemStack, PotionEffect>
 {
-    public SpongeTank(String name, SpongeTankType type, int health, Armor armor, int speed, SpongeCannon cannon, SpongeEngine engine, SpongeRadio radio, SpongeTrackz tracks, SpongeTurret turret)
+    public SpongeTank(String name, SpongeCountry country, SpongeTankType type, int health, Armor armor, int speed, SpongeCannon cannon, SpongeEngine engine, SpongeRadio radio, SpongeTrackz tracks, SpongeTurret turret)
     {
-        super(name, type, health, armor, speed, cannon, engine, radio, tracks, turret);
+        super(name, country, type, health, armor, speed, cannon, engine, radio, tracks, turret);
     }
 
-    private ItemStack parseArmorValue(ItemStack item)
+    @Override
+    protected ItemStack parseArmorValue(ItemStack item)
     {
         return parseArmorValue(item, armor);
     }
 
-    private ItemStack parseArmorValue(ItemStack item, Armor armor)
+    @Override
+    protected ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
         EnchantmentData enchantments = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
         enchantments.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue())))));
@@ -49,7 +51,8 @@ public class SpongeTank extends AbstractTank<SpongeTankType, SpongeCannon, Spong
         return isb.build();
     }
 
-    private ItemStack parseSpeedValue(ItemStack item)
+    @Override
+    protected ItemStack parseSpeedValue(ItemStack item)
     {
         LoreData lore = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
         List<Text> loreList = lore.lore().get();

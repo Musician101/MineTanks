@@ -66,9 +66,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
     @Override
     public void loadFromFiles()
     {
-        //noinspection ResultOfMethodCallIgnored
         getStorageDir().mkdirs();
-        //noinspection ConstantConditions
         for (File file : getStorageDir().listFiles())
         {
             if (file.getName().endsWith(".cfg"))

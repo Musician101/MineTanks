@@ -32,5 +32,5 @@ public abstract class AbstractScoreboard<Scoreboard>
 
     public abstract void playerDeath(UUID playerId);
 
-    public abstract void setPlayerHealth(UUID playerId, int health);
+    public abstract void setPlayerHealth(UUID playerId, double health);
 }

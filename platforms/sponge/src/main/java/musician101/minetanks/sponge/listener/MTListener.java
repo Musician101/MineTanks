@@ -86,6 +86,7 @@ public class MTListener
         onBlockChange(event);
     }
 
+    //TODO move to abstract layer
     private void onBlockChange(ChangeBlockEvent event)
     {
         if (event.isCancelled())

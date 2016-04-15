@@ -5,8 +5,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class SpigotTankType extends AbstractTankType<ItemStack>
 {
-    public SpigotTankType(String name, ItemStack item)
+    public SpigotTankType(String name, ItemStack item, int ramModifier)
     {
-        super(name, item);
+        super(name, item, ramModifier);
     }
 }

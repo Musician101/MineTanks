@@ -65,9 +65,7 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
     @Override
     public void loadFromFiles()
     {
-        //noinspection ResultOfMethodCallIgnored
         getStorageDir().mkdirs();
-        //noinspection ConstantConditions
         for (File file : getStorageDir().listFiles())
         {
             if (file.getName().endsWith(".cfg"))

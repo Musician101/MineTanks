@@ -85,7 +85,7 @@ public class SpongeMineTanks
     private void initMenu()
     {
         tankSelection = new IconMenu(CommonReference.TANK_SELECTION, new TankSelectionHandler());
-        for (SpongeTank tank : SpongeTanks.tankList)
+        for (SpongeTank tank : SpongeTanks.ALL)
             tankSelection.setOption(ItemTypes.MINECART, (LiteralText) Text.builder().append(Text.of(tank.getName())).color(TextColors.GREEN).build(), CommonItemText.tankType(tank.getType()));
     }
 

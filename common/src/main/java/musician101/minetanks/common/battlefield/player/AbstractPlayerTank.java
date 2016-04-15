@@ -4,12 +4,13 @@ import musician101.minetanks.common.tank.AbstractTank;
 
 import java.util.UUID;
 
-public abstract class AbstractPlayerTank<Tank extends AbstractTank>
+public abstract class AbstractPlayerTank<Tank extends AbstractTank, Plugin, TaskID>
 {
     private boolean isReady = false;
     protected int clipSize = 1;
     private MTTeam team;
     private Tank tank;
+    protected TaskID reloadTaskID;
     private final UUID player;
 
     protected AbstractPlayerTank(UUID player, MTTeam team)
@@ -22,6 +23,8 @@ public abstract class AbstractPlayerTank<Tank extends AbstractTank>
     {
         return isReady;
     }
+
+    public abstract boolean isReloading(Plugin plugin);
 
     public MTTeam getTeam()
     {
@@ -62,6 +65,8 @@ public abstract class AbstractPlayerTank<Tank extends AbstractTank>
     {
         this.isReady = isReady;
     }
+
+    public abstract void cancelReload();
 
     public void killed()
     {

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank, Region extends AbstractRegion, Scoreboard extends AbstractScoreboard, Location>
+public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank, Region extends AbstractRegion, Scoreboard extends AbstractScoreboard, ItemType, Location, Break, Place, Interact, Drop, Join, Quit, Move, Teleport, ShootBow, EntityDamage, ProjectileHit, BlockExplode>
 {
     private boolean enabled;
     private boolean inProgress = false;
@@ -34,6 +34,8 @@ public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank,
         this.scoreboard = scoreboard;
     }
 
+    protected abstract boolean isSword(ItemType itemType);
+
     public boolean isEnabled()
     {
         return enabled;
@@ -54,19 +56,18 @@ public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank,
         this.inProgress = inProgress;
     }
 
-    public abstract boolean addPlayer(UUID playerId, MTTeam team);
+    public abstract boolean addPlayer(UUID uuid, MTTeam team);
 
-    public abstract boolean removePlayer(UUID playerId);
+    public abstract boolean removePlayer(UUID uuid);
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isReady()
     {
         return region != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
     }
 
-    public boolean canPlayerExit(UUID playerId)
+    public boolean canPlayerExit(UUID uuid)
     {
-        return getPlayerTank(playerId).getTeam().canExit();
+        return getPlayerTank(uuid).getTeam().canExit();
     }
 
     public Location getGreenSpawn()
@@ -104,9 +105,9 @@ public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank,
         return players;
     }
 
-    public PlayerTank getPlayerTank(UUID playerId)
+    public PlayerTank getPlayerTank(UUID uuid)
     {
-        return players.get(playerId);
+        return players.get(uuid);
     }
 
     public Region getRegion()
@@ -129,13 +130,45 @@ public abstract class AbstractBattleField<PlayerTank extends AbstractPlayerTank,
         return name;
     }
 
-    public abstract void saveToFile(File battlefields);
-
-    public abstract void startMatch();
-
     public abstract void endMatch();
 
     public abstract void endMatch(boolean forced);
 
+    public abstract void saveToFile(File battlefields);
+
+    public abstract void startMatch();
+
     public abstract void playerKilled(UUID player);
+
+    public abstract void onBlockBreak(Break event);
+
+    public abstract void onBlockPlace(Place event);
+
+    public abstract void onBlockInteract(Interact event);
+
+    public abstract void onItemDrop(Drop event);
+
+    public abstract void onPlayerJoin(Join event);
+
+    public abstract void onPlayerQuit(Quit event);
+
+    public abstract void onPlayerMove(Move event);
+
+    public abstract void onPlayerTeleport(Teleport event);
+
+    public abstract void onBowShoot(ShootBow event);
+
+    public abstract void onEntityDamage(EntityDamage event);
+
+    public abstract void onProjectileHit(ProjectileHit event);
+
+    public abstract void onBlockExplode(BlockExplode event);
+
+    protected abstract void gravityHit(UUID uuid, double damage);
+
+    protected abstract void meleeHit(UUID rammed, UUID rammer, double damage);
+
+    protected abstract void playerHit(UUID rammed, UUID rammer, double damage);
+
+    protected abstract void triggerPlayerDeath(UUID killerId, UUID killedId);
 }
