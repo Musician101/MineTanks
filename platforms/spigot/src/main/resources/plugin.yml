@@ -1,5 +1,5 @@
 name: ${project.name}
-main: musician101.minetanks.spigot.SpigotMineTanks
+main: io.musician101.minetanks.spigot.SpigotMineTanks
 version: ${project.version}
 description: ${project.description}
 author: Musician101

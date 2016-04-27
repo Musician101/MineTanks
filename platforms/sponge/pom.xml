@@ -78,11 +78,4 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>Common-Sponge</id>
-            <url>https://raw.github.com/Musician101/Common/sponge-repo</url>
-        </repository>
-    </repositories>
 </project>
