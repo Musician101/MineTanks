@@ -38,6 +38,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -173,6 +175,8 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
                     }
                 }.runTaskLater(plugin, 1L);
                 pt.isReloading(plugin);
+                //TODO spectators tank doesn't get set to null and still receives gear
+                //TODO field counts spectator as unassigned
             }
             else
             {
@@ -307,8 +311,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
         SpigotPlayerTank pt = players.get(uuid);
         if (material == Material.WATCH)
         {
-            if (!handleWatch(uuid))
-                return false;
+            return handleWatch(uuid);
         }
         else if (pt.isReady())
         {
@@ -403,8 +406,8 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
-        //TODO test to see if this works now
-        event.setCancelled(players.containsKey(event.getPlayer().getUniqueId()));
+        if (event.getCause() != TeleportCause.PLUGIN)
+            event.setCancelled(players.containsKey(event.getPlayer().getUniqueId()));
     }
 
     @Override
@@ -427,10 +430,15 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
         if (event.isCancelled())
             return;
 
-        ItemStack itemStack = event.getBow();
         if (tank.getCannon() instanceof SpigotAutoLoader)
         {
+            ItemStack itemStack = event.getBow();
             SpigotAutoLoader cannon = (SpigotAutoLoader) tank.getCannon();
+            if (pt.getClipSize() < 1)
+                pt.setClipSize(cannon.getClipSize());
+            else
+                pt.setClipSize(pt.getClipSize() - 1);
+
             ItemMeta meta = itemStack.getItemMeta();
             meta.setLore(Arrays.asList(CommonItemText.CANNON,
                     CommonItemText.clipSize(pt.getClipSize(), cannon.getClipSize()),
@@ -439,6 +447,14 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
 
             itemStack.setItemMeta(meta);
         }
+
+        Inventory inv = player.getInventory();
+        int slot = inv.first(Material.ARROW);
+        if (slot == -1)
+            return;
+
+        ItemStack itemStack = inv.getItem(slot);
+        itemStack.setAmount(itemStack.getAmount() - 1);
     }
 
     @Override
@@ -454,7 +470,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
 
         if (arrow.getShooter() instanceof Player && players.get(((Player) arrow.getShooter()).getUniqueId()) != null)
         {
-            playerHit(damager, damaged, damage);
+            playerHit(((Player) arrow.getShooter()).getUniqueId(), damaged, damage);
             arrows.put(arrow.getUniqueId(), new BukkitRunnable()
             {
                 @Override
@@ -489,30 +505,35 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event)
     {
-        Entity entityDamager = event.getDamager();
+        if (!inProgress())
+            return;
+
         if (!(event.getEntity() instanceof Player))
             return;
 
-        if (!(entityDamager instanceof Arrow) && !(entityDamager instanceof Player || event.getCause() != DamageCause.BLOCK_EXPLOSION || event.getCause() != DamageCause.FALL))
+        Entity entityDamager = event.getDamager();
+        if (!(entityDamager instanceof Arrow) && !(entityDamager instanceof Player) && event.getCause() != DamageCause.BLOCK_EXPLOSION && event.getCause() != DamageCause.FALL)
             return;
 
+        //TODO using spectate command on a match in progress doesn't assign the scoreboard=
         UUID damaged = event.getEntity().getUniqueId();
-        if (players.get(damaged) != null)
+        if (!players.containsKey(damaged))
+            return;
+
+        SpigotPlayerTank damagedPT = players.get(damaged);
+        if (damagedPT.getTeam() != MTTeam.ASSIGNED)
             return;
 
         DamageCause cause = event.getCause();
         double damage = event.getDamage();
         if (entityDamager instanceof Arrow)
-        {
-            if (cause == DamageCause.BLOCK_EXPLOSION)
-                blockExplosion(entityDamager.getUniqueId(), damage, damaged);
-            else
-                arrowIsDamager(entityDamager.getUniqueId(), damage, damaged);
-        }
+            arrowIsDamager(entityDamager.getUniqueId(), damage, damaged);
         else if (entityDamager instanceof Player)
             playerIsDamager(entityDamager.getUniqueId(), damage, damaged);
         else if (cause == DamageCause.FALL)
             gravityHit(damaged, damage);
+        else if (cause == DamageCause.BLOCK_EXPLOSION)
+            blockExplosion(entityDamager.getUniqueId(), damage, damaged);
 
         event.setCancelled(true);
     }
@@ -545,7 +566,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
         SpigotMTScoreboard sb = getScoreboard();
         sb.setPlayerHealth(damaged, (int) (sb.getPlayerHealth(damaged) - (damage * 2) * 20));
         if (sb.getPlayerHealth(damaged) <= 0)
-            triggerPlayerDeath(damaged, damager);
+            triggerPlayerDeath(damager, damaged);
     }
 
     @Override
@@ -557,13 +578,13 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
         String killedMsg = (sb.isOnGreen(killedId) ? ChatColor.GREEN : ChatColor.RED) + killed.getName();
         String killerMsg = (sb.isOnGreen(killerId) ? ChatColor.GREEN : ChatColor.RED) + killer.getName();
         getPlayers().keySet().forEach(uuid -> Bukkit.getPlayer(uuid).sendMessage(ChatColor.GOLD + CommonMessages.PREFIX + killedMsg + ChatColor.GOLD + " was killed by " + killerMsg + ChatColor.GOLD + "."));
+        playerKilled(killedId);
     }
 
     @Override
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event)
     {
-        //TODO need to test explosion with 0F
         new BukkitRunnable()
         {
             @Override
@@ -579,7 +600,7 @@ public class SpigotBattleField extends AbstractBattleField<SpigotMineTanks, Spig
                     if (!players.containsKey(player.getUniqueId()))
                         return;
 
-                    arrow.getWorld().createExplosion(arrow.getLocation(), 0F);
+                    arrow.getWorld().createExplosion(arrow.getLocation(), 1F);
                     Bukkit.getScheduler().cancelTask(arrows.get(arrow.getUniqueId()));
                     arrow.remove();
                 }

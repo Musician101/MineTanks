@@ -291,7 +291,7 @@ public class CommonReference
         public static final String FIELD_NOT_READY = PREFIX + "Sorry, this field is not ready.";
         public static final String FIELD_NOT_SPECIFIED = PREFIX + "Error: Field not specified.";
         public static final String GREEN_SPAWN_SET = PREFIX + "Green spawn point set.";
-        public static final String GREEN_WINS = PREFIX + "Green ream wins!";
+        public static final String GREEN_WINS = PREFIX + "Green team wins!";
         public static final String LEFT_FIELD = PREFIX + "You have left the battlefield.";
         public static final String LOCATION_NOT_IN_REGION = PREFIX + "Error: The location is outside of the field's region.";
         public static final String LOGGED_OFF_WITH_ITEMS_STORED = PREFIX + "You logged off with items still stored away. They will be returned to you now.";
@@ -587,7 +587,7 @@ public class CommonReference
 
     public static class CommonTurrets
     {
-        public static final String _113 = "_113";
+        public static final String _113 = "113";
         public static final String _121 = "121";
         public static final String AMX_30_B = "AMX 30 B";
         public static final String AMX_50_B = "AMX 50 B";
@@ -605,9 +605,10 @@ public class CommonReference
         public static final String M60 = "M60";
         public static final String M87 = "M87";
         public static final String MAUS = "Maus";
-        public static final String NONE = "None";
+        public static final String NONE_TD = "None (TD)";
+        public static final String NONE_SPG = "None (SPG)";
         public static final String OBJECT_140 = "Object 140";
-        public static final String OBJECT_260_MOD_1946 = "Object 260 mod 1946";
+        public static final String OBJECT_260_MOD_1945 = "Object 260 mod 1946";
         public static final String OBJECT_430 = "Object 430";
         public static final String OBJECT_907 = "Object 907";
         public static final String SPAHPANZER_RU_251 = "Spahpanzer Ru 251 Drehturm 360";

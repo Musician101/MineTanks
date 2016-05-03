@@ -19,30 +19,33 @@ public class MainSelectionMenu extends AbstractMenu
     public MainSelectionMenu(SpigotMineTanks plugin, SpigotBattleField field, UUID viewer)
     {
         super(plugin, Bukkit.createInventory(null, 9, "Tank Selection"), event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+        {
+            Player player = event.getPlayer();
+            if (!viewer.equals(player.getUniqueId()))
+                return;
+
+            if (!field.getPlayers().containsKey(viewer))
+                return;
+
+            String name = event.getItem().getItemMeta().getDisplayName();
+            switch (name)
+            {
+                case "Countries":
                 {
-                    Player player = event.getPlayer();
-                    if (!viewer.equals(player.getUniqueId()))
-                        return;
-
-                    if (!field.getPlayers().containsKey(viewer))
-                        return;
-
-                    String name = event.getItem().getItemMeta().getDisplayName();
-                    switch (name)
-                    {
-                        case "Countries":
-                            new SelectCountryMenu(plugin, field, viewer).open(player);
-                            break;
-                        case "Tank Types":
-                            new SelectTankTypeMenu(plugin, field, viewer).open(player);
-                            break;
-                        default:
-                            event.setWillClose(false);
-                            event.setWillDestroy(false);
-                            break;
-                    }
-                }));
+                    new SelectCountryMenu(plugin, field, viewer).open(player);
+                    event.setWillDestroy(true);
+                    break;
+                }
+                case "Tank Types":
+                {
+                    new SelectTankTypeMenu(plugin, field, viewer).open(player);
+                    event.setWillDestroy(true);
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
 
         List<SpigotCountry> countries = SpigotCountries.getValues();
         ItemStack bannerStack = new ItemStack(countries.get(new Random().nextInt(countries.size() - 1)).getItem());

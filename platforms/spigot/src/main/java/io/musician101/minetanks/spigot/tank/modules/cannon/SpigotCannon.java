@@ -25,7 +25,7 @@ public class SpigotCannon extends AbstractCannon<ItemStack>
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        meta.addEnchant(Enchantment.ARROW_INFINITE, 10, true);
         meta.setLore(Arrays.asList(CommonItemText.CANNON,
                 CommonItemText.reloadTime(getReloadTime())));
 

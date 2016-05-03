@@ -42,8 +42,21 @@ public class SpigotPlayerTank extends AbstractPlayerTank<SpigotTank, SpigotMineT
             return true;
 
         SpigotCannon cannon = getTank().getCannon();
-        int maxClipSize = cannon instanceof SpigotAutoLoader ? ((SpigotAutoLoader) cannon).getClipSize() : 1;
-        int time = (int) (!(cannon instanceof SpigotAutoLoader) || clipSize == 1 ? cannon.getReloadTime() : ((SpigotAutoLoader) cannon).getCycleTime());
+        //TODO reload timers still not working for some reason
+        //int time = (int) (!(cannon instanceof SpigotAutoLoader) || clipSize == 1 ? cannon.getReloadTime() : ((SpigotAutoLoader) cannon).getCycleTime());
+        int time;
+        if (clipSize == 1)
+        {
+            if (!(cannon instanceof SpigotAutoLoader))
+                time = (int) (cannon.getReloadTime() * 2);
+            else
+                time = (int) (cannon.getReloadTime() / 2);
+        }
+        else
+        {
+            time = (int) (((SpigotAutoLoader) cannon).getCycleTime() * 2);
+        }
+
         player.setLevel(time);
         reloadTaskID = new BukkitRunnable()
         {
@@ -51,18 +64,14 @@ public class SpigotPlayerTank extends AbstractPlayerTank<SpigotTank, SpigotMineT
             public void run()
             {
                 player.setLevel(player.getLevel() - 1);
-                if (player.getLevel() < 1 && maxClipSize > 1)
+                Bukkit.getLogger().info(player.getName() + " " + player.getLevel());
+                if (player.getLevel() < 1)
                 {
-                    if (clipSize == 0)
-                        clipSize = maxClipSize;
-                    else
-                        clipSize--;
+                    reloadTaskID = -1;
+                    cancel();
                 }
-
-                reloadTaskID = -1;
-                cancel();
             }
-        }.runTaskTimerAsynchronously(plugin, 1, time).getTaskId();
+        }.runTaskTimer(plugin, 1L, time).getTaskId();
         return false;
     }
 

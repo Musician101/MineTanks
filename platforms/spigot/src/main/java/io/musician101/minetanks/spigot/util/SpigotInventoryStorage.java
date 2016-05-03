@@ -57,7 +57,6 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage
             for (Map pe : yml.getMapList(CommonConfig.EFFECTS))
                 player.addPotionEffect(PotionEffectType.getByName(pe.get(CommonConfig.TYPE).toString().toUpperCase()).createEffect(Integer.parseInt(pe.get(CommonConfig.DURATION).toString()), Integer.parseInt(pe.get(CommonConfig.AMPLIFIER).toString())), true);
 
-            //TODO players not being teleported back to original location
             //TODO save player's gamemode
             //player.teleport(Location.deserialize(yml.getConfigurationSection(CommonConfig.LOCATION).getValues(true)));
             Location location = Location.deserialize(yml.getConfigurationSection(CommonConfig.LOCATION).getValues(true));

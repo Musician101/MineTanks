@@ -1,11 +1,9 @@
 package io.musician101.minetanks.spigot.tank.modules.tracks;
 
-import io.musician101.minetanks.common.CommonReference.CommonTankTypes;
-import io.musician101.minetanks.common.tank.AbstractTankType;
-import io.musician101.minetanks.spigot.tank.SpigotTankType;
-import io.musician101.minetanks.spigot.tank.SpigotTankTypes;
 import io.musician101.minetanks.common.CommonReference.CommonItemText;
 import io.musician101.minetanks.common.tank.modules.AbstractTrackz;
+import io.musician101.minetanks.spigot.tank.SpigotTankType;
+import io.musician101.minetanks.spigot.tank.SpigotTankTypes;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -14,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 
-public class SpigotTrackz extends AbstractTrackz<ItemStack>
+public class SpigotTrackz extends AbstractTrackz<ItemStack, SpigotTankType>
 {
     SpigotTrackz(String name, SpigotTankType type)
     {
@@ -23,19 +21,24 @@ public class SpigotTrackz extends AbstractTrackz<ItemStack>
     }
 
     @Override
-    protected <T extends AbstractTankType> void parseTracks(T type)
+    protected void parseTracks(SpigotTankType type)
     {
+        Material tankMaterial = Material.AIR;
+        for (SpigotTankType stt : SpigotTankTypes.getValues())
+            if (stt.getName().equals(type.getName()))
+                tankMaterial = stt.getItem().getType();
+
         Material material = Material.AIR;
-        if (type == SpigotTankTypes.getTankType(CommonTankTypes.LIGHT))
-            material = Material.LEATHER_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.MEDIUM))
-            material = Material.IRON_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.HEAVY))
-            material = Material.DIAMOND_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.TD))
-            material = Material.CHAINMAIL_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.SPG))
-            material = Material.GOLD_LEGGINGS;
+        if (tankMaterial == Material.WOOD_SWORD)
+            material = Material.LEATHER_BOOTS;
+        else if (tankMaterial == Material.STONE_SWORD)
+            material = Material.IRON_BOOTS;
+        else if (tankMaterial == Material.IRON_SWORD)
+            material = Material.DIAMOND_BOOTS;
+        else if (tankMaterial == Material.GOLD_SWORD)
+            material = Material.CHAINMAIL_BOOTS;
+        else if (tankMaterial == Material.DIAMOND_SWORD)
+            material = Material.GOLD_BOOTS;
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();

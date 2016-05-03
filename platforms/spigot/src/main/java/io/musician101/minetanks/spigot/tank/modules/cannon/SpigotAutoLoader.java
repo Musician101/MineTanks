@@ -39,7 +39,7 @@ public class SpigotAutoLoader extends SpigotCannon
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
-        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        meta.addEnchant(Enchantment.ARROW_INFINITE, 10, true);
         meta.setLore(Arrays.asList(CommonItemText.CANNON,
                 CommonItemText.clipSize(clipSize, clipSize),
                 CommonItemText.cycleTime(cycleTime),

@@ -110,8 +110,8 @@ public class AbstractMenu implements Listener
 
     public class ClickEvent
     {
-        private boolean close = true;
-        private boolean destroy = true;
+        private boolean close = false;
+        private boolean destroy = false;
         private int position;
         private ItemStack itemStack;
         private Player player;

@@ -4,7 +4,7 @@ import io.musician101.minetanks.common.tank.AbstractTankType;
 import io.musician101.minetanks.common.tank.Armor;
 import io.musician101.minetanks.common.tank.Info;
 
-public abstract class AbstractTurret<I> extends Info<I>
+public abstract class AbstractTurret<I, T extends AbstractTankType<I>> extends Info<I>
 {
     private final Armor armor;
 
@@ -19,5 +19,5 @@ public abstract class AbstractTurret<I> extends Info<I>
         return armor;
     }
 
-    protected abstract <T extends AbstractTankType> void parseTurret(T tankType);
+    protected abstract void parseTurret(T tankType);
 }

@@ -1,14 +1,14 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>musician101.minetanks</groupId>
+    <groupId>io.musician101.minetanks</groupId>
     <artifactId>sponge</artifactId>
     <name>MineTanks-Sponge</name>
     <description>Sponge implementation.</description>
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>musician101</groupId>
+        <groupId>io.musician101</groupId>
         <artifactId>minetanks</artifactId>
         <version>2.0</version>
         <relativePath>../../pom.xml</relativePath>
@@ -47,15 +47,15 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>musician101:common</include>
-                                    <include>musician101.minetanks:common</include>
+                                    <include>io.musician101:common</include>
+                                    <include>io.musician101.minetanks:common</include>
                                 </includes>
                             </artifactSet>
                             <filters>
                                 <filter>
-                                    <artifact>musician101:common</artifact>
+                                    <artifact>io.musician101:common</artifact>
                                     <includes>
-                                        <include>musician101/common/java/minecraft/sponge/**</include>
+                                        <include>io/musician101/common/java/minecraft/sponge/**</include>
                                     </includes>
                                 </filter>
                             </filters>
@@ -68,12 +68,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>musician101.minetanks</groupId>
+            <groupId>io.musician101.minetanks</groupId>
             <artifactId>common</artifactId>
             <version>2.0</version>
         </dependency>
         <dependency>
-            <groupId>musician101.common.java.minecraft</groupId>
+            <groupId>io.musician101.common.java.minecraft</groupId>
             <artifactId>sponge</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>

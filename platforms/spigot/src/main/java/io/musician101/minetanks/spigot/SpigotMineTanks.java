@@ -4,7 +4,6 @@ import io.musician101.common.java.minecraft.spigot.AbstractSpigotConfig;
 import io.musician101.common.java.minecraft.spigot.AbstractSpigotPlugin;
 import io.musician101.minetanks.common.CommonReference;
 import io.musician101.minetanks.common.CommonReference.CommonCommands;
-import io.musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import io.musician101.minetanks.spigot.battlefield.SpigotBattleFieldStorage;
 import io.musician101.minetanks.spigot.command.MTSpigotCommand;
 import io.musician101.minetanks.spigot.util.SpigotInventoryStorage;
@@ -13,12 +12,9 @@ import org.bukkit.command.CommandSender;
 
 //TODO despawn arrows if they leave the region
 //TODO prevent mob spawning in region
-//TODO remove infinity enchant on bows and remove code that subtracts arrows from player inventories
 //TODO check if code handles Draws
 //TODO cancel all reload handler tasks when a player dies
-//TODO need to test explosion with 0F set as the power
 //TODO implement new GUI that separates the ALL by country
-//TODO move all listeners and handlers to BattleField class
 public class SpigotMineTanks extends AbstractSpigotPlugin<SpigotMineTanks, AbstractSpigotConfig<SpigotMineTanks>>
 {
     private SpigotBattleFieldStorage fieldStorage;

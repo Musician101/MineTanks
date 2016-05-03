@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>musician101.minetanks</groupId>
+    <groupId>io.musician101.minetanks</groupId>
     <artifactId>spigot</artifactId>
     <name>MineTanks-Spigot</name>
     <description>Spigot implementation.</description>
 
     <parent>
-        <groupId>musician101</groupId>
+        <groupId>io.musician101</groupId>
         <artifactId>minetanks</artifactId>
         <version>2.0</version>
         <relativePath>../../pom.xml</relativePath>
@@ -51,11 +51,11 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
-                                    <include>musician101.common.java.minecraft:spigot</include>
-                                    <include>musician101.minetanks:common</include>
+                                    <include>io.musician101.common.java.minecraft:mccommon</include>
+                                    <include>io.musician101.common.java.minecraft:spigot</include>
+                                    <include>io.musician101.minetanks:common</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -67,12 +67,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>musician101.common.java.minecraft</groupId>
+            <groupId>io.musician101.common.java.minecraft</groupId>
             <artifactId>spigot</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>musician101.minetanks</groupId>
+            <groupId>io.musician101.minetanks</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>

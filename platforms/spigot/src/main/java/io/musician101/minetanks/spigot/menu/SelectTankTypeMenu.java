@@ -13,32 +13,32 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 //TODO add description to banner icon in MainSelectionMenu
-class SelectTankTypeMenu extends AbstractMenu
+public class SelectTankTypeMenu extends AbstractMenu
 {
-    SelectTankTypeMenu(SpigotMineTanks plugin, SpigotBattleField field, UUID viewer)
+    public SelectTankTypeMenu(SpigotMineTanks plugin, SpigotBattleField field, UUID viewer)
     {
         super(plugin, Bukkit.createInventory(null, 9, "Select Tank Type"), event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
-                {
-                    Player player = event.getPlayer();
-                    if (!viewer.equals(player.getUniqueId()))
-                        return;
+        {
+            Player player = event.getPlayer();
+            if (!viewer.equals(player.getUniqueId()))
+                return;
 
-                    if (!field.getPlayers().containsKey(viewer))
-                        return;
+            if (!field.getPlayers().containsKey(viewer))
+                return;
 
-                    String name = event.getItem().getItemMeta().getDisplayName();
-                    SpigotTankType type = SpigotTankTypes.getTankType(ChatColor.stripColor(name));
-                    if (name.equals("Back"))
-                        new MainSelectionMenu(plugin, field, viewer).open(player);
-                    else if (type != null)
-                        new SelectTankMenu(plugin, field, null, type, viewer).open(player);
-                    else
-                    {
-                        event.setWillClose(false);
-                        event.setWillDestroy(false);
-                    }
-                }));
+            String name = event.getItem().getItemMeta().getDisplayName();
+            SpigotTankType type = SpigotTankTypes.getTankType(ChatColor.stripColor(name));
+            if (name.equals("Back"))
+            {
+                new MainSelectionMenu(plugin, field, viewer).open(player);
+                event.setWillDestroy(true);
+            }
+            else if (type != null)
+            {
+                new SelectTankMenu(plugin, field, null, type, viewer).open(player);
+                event.setWillDestroy(true);
+            }
+        });
         //TODO add GUI for all commands
         for (int slot = 0; slot < inv.getSize() - 1; slot++)
         {

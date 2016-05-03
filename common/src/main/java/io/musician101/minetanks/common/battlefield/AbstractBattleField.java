@@ -230,8 +230,8 @@ public abstract class AbstractBattleField<A, T extends AbstractPlayerTank, R ext
         if (!assignTeams(playersList))
             return;
 
-        setInProgress(true);
         setUpPlayers(playersList);
+        setInProgress(true);
         setPlayerScoreboards();
     }
 

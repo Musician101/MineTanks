@@ -1,7 +1,6 @@
 package io.musician101.minetanks.spigot.tank.modules;
 
 import io.musician101.minetanks.common.CommonReference.CommonItemText;
-import io.musician101.minetanks.common.CommonReference.CommonTankTypes;
 import io.musician101.minetanks.common.tank.modules.AbstractEngine;
 import io.musician101.minetanks.spigot.tank.SpigotTankType;
 import io.musician101.minetanks.spigot.tank.SpigotTankTypes;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 
-public class SpigotEngine extends AbstractEngine<ItemStack>
+public class SpigotEngine extends AbstractEngine<ItemStack, SpigotTankType>
 {
     public SpigotEngine(String name, SpigotTankType type)
     {
@@ -21,19 +20,25 @@ public class SpigotEngine extends AbstractEngine<ItemStack>
         parseEngine(type);
     }
 
-    private void parseEngine(SpigotTankType type)
+    @Override
+    protected void parseEngine(SpigotTankType type)
     {
+        Material tankMaterial = Material.AIR;
+        for (SpigotTankType stt : SpigotTankTypes.getValues())
+            if (stt.getName().equals(type.getName()))
+                tankMaterial = stt.getItem().getType();
+
         Material material = Material.AIR;
-        if (type == SpigotTankTypes.getTankType(CommonTankTypes.LIGHT))
+        if (tankMaterial == Material.WOOD_SWORD)
             material = Material.LEATHER_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.MEDIUM))
+        else if (tankMaterial == Material.STONE_SWORD)
             material = Material.IRON_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.HEAVY))
+        else if (tankMaterial == Material.IRON_SWORD)
             material = Material.DIAMOND_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.TD))
+        else if (tankMaterial == Material.GOLD_SWORD)
             material = Material.CHAINMAIL_LEGGINGS;
-        else if (type == SpigotTankTypes.getTankType(CommonTankTypes.SPG))
-            material = Material.GOLD_LEGGINGS;
+        else if (tankMaterial == Material.DIAMOND_SWORD)
+        material = Material.GOLD_LEGGINGS;
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
