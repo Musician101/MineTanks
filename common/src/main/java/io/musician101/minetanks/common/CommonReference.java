@@ -9,7 +9,7 @@ import java.io.File;
 public class CommonReference
 {
     public static final String DESCRIPTION = "Minecraft PvP plugin heavily based on World of Tanks.";
-    public static final String ID = "minetanks";
+    public static final String ID = "io.musician101.minetanks";
     public static final String NAME = "MineTanks";
     public static final String VERSION = "2.0";
 

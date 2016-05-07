@@ -17,7 +17,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
 
-public class SpongeTurret extends AbstractTurret<ItemStack>
+public class SpongeTurret extends AbstractTurret<ItemStack, SpongeTankType>
 {
     public SpongeTurret(String name, SpongeTankType type, Armor armor)
     {
@@ -26,7 +26,7 @@ public class SpongeTurret extends AbstractTurret<ItemStack>
     }
 
     @Override
-    protected <T extends AbstractTankType> void parseTurret(T type)
+    protected void parseTurret(SpongeTankType type)
     {
         ItemType itemType = ItemTypes.STICK;
         if (type == SpongeTankTypes.LIGHT)

@@ -16,7 +16,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
 
-public class SpongeTrackz extends AbstractTrackz<ItemStack>
+public class SpongeTrackz extends AbstractTrackz<ItemStack, SpongeTankType>
 {
     public SpongeTrackz(String name, SpongeTankType type)
     {
@@ -25,7 +25,7 @@ public class SpongeTrackz extends AbstractTrackz<ItemStack>
     }
 
     @Override
-    protected <T extends AbstractTankType> void  parseTracks(T type)
+    protected void  parseTracks(SpongeTankType type)
     {
         ItemType itemType = ItemTypes.STICK;
         if (type == SpongeTankTypes.LIGHT)

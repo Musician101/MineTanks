@@ -13,7 +13,8 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataView;
-import org.spongepowered.api.data.LocateableSnapshot;
+import org.spongepowered.api.data.LocatableSnapshot;
+import org.spongepowered.api.data.persistence.DataBuilder;
 import org.spongepowered.api.data.translator.ConfigurateTranslator;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -110,9 +111,20 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeM
     {
         ConfigurateTranslator ct = ConfigurateTranslator.instance();
         DataView dv = ct.translateFrom(node);
-        /** It complains about raw types despite the method currently not relying on it. */
+        Optional<DataBuilder<LocatableSnapshot>> dataBuilderOptional = Sponge.getDataManager().getBuilder(LocatableSnapshot.class);
+        if (!dataBuilderOptional.isPresent())
+            return null;
+
+        Optional<LocatableSnapshot> locatableSnapshotOptional = dataBuilderOptional.get().build(dv);
+        if (!locatableSnapshotOptional.isPresent())
+            return null;
+
+        /** It complains about raw types despite the method currently returning Optional<Location<World>>. */
         @SuppressWarnings("unchecked")
-        Optional<Location<World>> olw = Sponge.getDataManager().getBuilder(LocateableSnapshot.class).get().build(dv).get().getLocation();
+        Optional<Location<World>> olw = locatableSnapshotOptional.get().getLocation();
+        if (!olw.isPresent())
+            return null;
+
         return olw.get();
     }
 

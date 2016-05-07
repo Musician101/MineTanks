@@ -10,7 +10,7 @@ import io.musician101.minetanks.common.tank.modules.AbstractRadio;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class AbstractTank<O extends AbstractCountry, Y extends AbstractTankType, M extends AbstractModules<C, E, R, T, U>, C extends AbstractCannon, E extends AbstractEngine, R extends AbstractRadio, T extends AbstractTrackz, U extends AbstractTurret, I> extends Info<I>
+public abstract class AbstractTank<O extends AbstractCountry<I>, Y extends AbstractTankType<I>, M extends AbstractModules<C, E, R, T, U>, C extends AbstractCannon<I>, E extends AbstractEngine<I, Y>, R extends AbstractRadio<I, Y>, T extends AbstractTrackz<I, Y>, U extends AbstractTurret<I, Y>, I> extends Info<I>
 {
     protected final Armor armor;
     protected final C cannon;

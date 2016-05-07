@@ -15,7 +15,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
 
-public class SpongeEngine extends AbstractEngine<ItemStack>
+public class SpongeEngine extends AbstractEngine<ItemStack, SpongeTankType>
 {
     public SpongeEngine(String name, SpongeTankType type)
     {
@@ -23,7 +23,8 @@ public class SpongeEngine extends AbstractEngine<ItemStack>
         parseEngine(type);
     }
 
-    private void parseEngine(SpongeTankType type)
+    @Override
+    protected void parseEngine(SpongeTankType type)
     {
         ItemType itemType = ItemTypes.STICK;
         if (type == SpongeTankTypes.LIGHT)

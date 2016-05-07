@@ -11,9 +11,6 @@ import io.musician101.minetanks.sponge.tank.module.tracks.SpongeTrackz;
 import io.musician101.minetanks.sponge.tank.module.turret.SpongeTurret;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.catalog.CatalogItemData;
-import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
-import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectType;
@@ -31,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+//TODO cannon subtype instead of having it default to SpongeCannon, add this to Spigot version to see if this fixes the stupid reload bug
 public class SpongeTank extends AbstractTank<SpongeCountry, SpongeTankType, SpongeModules, SpongeCannon, SpongeEngine, SpongeRadio, SpongeTrackz, SpongeTurret, ItemStack>
 {
     SpongeTank(String name, SpongeCountry country, SpongeTankType type, int health, Armor armor, int speed, SpongeModules modules)
@@ -47,24 +45,16 @@ public class SpongeTank extends AbstractTank<SpongeCountry, SpongeTankType, Spon
     @Override
     protected ItemStack parseArmorValue(ItemStack item, Armor armor)
     {
-        EnchantmentData enchantments = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.ENCHANTMENT_DATA).get().create();
-        enchantments.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue())))));
-        ItemStack.Builder isb = ItemStack.builder();
-        isb.fromItemStack(item);
-        isb.itemData(enchantments);
-        return isb.build();
+        item.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, (int) Math.round(armor.getArmorValue()))));
+        return item;
     }
 
     @Override
     protected ItemStack parseSpeedValue(ItemStack item)
     {
-        LoreData lore = Sponge.getDataManager().getManipulatorBuilder(CatalogItemData.LORE_DATA).get().create();
-        List<Text> loreList = lore.lore().get();
-        loreList.add(Text.of(CommonItemText.speedValue(getSpeed())));
-        lore.set(Sponge.getGame().getRegistry().getValueFactory().createListValue(Keys.ITEM_LORE, loreList));
         Builder isb = ItemStack.builder();
         isb.fromItemStack(item);
-        isb.itemData(lore);
+        isb.add(Keys.ITEM_LORE, Collections.singletonList(Text.of(CommonItemText.speedValue(getSpeed()))));
         return isb.build();
     }
 

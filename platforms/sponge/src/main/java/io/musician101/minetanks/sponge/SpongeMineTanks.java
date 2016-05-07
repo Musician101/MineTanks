@@ -29,7 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
 
-@Plugin(id = CommonReference.ID, name = CommonReference.NAME, version = CommonReference.VERSION)
+@Plugin(id = CommonReference.ID, name = CommonReference.NAME, version = CommonReference.VERSION, description = CommonReference.DESCRIPTION)
 public class SpongeMineTanks
 {
     private SpongeBattleFieldStorage fieldStorage;

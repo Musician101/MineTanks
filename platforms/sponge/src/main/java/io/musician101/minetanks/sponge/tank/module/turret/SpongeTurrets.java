@@ -1,13 +1,14 @@
 package io.musician101.minetanks.sponge.tank.module.turret;
 
 import io.musician101.minetanks.common.CommonReference.CommonTurrets;
+import io.musician101.minetanks.common.tank.AbstractInfoStorage;
 import io.musician101.minetanks.common.tank.Armor;
 import io.musician101.minetanks.sponge.tank.SpongeTankTypes;
 
-public class SpongeTurrets
+public class SpongeTurrets extends AbstractInfoStorage<SpongeTurret>
 {
-    public static final SpongeTurret NO_TURRET_ARTY = new SpongeTurret(CommonTurrets.NONE, SpongeTankTypes.ARTY, new Armor(0, 0, 0));
-    public static final SpongeTurret NO_TURRET_TD = new SpongeTurret(CommonTurrets.NONE, SpongeTankTypes.TD, new Armor(0, 0, 0));
+    public static final SpongeTurret NO_TURRET_ARTY = new SpongeTurret(CommonTurrets.NONE_SPG, SpongeTankTypes.ARTY, new Armor(0, 0, 0));
+    public static final SpongeTurret NO_TURRET_TD = new SpongeTurret(CommonTurrets.NONE_TD, SpongeTankTypes.TD, new Armor(0, 0, 0));
     public static final SpongeTurret _121 = new SpongeTurret(CommonTurrets._121, SpongeTankTypes.MEDIUM, new Armor(240, 130, 60));
     public static final SpongeTurret _113 = new SpongeTurret(CommonTurrets._113, SpongeTankTypes.HEAVY, new Armor(240, 160, 80));
     public static final SpongeTurret AMX_30_B = new SpongeTurret(CommonTurrets.AMX_30_B, SpongeTankTypes.MEDIUM, new Armor(80, 40, 30));
@@ -27,7 +28,7 @@ public class SpongeTurrets
     public static final SpongeTurret M87 = new SpongeTurret(CommonTurrets.M87, SpongeTankTypes.MEDIUM, new Armor(177.8, 76.2, 50.8));
     public static final SpongeTurret MAUS = new SpongeTurret(CommonTurrets.MAUS, SpongeTankTypes.HEAVY, new Armor(240, 210, 210));
     public static final SpongeTurret OBJECT_140 = new SpongeTurret(CommonTurrets.OBJECT_140, SpongeTankTypes.MEDIUM, new Armor(240, 187, 65));
-    public static final SpongeTurret OBJECT_260_MOD_1945 = new SpongeTurret(CommonTurrets.OBJECT_260_MOD_1946, SpongeTankTypes.HEAVY, new Armor(350, 240, 100));
+    public static final SpongeTurret OBJECT_260_MOD_1945 = new SpongeTurret(CommonTurrets.OBJECT_260_MOD_1945, SpongeTankTypes.HEAVY, new Armor(350, 240, 100));
     public static final SpongeTurret OBJECT_430 = new SpongeTurret(CommonTurrets.OBJECT_430, SpongeTankTypes.MEDIUM, new Armor(248, 185, 63));
     public static final SpongeTurret OBJECT_907 = new SpongeTurret(CommonTurrets.OBJECT_907, SpongeTankTypes.MEDIUM, new Armor(228, 180, 46));
     public static final SpongeTurret STB_1 = new SpongeTurret(CommonTurrets.STB_1, SpongeTankTypes.MEDIUM, new Armor(132, 132, 37));

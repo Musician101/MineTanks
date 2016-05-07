@@ -22,7 +22,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collections;
 
-public class SpongeRadio extends AbstractRadio<ItemStack>
+public class SpongeRadio extends AbstractRadio<ItemStack, SpongeTankType>
 {
     public SpongeRadio(String name, SpongeTankType type)
     {
@@ -30,7 +30,8 @@ public class SpongeRadio extends AbstractRadio<ItemStack>
         parseRadio(type);
     }
 
-    private void parseRadio(SpongeTankType type)
+    @Override
+    protected void parseRadio(SpongeTankType type)
     {
         ItemType itemType = ItemTypes.STICK;
         if (type == SpongeTankTypes.LIGHT)
