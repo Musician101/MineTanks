@@ -1,0 +1,22 @@
+plugins {
+    id 'org.spongepowered.plugin' version '0.7'
+}
+
+dependencies {
+    compile project(':minetanks-common')
+    compile 'io.musician101:musicianlibrary-sponge:3.0-SNAPSHOT'
+}
+
+processResources {
+    from('src/main/resources') {
+        expand 'version': project.version
+    }
+}
+
+//noinspection GroovyMissingReturnStatement
+shadowJar {
+    dependencies {
+        //noinspection GroovyAssignabilityCheck
+        include(dependency(':minetanks-common'))
+    }
+}

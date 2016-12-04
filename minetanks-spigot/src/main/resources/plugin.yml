@@ -1,0 +1,12 @@
+name: Minetanks
+version: @version@
+main: io.musician101.minetanks.spigot.SpigotMineTanks
+softdepend: [SpigotMusicianLibrary]
+authors: [Musician101]
+description: Minecraft PvP plugin heavily based on World of Tanks.
+website: https://www.github.com/Musician101
+
+commands:
+    minetanks:
+        aliases: [mt]
+        description: Base command for the plugin.

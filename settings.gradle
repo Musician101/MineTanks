@@ -1,0 +1,3 @@
+rootProject.name = 'minetanks'
+
+include 'minetanks-common', 'minetanks-spigot', 'minetanks-sponge', 'minetanks-forge'
