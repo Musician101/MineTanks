@@ -2,6 +2,7 @@ package io.musician101.minetanks.spigot.tank;
 
 import io.musician101.minetanks.common.CommonReference.CommonCountries;
 import io.musician101.minetanks.common.tank.AbstractInfoStorage;
+import java.util.List;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -9,15 +10,11 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
-import java.util.List;
+public class SpigotCountries extends AbstractInfoStorage<SpigotCountry> {
 
-public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
-{
     //TODO create custom ItemStackBuilder
-    private SpigotCountries()
-    {
-        super(new SpigotCountry(CommonCountries.CHINA, new ItemStack(Material.BANNER)
-                {
+    private SpigotCountries() {
+        super(new SpigotCountry(CommonCountries.CHINA, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.CHINA);
@@ -31,8 +28,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.CZECH, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.CZECH, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.CZECH);
@@ -42,8 +38,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.FRANCE, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.FRANCE, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.FRANCE);
@@ -53,8 +48,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.GERMANY, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.GERMANY, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.GERMANY);
@@ -65,8 +59,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.JAPAN, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.JAPAN, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.JAPAN);
@@ -75,8 +68,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.UK, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.UK, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setBaseColor(DyeColor.BLUE);
@@ -90,8 +82,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.USA, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.USA, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.USA);
@@ -101,8 +92,7 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                         setItemMeta(meta);
                     }
                 }),
-                new SpigotCountry(CommonCountries.USSR, new ItemStack(Material.BANNER)
-                {
+                new SpigotCountry(CommonCountries.USSR, new ItemStack(Material.BANNER) {
                     {
                         BannerMeta meta = (BannerMeta) getItemMeta();
                         meta.setDisplayName(CommonCountries.USSR);
@@ -122,13 +112,11 @@ public class SpigotCountries extends AbstractInfoStorage<SpigotCountry>
                 }));
     }
 
-    public static SpigotCountry getCountry(String name)
-    {
+    public static SpigotCountry getCountry(String name) {
         return new SpigotCountries().get(name);
     }
 
-    public static List<SpigotCountry> getValues()
-    {
+    public static List<SpigotCountry> getValues() {
         return new SpigotCountries().values();
     }
 }

@@ -7,10 +7,9 @@ import io.musician101.minetanks.common.tank.Armor;
 import io.musician101.minetanks.sponge.tank.SpongeTankTypes;
 
 
-public class SpongeTurrets extends AbstractInfoStorage<SpongeTurret>
-{
-    private SpongeTurrets()
-    {
+public class SpongeTurrets extends AbstractInfoStorage<SpongeTurret> {
+
+    private SpongeTurrets() {
         super(
                 new SpongeTurret(CommonTurrets.NONE_SPG, SpongeTankTypes.getTankType(CommonTankTypes.SPG), new Armor(0, 0, 0)),
                 new SpongeTurret(CommonTurrets.NONE_TD, SpongeTankTypes.getTankType(CommonTankTypes.TD), new Armor(0, 0, 0)),
@@ -52,8 +51,7 @@ public class SpongeTurrets extends AbstractInfoStorage<SpongeTurret>
     }
 
 
-    public static SpongeTurret getTurret(String name)
-    {
+    public static SpongeTurret getTurret(String name) {
         return new SpongeTurrets().get(name);
     }
 }

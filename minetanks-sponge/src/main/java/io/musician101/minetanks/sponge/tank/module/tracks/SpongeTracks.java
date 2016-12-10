@@ -6,10 +6,9 @@ import io.musician101.minetanks.common.tank.AbstractInfoStorage;
 import io.musician101.minetanks.sponge.tank.SpongeTankTypes;
 
 
-public class SpongeTracks extends AbstractInfoStorage<SpongeTrackz>
-{
-    private SpongeTracks()
-    {
+public class SpongeTracks extends AbstractInfoStorage<SpongeTrackz> {
+
+    private SpongeTracks() {
         super(
                 new SpongeTrackz(CommonTracks.ONE_21, SpongeTankTypes.getTankType(CommonTankTypes.MEDIUM)),
                 new SpongeTrackz(CommonTracks.ONE_13, SpongeTankTypes.getTankType(CommonTankTypes.HEAVY)),
@@ -59,8 +58,7 @@ public class SpongeTracks extends AbstractInfoStorage<SpongeTrackz>
     }
 
 
-    public static SpongeTrackz getTracks(String name)
-    {
+    public static SpongeTrackz getTracks(String name) {
         return new SpongeTracks().get(name);
     }
 }

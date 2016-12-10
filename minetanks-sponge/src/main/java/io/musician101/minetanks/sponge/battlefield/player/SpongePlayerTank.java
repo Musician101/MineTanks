@@ -5,39 +5,33 @@ import io.musician101.minetanks.sponge.SpongeMineTanks;
 import io.musician101.minetanks.sponge.tank.SpongeTank;
 import io.musician101.minetanks.sponge.tank.module.cannon.SpongeAutoLoader;
 import io.musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.scheduler.Task;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+public class SpongePlayerTank extends AbstractPlayerTank<SpongeTank, UUID> {
 
-public class SpongePlayerTank extends AbstractPlayerTank<SpongeTank, UUID>
-{
-    public SpongePlayerTank(UUID uuid, MTTeam team)
-    {
+    public SpongePlayerTank(UUID uuid, MTTeam team) {
         super(uuid, team);
     }
 
     @Override
-    public void cancelReload()
-    {
-        if (reloadTaskID != null)
-        {
+    public void cancelReload() {
+        if (reloadTaskID != null) {
             Sponge.getScheduler().getTaskById(reloadTaskID).ifPresent(Task::cancel);
             reloadTaskID = null;
         }
     }
 
     @Override
-    public boolean isReloading()
-    {
-        Sponge.getServer().getPlayer(getPlayerId()).ifPresent(player ->//NOSONAR
+    public boolean isReloading() {
+        Sponge.getServer().getPlayer(getPlayerId()).ifPresent(player ->
         {
             SpongeCannon cannon = getTank().getCannon();
             int time;
-            if (clipSize == 1)
-            {
+            if (clipSize == 1) {
                 if (cannon instanceof SpongeAutoLoader)
                     time = (int) (cannon.getReloadTime() / 2);
                 else
@@ -65,8 +59,7 @@ public class SpongePlayerTank extends AbstractPlayerTank<SpongeTank, UUID>
     }
 
     @Override
-    public void setTank(SpongeTank tank)
-    {
+    public void setTank(SpongeTank tank) {
         super.setTank(tank);
         if (tank == null)
             clipSize = 0;

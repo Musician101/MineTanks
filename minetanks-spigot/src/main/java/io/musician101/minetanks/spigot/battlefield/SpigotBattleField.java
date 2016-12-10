@@ -14,7 +14,18 @@ import io.musician101.minetanks.spigot.tank.SpigotTank;
 import io.musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
 import io.musician101.minetanks.spigot.util.MTUtils;
 import io.musician101.minetanks.spigot.util.SpigotInventoryStorage;
-import io.musician101.minetanks.spigot.util.SpigotRegion;
+import io.musician101.musicianlibrary.java.minecraft.spigot.SpigotRegion;
+import io.musician101.musicianlibrary.java.util.Utils;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -47,39 +58,25 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.logging.Logger;
+public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerTank, SpigotRegion, SpigotMTScoreboard, Material, Location, BlockBreakEvent, BlockPlaceEvent, PlayerInteractEvent, PlayerDropItemEvent, PlayerJoinEvent, PlayerQuitEvent, PlayerMoveEvent, PlayerTeleportEvent, EntityShootBowEvent, EntityDamageByEntityEvent, ProjectileHitEvent, BlockExplodeEvent> implements Listener {
 
-public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerTank, SpigotRegion, SpigotMTScoreboard, Material, Location, BlockBreakEvent, BlockPlaceEvent, PlayerInteractEvent, PlayerDropItemEvent, PlayerJoinEvent, PlayerQuitEvent, PlayerMoveEvent, PlayerTeleportEvent, EntityShootBowEvent, EntityDamageByEntityEvent, ProjectileHitEvent, BlockExplodeEvent> implements Listener
-{
     private final Map<UUID, Integer> arrows = new HashMap<>();
 
-    public SpigotBattleField(String name, boolean enabled, SpigotRegion region, Location greenSpawn, Location redSpawn, Location spectators)
-    {
+    public SpigotBattleField(String name, boolean enabled, SpigotRegion region, Location greenSpawn, Location redSpawn, Location spectators) {
         super(name, enabled, region, greenSpawn, redSpawn, spectators, new SpigotMTScoreboard());
         SpigotMineTanks plugin = SpigotMineTanks.instance();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
-    public boolean addPlayer(Player player, MTTeam team)
-    {
+    public boolean addPlayer(Player player, MTTeam team) {
         UUID uuid = player.getUniqueId();
         if (!players.containsKey(uuid) && !SpigotMineTanks.instance().getInventoryStorage().save(player))
             return false;
 
         if (team == MTTeam.SPECTATOR)
             player.sendMessage(ChatColor.GREEN + CommonMessages.fieldSpectating(this));
-        else
-        {
+        else {
             player.getInventory().setItem(0, MTUtils.createCustomItem(Material.STICK, CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(null)));
             player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, CommonItemText.READY_UP, CommonItemText.NOT_READY));
             unassigned++;
@@ -92,8 +89,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected void arrowIsDamager(UUID damager, double damage, Player damaged)
-    {
+    protected void arrowIsDamager(UUID damager, double damage, Player damaged) {
         Arrow arrow = null;
         for (Entity entity : getRegion().getWorld().getEntitiesByClass(Arrow.class))
             if (damager.equals(entity.getUniqueId()))
@@ -102,14 +98,11 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
         if (arrow == null)
             return;
 
-        if (arrow.getShooter() instanceof Player && players.get(((Player) arrow.getShooter()).getUniqueId()) != null)
-        {
+        if (arrow.getShooter() instanceof Player && players.get(((Player) arrow.getShooter()).getUniqueId()) != null) {
             playerHit((Player) arrow.getShooter(), damaged, damage);
-            arrows.put(arrow.getUniqueId(), new BukkitRunnable()
-            {
+            arrows.put(arrow.getUniqueId(), new BukkitRunnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     getRegion().getWorld().getEntitiesByClass(Arrow.class).stream().filter(a -> arrows.containsKey(a.getUniqueId()) && getRegion().isInRegion(a.getLocation())).forEach(a ->
                     {
                         a.remove();
@@ -122,32 +115,27 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected boolean assignTeams(List<UUID> playersList)
-    {
+    protected boolean assignTeams(List<UUID> playersList) {
         Collections.shuffle(playersList);
-        for (UUID uuid : playersList)
-        {
+        for (UUID uuid : playersList) {
             SpigotPlayerTank pt = players.get(uuid);
             if (getScoreboard().getGreenTeamSize() == 0 && getScoreboard().getRedTeamSize() == 0 && unassigned < 2)
                 return false;
 
             Player player = Bukkit.getPlayer(uuid);
-            if (getScoreboard().getGreenTeamSize() == getScoreboard().getRedTeamSize() && unassigned == 1)
-            {
+            if (getScoreboard().getGreenTeamSize() == getScoreboard().getRedTeamSize() && unassigned == 1) {
                 pt.setTeam(MTTeam.SPECTATOR);
                 pt.setTeam(null);
             }
-            else if (getScoreboard().getGreenTeamSize() <= getScoreboard().getRedTeamSize())
-            {
+            else if (getScoreboard().getGreenTeamSize() <= getScoreboard().getRedTeamSize()) {
                 getScoreboard().addGreenPlayer(player);
                 pt.setTeam(MTTeam.ASSIGNED);
-                pt.getTank().applySpeedEffect(uuid);
+                pt.getTank().applySpeedEffect(player);
             }
-            else if (getScoreboard().getGreenTeamSize() >= getScoreboard().getRedTeamSize())
-            {
+            else if (getScoreboard().getGreenTeamSize() >= getScoreboard().getRedTeamSize()) {
                 pt.setTeam(MTTeam.ASSIGNED);
                 getScoreboard().addRedPlayer(player);
-                pt.getTank().applySpeedEffect(uuid);
+                pt.getTank().applySpeedEffect(player);
             }
 
             unassigned--;
@@ -157,29 +145,24 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected void blockExplosion(Player damager, double damage, Player damaged)
-    {
-        playerHit(damaged, damager, damage);
-        Bukkit.getScheduler().cancelTask(arrows.remove(damager.getUniqueId()));
+    protected void blockExplosion(UUID damager, double damage, Player damaged) {
+        playerHit(damaged, (Player) damaged.getWorld().getEntitiesByClass(Arrow.class).stream().filter(arrow -> arrow.getUniqueId().equals(damager)).collect(Utils.singletonCollector()).getShooter(), damage);
+        Bukkit.getScheduler().cancelTask(arrows.remove(damager));
     }
 
     @Override
-    public void endMatch()
-    {
+    public void endMatch() {
         endMatch(false);
     }
 
     @Override
-    public void endMatch(boolean forced)
-    {
+    public void endMatch(boolean forced) {
         if (!inProgress())
             return;
 
-        if (forced || getScoreboard().getGreenTeamSize() == 0 || getScoreboard().getRedTeamSize() == 0)
-        {
+        if (forced || getScoreboard().getGreenTeamSize() == 0 || getScoreboard().getRedTeamSize() == 0) {
             setInProgress(false);
-            for (Entry<UUID, SpigotPlayerTank> entry : players.entrySet())
-            {
+            for (Entry<UUID, SpigotPlayerTank> entry : players.entrySet()) {
                 Player player = Bukkit.getPlayer(entry.getKey());
                 player.getInventory().setHelmet(null);
                 player.getInventory().setChestplate(null);
@@ -204,8 +187,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected void gravityHit(Player player, double damage)
-    {
+    protected void gravityHit(Player player, double damage) {
         double dmg = damage * 5;
         SpigotMTScoreboard sb = getScoreboard();
         sb.setPlayerHealth(player, (int) (sb.getPlayerHealth(player) - dmg));
@@ -214,17 +196,14 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected boolean handleWatch(Player player)
-    {
+    protected boolean handleWatch(Player player) {
         SpigotPlayerTank pt = players.get(player.getUniqueId());
-        if (pt.getTank() == null)
-        {
+        if (pt.getTank() == null) {
             //TODO need to make this a CommonMessage
             player.sendMessage(ChatColor.RED + CommonMessages.PREFIX + "You cannot ready until you have selected a tank.");
             return false;
         }
-        else if (pt.isReady())
-        {
+        else if (pt.isReady()) {
             pt.setReady(false);
             player.getInventory().setItem(1, MTUtils.createCustomItem(Material.WATCH, CommonItemText.READY_UP, CommonItemText.NOT_READY));
             return true;
@@ -237,15 +216,13 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected boolean isMenuItem(Material material)
-    {
+    protected boolean isMenuItem(Material material) {
         //Stick is the default item if a player hasn't chosen a tank.
         return Arrays.asList(Material.STICK, Material.WOOD_SWORD, Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLD_SWORD, Material.DIAMOND_SWORD, Material.WATCH).contains(material);
     }
 
     @Override
-    protected void meleeHit(Player rammed, Player rammer, double damage)
-    {
+    protected void meleeHit(Player rammed, Player rammer, double damage) {
         double rammerDmg = damage * players.get(rammer.getUniqueId()).getTank().getType().getRamModifier();
         double rammedDmg = damage * players.get(rammed.getUniqueId()).getTank().getType().getRamModifier();
         if (rammerDmg > 0)
@@ -257,8 +234,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event)
-    {
+    public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (!getRegion().isInRegion(player.getLocation()))
             return;
@@ -271,8 +247,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onBlockExplode(BlockExplodeEvent event)
-    {
+    public void onBlockExplode(BlockExplodeEvent event) {
         if (event.isCancelled())
             return;
 
@@ -282,8 +257,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onBlockInteract(PlayerInteractEvent event)
-    {
+    public void onBlockInteract(PlayerInteractEvent event) {
         if (!event.hasItem())
             return;
 
@@ -303,8 +277,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event)
-    {
+    public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (!getRegion().isInRegion(player.getLocation()))
             return;
@@ -317,8 +290,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onBowShoot(EntityShootBowEvent event)//NOSONAR
-    {
+    public void onBowShoot(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player))
             return;
 
@@ -335,8 +307,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
         if (event.isCancelled())
             return;
 
-        if (tank.getCannon() instanceof SpigotAutoLoader)
-        {
+        if (tank.getCannon() instanceof SpigotAutoLoader) {
             ItemStack itemStack = event.getBow();
             SpigotAutoLoader cannon = (SpigotAutoLoader) tank.getCannon();
             if (pt.getClipSize() < 1)
@@ -364,8 +335,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onEntityDamage(EntityDamageByEntityEvent event)//NOSONAR
-    {
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (!inProgress())
             return;
 
@@ -396,22 +366,20 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
         else if (cause == DamageCause.FALL)
             gravityHit(damaged, damage);
         else if (cause == DamageCause.BLOCK_EXPLOSION)
-            blockExplosion(damaged, damage, damager);
+            blockExplosion(damager.getUniqueId(), damage, damaged);
 
         event.setCancelled(true);
     }
 
     @Override
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event)
-    {
+    public void onItemDrop(PlayerDropItemEvent event) {
         event.setCancelled(players.containsKey(event.getPlayer().getUniqueId()));
     }
 
     @Override
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event)
-    {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         SpigotInventoryStorage invStorage = SpigotMineTanks.instance().getInventoryStorage();
         File file = invStorage.getPlayerFile(player.getUniqueId());
@@ -424,8 +392,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event)
-    {
+    public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         SpigotPlayerTank pt = players.get(player.getUniqueId());
         if (pt == null)
@@ -453,8 +420,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event)
-    {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         if (getPlayers().containsKey(uuid))
@@ -463,23 +429,18 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
 
     @Override
     @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent event)
-    {
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (event.getCause() != TeleportCause.PLUGIN)
             event.setCancelled(players.containsKey(event.getPlayer().getUniqueId()));
     }
 
     @Override
     @EventHandler
-    public void onProjectileHit(ProjectileHitEvent event)
-    {
-        new BukkitRunnable()
-        {
+    public void onProjectileHit(ProjectileHitEvent event) {
+        new BukkitRunnable() {
             @Override
-            public void run()
-            {
-                if (event.getEntity().getShooter() instanceof Player && event.getEntity() instanceof Arrow)
-                {
+            public void run() {
+                if (event.getEntity().getShooter() instanceof Player && event.getEntity() instanceof Arrow) {
                     Arrow arrow = (Arrow) event.getEntity();
                     if (!arrows.containsKey(arrow.getUniqueId()))
                         return;
@@ -497,8 +458,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected void playerHit(Player damaged, Player damager, double damage)
-    {
+    protected void playerHit(Player damaged, Player damager, double damage) {
         SpigotMTScoreboard sb = getScoreboard();
         sb.setPlayerHealth(damaged, (int) (sb.getPlayerHealth(damaged) - (damage * 2) * 20));
         if (sb.getPlayerHealth(damaged) <= 0)
@@ -506,15 +466,13 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected void playerIsDamager(Player damager, double damage, Player damaged)
-    {
+    protected void playerIsDamager(Player damager, double damage, Player damaged) {
         if (players.get(damager.getUniqueId()) != null)
             meleeHit(damaged, damager, damage);
     }
 
     @Override
-    public void playerKilled(Player player)
-    {
+    public void playerKilled(Player player) {
         players.get(player.getUniqueId()).killed();
         getScoreboard().playerDeath(player);
         player.getInventory().clear();
@@ -527,16 +485,13 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected boolean processBlockInteract(Player player)
-    {
+    protected boolean processBlockInteract(Player player) {
         Material material = player.getInventory().getItemInMainHand().getType();
         SpigotPlayerTank pt = players.get(player.getUniqueId());
-        if (material == Material.WATCH)
-        {
+        if (material == Material.WATCH) {
             return handleWatch(player);
         }
-        else if (pt.isReady())
-        {
+        else if (pt.isReady()) {
             player.sendMessage(ChatColor.RED + CommonMessages.MUST_UNREADY);
             return false;
         }
@@ -546,8 +501,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    public boolean removePlayer(Player player)
-    {
+    public boolean removePlayer(Player player) {
         UUID uuid = player.getUniqueId();
         SpigotPlayerTank pt = players.get(uuid);
         if (pt == null)
@@ -565,17 +519,13 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    public void saveToFile(File battlefields)
-    {
+    public void saveToFile(File battlefields) {
         Logger logger = SpigotMineTanks.instance().getLogger();
         File file = new File(battlefields, CommonConfig.battlefieldFile(this));
-        try
-        {
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();//NOSONAR
+        try {
+            file.createNewFile();
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             logger.warning(CommonMessages.fileCreateFailed(file));
             return;
         }
@@ -594,45 +544,37 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
             field.set(CommonConfig.SPECTATORS, getSpectators().serialize());
 
         field.set(CommonConfig.ENABLED, isEnabled());
-        try
-        {
+        try {
             field.save(file);
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             logger.warning(CommonMessages.fileSaveFailed(file));
         }
     }
 
     @Override
-    protected void setPlayerScoreboards()
-    {
+    protected void setPlayerScoreboards() {
         players.keySet().stream()
                 .map(Bukkit::getPlayer)
                 .forEach(getScoreboard()::setPlayerScoreboard);
     }
 
     @Override
-    protected void setUpPlayers(List<UUID> playersList)
-    {
-        for (UUID uuid : playersList)
-        {
+    protected void setUpPlayers(List<UUID> playersList) {
+        for (UUID uuid : playersList) {
             SpigotPlayerTank pt = players.get(uuid);
             SpigotTank tank = pt.getTank();
             Player player = Bukkit.getPlayer(uuid);
-            if (pt.getTeam() != MTTeam.SPECTATOR)
-            {
+            if (pt.getTeam() != MTTeam.SPECTATOR) {
                 if (getScoreboard().isOnGreen(player))
                     player.teleport(getGreenSpawn());
                 else if (getScoreboard().isOnRed(player))
                     player.teleport(getRedSpawn());
 
                 getScoreboard().setPlayerHealth(player, tank.getHealth());
-                new BukkitRunnable()
-                {
+                new BukkitRunnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         player.getInventory().clear();
                         tank.getWeapons().forEach(player.getInventory()::addItem);
                         player.getInventory().setHelmet(tank.getHelmet());
@@ -645,8 +587,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
                 //TODO spectators tank doesn't get set to null and still receives gear
                 //TODO field counts spectator as unassigned
             }
-            else
-            {
+            else {
                 pt.setTank(null);
                 player.getInventory().clear();
             }
@@ -654,8 +595,7 @@ public class SpigotBattleField extends AbstractBattleField<Player, SpigotPlayerT
     }
 
     @Override
-    protected void triggerPlayerDeath(Player killer, Player killed)
-    {
+    protected void triggerPlayerDeath(Player killer, Player killed) {
         SpigotMTScoreboard sb = getScoreboard();
         String killedMsg = (sb.isOnGreen(killed) ? ChatColor.GREEN : ChatColor.RED) + killed.getName();
         String killerMsg = (sb.isOnGreen(killer) ? ChatColor.GREEN : ChatColor.RED) + killer.getName();

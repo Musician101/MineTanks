@@ -6,29 +6,26 @@ import io.musician101.minetanks.spigot.battlefield.SpigotBattleField;
 import io.musician101.minetanks.spigot.tank.SpigotCountries;
 import io.musician101.minetanks.spigot.tank.SpigotCountry;
 import io.musician101.musicianlibrary.java.minecraft.spigot.menu.AbstractSpigotChestMenu;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+public class MainSelectionMenu extends AbstractSpigotChestMenu<SpigotMineTanks> {
 
-public class MainSelectionMenu extends AbstractSpigotChestMenu<SpigotMineTanks>
-{
     private final SpigotBattleField field;
 
-    public MainSelectionMenu(SpigotBattleField field, Player player)
-    {
+    public MainSelectionMenu(SpigotBattleField field, Player player) {
         super(player, 9, CommonReference.TANK_SELECTION, SpigotMineTanks.instance());
         this.field = field;
     }
 
     @Override
-    protected void build()
-    {
+    protected void build() {
         List<SpigotCountry> countries = SpigotCountries.getValues();
         ItemStack bannerStack = new ItemStack(countries.get(new Random().nextInt(countries.size() - 1)).getItem());
         BannerMeta bannerMeta = (BannerMeta) bannerStack.getItemMeta();

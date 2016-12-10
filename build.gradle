@@ -14,9 +14,7 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    //noinspection GroovyAssignabilityCheck
     group project.pluginGroup
-    //noinspection GroovyAssignabilityCheck
     version project.pluginVersion
 
     sourceCompatibility = '1.8'

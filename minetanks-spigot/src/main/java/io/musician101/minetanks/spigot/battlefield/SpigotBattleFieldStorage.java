@@ -5,26 +5,22 @@ import io.musician101.minetanks.common.CommonReference.CommonMessages;
 import io.musician101.minetanks.common.CommonReference.CommonStorage;
 import io.musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import io.musician101.minetanks.spigot.SpigotMineTanks;
-import io.musician101.minetanks.spigot.util.SpigotRegion;
+import io.musician101.musicianlibrary.java.minecraft.spigot.SpigotRegion;
+import java.io.File;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.util.UUID;
+public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotBattleField> {
 
-public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotBattleField>
-{
-    public SpigotBattleFieldStorage()
-    {
+    public SpigotBattleFieldStorage() {
         super(new File(SpigotMineTanks.instance().getDataFolder(), CommonStorage.BATTLEFIELDS));
         loadFromFiles();
     }
 
     @Override
-    public boolean canPlayerExit(UUID player)
-    {
-        for (String name : fields.keySet())
-        {
+    public boolean canPlayerExit(UUID player) {
+        for (String name : fields.keySet()) {
             SpigotBattleField field = getField(name);
             if (field.getPlayers().containsKey(player))
                 return field.canPlayerExit(player);
@@ -34,13 +30,11 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
     }
 
     @Override
-    public boolean createField(String name)
-    {
+    public boolean createField(String name) {
         return createField(name, false, null, null, null, null);
     }
 
-    private boolean createField(String name, boolean enabled, SpigotRegion spigotRegion, Location greenSpawn, Location redSpawn, Location spectators)
-    {
+    private boolean createField(String name, boolean enabled, SpigotRegion spigotRegion, Location greenSpawn, Location redSpawn, Location spectators) {
         for (String field : fields.keySet())
             if (field.equals(name))
                 return false;
@@ -50,15 +44,10 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
     }
 
     @Override
-    public void loadFromFiles()
-    {
-        //noinspection ResultOfMethodCallIgnored
+    public void loadFromFiles() {
         getStorageDir().mkdirs();
-        //noinspection ConstantConditions
-        for (File file : getStorageDir().listFiles())
-        {
-            if (file.getName().endsWith(".cfg"))
-            {
+        for (File file : getStorageDir().listFiles()) {
+            if (file.getName().endsWith(".cfg")) {
                 YamlConfiguration field = YamlConfiguration.loadConfiguration(file);
                 String name = file.getName().replace(".cfg", "");
                 boolean enabled = field.getBoolean(CommonConfig.ENABLED);
@@ -86,8 +75,7 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
     }
 
     @Override
-    public boolean removeField(String field)
-    {
+    public boolean removeField(String field) {
         if (!fields.containsKey(field))
             return false;
 
@@ -96,8 +84,7 @@ public class SpigotBattleFieldStorage extends AbstractBattleFieldStorage<SpigotB
     }
 
     @Override
-    public void saveToFiles()
-    {
+    public void saveToFiles() {
         for (SpigotBattleField field : fields.values())
             field.saveToFile(getStorageDir());
     }

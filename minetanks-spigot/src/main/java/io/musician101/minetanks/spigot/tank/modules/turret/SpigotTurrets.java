@@ -5,14 +5,12 @@ import io.musician101.minetanks.common.CommonReference.CommonTurrets;
 import io.musician101.minetanks.common.tank.AbstractInfoStorage;
 import io.musician101.minetanks.common.tank.Armor;
 import io.musician101.minetanks.spigot.tank.SpigotTankTypes;
-
 import java.util.List;
 
 
-public class SpigotTurrets extends AbstractInfoStorage<SpigotTurret>
-{
-    private SpigotTurrets()
-    {
+public class SpigotTurrets extends AbstractInfoStorage<SpigotTurret> {
+
+    private SpigotTurrets() {
         super(
                 new SpigotTurret(CommonTurrets.NONE_SPG, SpigotTankTypes.getTankType(CommonTankTypes.SPG), new Armor(0, 0, 0)),
                 new SpigotTurret(CommonTurrets.NONE_TD, SpigotTankTypes.getTankType(CommonTankTypes.TD), new Armor(0, 0, 0)),
@@ -53,14 +51,12 @@ public class SpigotTurrets extends AbstractInfoStorage<SpigotTurret>
                 new SpigotTurret(CommonTurrets.XM551_TEST_BED, SpigotTankTypes.getTankType(CommonTankTypes.LIGHT), new Armor(38.1, 15.9, 15.9)));
     }
 
-    public static SpigotTurret getTurret(String name)
-    {
+    public static SpigotTurret getTurret(String name) {
         return new SpigotTurrets().get(name);
     }
 
 
-    public List<SpigotTurret> getValues()
-    {
+    public List<SpigotTurret> getValues() {
         return new SpigotTurrets().values();
     }
 }

@@ -5,6 +5,12 @@ import io.musician101.minetanks.common.CommonReference.CommonMessages;
 import io.musician101.minetanks.common.CommonReference.CommonStorage;
 import io.musician101.minetanks.common.util.AbstractInventoryStorage;
 import io.musician101.minetanks.spigot.SpigotMineTanks;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,26 +20,16 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+public class SpigotInventoryStorage extends AbstractInventoryStorage<Player> {
 
-public class SpigotInventoryStorage extends AbstractInventoryStorage<Player>
-{
-    public SpigotInventoryStorage(SpigotMineTanks plugin)
-    {
+    public SpigotInventoryStorage(SpigotMineTanks plugin) {
         super(new File(plugin.getDataFolder(), CommonStorage.INVENTORY));
     }
 
     @Override
-    public void load(Player player)
-    {
+    public void load(Player player) {
         File file = getPlayerFile(player.getUniqueId());
-        if (file.exists())
-        {
+        if (file.exists()) {
             player.getInventory().setHelmet(null);
             player.getInventory().setChestplate(null);
             player.getInventory().setLeggings(null);
@@ -65,24 +61,19 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage<Player>
             player.sendMessage("pitch: " + location.getPitch());
             player.teleport(location);
             player.setExp(Float.parseFloat(yml.getString(CommonConfig.XP)));
-            //noinspection ResultOfMethodCallIgnored
-            file.delete();//NOSONAR
+            file.delete();
         }
     }
 
     @Override
-    public boolean save(Player player)
-    {
+    public boolean save(Player player) {
         //TODO need to save offhand item to inventory files
         //TODO save player's gamemode
         File file = getPlayerFile(player.getUniqueId());
-        try
-        {
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();//NOSONAR
+        try {
+            file.createNewFile();
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             player.sendMessage(ChatColor.RED + CommonMessages.fileSaveFailed(file));
             return false;
         }
@@ -96,8 +87,7 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage<Player>
             yml.set(CommonConfig.ARMOR + slot, player.getInventory().getArmorContents()[slot]);
 
         List<Map<String, Object>> effects = new ArrayList<>();
-        for (PotionEffect effect : player.getActivePotionEffects())
-        {
+        for (PotionEffect effect : player.getActivePotionEffects()) {
             Map<String, Object> pe = new HashMap<>();
             pe.put(CommonConfig.TYPE, effect.getType().getName());
             pe.put(CommonConfig.DURATION, effect.getDuration());
@@ -108,15 +98,12 @@ public class SpigotInventoryStorage extends AbstractInventoryStorage<Player>
         yml.set(CommonConfig.EFFECTS, effects);
         yml.set(CommonConfig.LOCATION, player.getLocation().serialize());
         yml.set(CommonConfig.XP, player.getExp());
-        try
-        {
+        try {
             yml.save(file);
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             player.sendMessage(ChatColor.RED + CommonMessages.fileSaveFailed(file));
-            //noinspection ResultOfMethodCallIgnored
-            file.delete();//NOSONAR
+            file.delete();
             return false;
         }
 

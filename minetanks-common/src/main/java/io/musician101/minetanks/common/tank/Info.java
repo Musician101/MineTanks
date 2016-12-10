@@ -1,27 +1,23 @@
 package io.musician101.minetanks.common.tank;
 
-public abstract class Info<I>
-{
-    private I item;
-    private final String name;
+public abstract class Info<I> {
 
-    protected Info(String name)
-    {
+    private final String name;
+    private I item;
+
+    protected Info(String name) {
         this.name = name;
     }
 
-    public I getItem()
-    {
+    public I getItem() {
         return item;
     }
 
-    protected void setItem(I item)
-    {
+    protected void setItem(I item) {
         this.item = item;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 }

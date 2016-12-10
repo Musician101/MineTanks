@@ -5,6 +5,10 @@ import io.musician101.minetanks.common.CommonReference.CommonConfig;
 import io.musician101.minetanks.common.CommonReference.CommonMessages;
 import io.musician101.minetanks.common.util.AbstractInventoryStorage;
 import io.musician101.musicianlibrary.java.minecraft.sponge.TextUtils;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -19,37 +23,26 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+public class SpongeInventoryStorage extends AbstractInventoryStorage<Player> {
 
-public class SpongeInventoryStorage extends AbstractInventoryStorage<Player>
-{
-
-    public SpongeInventoryStorage(File storageDir)
-    {
+    public SpongeInventoryStorage(File storageDir) {
         super(storageDir);
     }
 
-    private ItemStack getItem(ConfigurationNode node)
-    {
+    private ItemStack getItem(ConfigurationNode node) {
         return ItemStack.builder().fromContainer(DataTranslators.CONFIGURATION_NODE.translate(node)).build();
     }
 
     @Override
-    public void load(Player player)//NOSONAR
-    {
+    public void load(Player player) {
         File file = getPlayerFile(player.getUniqueId());
-        if (!file.exists())
-        {
+        if (!file.exists()) {
             player.sendMessage(TextUtils.redText(CommonMessages.fileLoadFailed(file)));
             return;
         }
 
-        try
-        {
+        try {
             ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
             ConfigurationNode node = cl.load();
             node.getNode(CommonConfig.INVENTORY.replace(".", "")).getList(TypeToken.of(ConfigurationNode.class)).forEach(itemNode -> player.getInventory().set(getItem(itemNode)));
@@ -67,8 +60,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage<Player>
                 player.setBoots(getItem(node.getNode(CommonConfig.BOOTS)));
 
             DataTranslator<ConfigurationNode> dt = DataTranslators.CONFIGURATION_NODE;
-            if (!node.getNode(CommonConfig.EFFECTS).isVirtual())
-            {
+            if (!node.getNode(CommonConfig.EFFECTS).isVirtual()) {
                 ConfigurationNode effectsNode = node.getNode(CommonConfig.EFFECTS);
                 if (!effectsNode.isVirtual() && effectsNode.hasListChildren())
                     Sponge.getDataManager().getManipulatorBuilder(CatalogEntityData.POTION_EFFECT_DATA).ifPresent(builder ->
@@ -76,8 +68,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage<Player>
                                     player.setRawData(potionEffectData.toContainer())));
             }
 
-            if (!node.getNode(CommonConfig.XP).isVirtual())
-            {
+            if (!node.getNode(CommonConfig.XP).isVirtual()) {
                 ConfigurationNode xpNode = node.getNode(CommonConfig.XP);
                 if (!xpNode.isVirtual() && xpNode.hasMapChildren())
                     Sponge.getDataManager().getManipulatorBuilder(CatalogEntityData.EXPERIENCE_HOLDER_DATA).ifPresent(builder ->
@@ -85,23 +76,19 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage<Player>
                                     player.setRawData(experienceHolderData.toContainer())));
             }
 
-            //noinspection ResultOfMethodCallIgnored
-            file.delete();//NOSONAR
+            file.delete();
         }
-        catch (IOException | ObjectMappingException e)//NOSONAR
-        {
+        catch (IOException | ObjectMappingException e) {
             player.sendMessage(TextUtils.redText(CommonMessages.fileLoadFailed(file)));
         }
     }
 
     @Override
-    public boolean save(Player player)
-    {
+    public boolean save(Player player) {
         File file = getPlayerFile(player.getUniqueId());
         ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
         Inventory inv = player.getInventory();
-        try
-        {
+        try {
             ConfigurationNode node = cl.load();
             DataTranslator<ConfigurationNode> dt = DataTranslators.CONFIGURATION_NODE;
             List<ConfigurationNode> items = new ArrayList<>();
@@ -130,8 +117,7 @@ public class SpongeInventoryStorage extends AbstractInventoryStorage<Player>
             node.getNode(CommonConfig.LOCATION).setValue(player.getLocation().toContainer());
             cl.save(node);
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             player.sendMessage(TextUtils.redText(CommonMessages.fileSaveFailed(file)));
             return false;
         }

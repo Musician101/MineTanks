@@ -1,21 +1,18 @@
 package io.musician101.minetanks.spigot.util;
 
+import java.util.Arrays;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+public class MTUtils {
 
-public class MTUtils
-{
-    private MTUtils()
-    {
+    private MTUtils() {
 
     }
 
-    public static ItemStack createCustomItem(Material material, String displayName, String... description)
-    {
+    public static ItemStack createCustomItem(Material material, String displayName, String... description) {
         ItemStack item = new ItemStack(material, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + displayName);

@@ -14,8 +14,17 @@ import io.musician101.minetanks.sponge.tank.SpongeTank;
 import io.musician101.minetanks.sponge.tank.module.cannon.SpongeAutoLoader;
 import io.musician101.minetanks.sponge.util.MTUtils;
 import io.musician101.minetanks.sponge.util.SpongeInventoryStorage;
-import io.musician101.minetanks.sponge.util.SpongeRegion;
+import io.musician101.musicianlibrary.java.minecraft.sponge.SpongeRegion;
 import io.musician101.musicianlibrary.java.minecraft.sponge.TextUtils;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -60,39 +69,25 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.explosion.Explosion;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
+public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerTank, SpongeRegion, SpongeMTScoreboard, ItemType, Location<World>, ChangeBlockEvent.Break, ChangeBlockEvent.Place, InteractBlockEvent.Secondary, DropItemEvent.Dispense, ClientConnectionEvent.Join, ClientConnectionEvent.Disconnect, MoveEntityEvent, MoveEntityEvent.Teleport, LaunchProjectileEvent, DamageEntityEvent, CollideBlockEvent.Impact, ExplosionEvent.Detonate> {
 
-public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerTank, SpongeRegion, SpongeMTScoreboard, ItemType, Location<World>, ChangeBlockEvent.Break, ChangeBlockEvent.Place, InteractBlockEvent.Secondary, DropItemEvent.Dispense, ClientConnectionEvent.Join, ClientConnectionEvent.Disconnect, MoveEntityEvent, MoveEntityEvent.Teleport, LaunchProjectileEvent, DamageEntityEvent, CollideBlockEvent.Impact, ExplosionEvent.Detonate>
-{
     private final Map<UUID, UUID> arrows = new HashMap<>();
 
-    public SpongeBattleField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators)
-    {
+    public SpongeBattleField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators) {
         super(name, enabled, region, greenSpawn, redSpawn, spectators, new SpongeMTScoreboard());
     }
 
     @Override
-    public boolean addPlayer(Player player, MTTeam team)
-    {
+    public boolean addPlayer(Player player, MTTeam team) {
         if (!SpongeMineTanks.instance().getInventoryStorage().save(player))
             return false;
 
-        if (team == MTTeam.SPECTATOR)
-        {
+        if (team == MTTeam.SPECTATOR) {
             player.setLocation(getSpectators());
             player.sendMessage(TextUtils.greenText(CommonMessages.fieldSpectating(this)));
         }
-        else
-        {
+        else {
             player.getInventory().offer(MTUtils.createCustomItem(ItemTypes.STICK, CommonItemText.OPEN_HANGAR, CommonItemText.selectedTank(null)));
             player.getInventory().offer(MTUtils.createCustomItem(ItemTypes.CLOCK, CommonItemText.READY_UP, CommonItemText.NOT_READY));
             unassigned++;
@@ -103,13 +98,11 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void arrowIsDamager(UUID damager, double damage, Player damaged)
-    {
-        getRegion().getWorld().getEntity(damager).ifPresent(entity ->//NOSONAR
+    protected void arrowIsDamager(UUID damager, double damage, Player damaged) {
+        getRegion().getWorld().getEntity(damager).ifPresent(entity ->
         {
             Arrow arrow = (Arrow) entity;
-            if (arrow.getShooter() instanceof Player && players.containsKey(((Player) arrow.getShooter()).getUniqueId()))
-            {
+            if (arrow.getShooter() instanceof Player && players.containsKey(((Player) arrow.getShooter()).getUniqueId())) {
                 Player shooter = (Player) arrow.getShooter();
                 playerHit(shooter, damaged, damage);
                 arrows.put(damager,
@@ -133,33 +126,28 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected boolean assignTeams(List<UUID> playersList)
-    {
+    protected boolean assignTeams(List<UUID> playersList) {
         Collections.shuffle(playersList);
-        for (UUID uuid : playersList)
-        {
+        for (UUID uuid : playersList) {
             SpongePlayerTank pt = players.get(uuid);
             if (getScoreboard().getGreenTeamSize() == 0 && getScoreboard().getRedTeamSize() == 0 && unassigned < 2)
                 return false;
 
-            Sponge.getServer().getPlayer(uuid).ifPresent(player ->//NOSONAR
+            Sponge.getServer().getPlayer(uuid).ifPresent(player ->
             {
-                if (getScoreboard().getGreenTeamSize() == getScoreboard().getRedTeamSize() && unassigned == 1)
-                {
+                if (getScoreboard().getGreenTeamSize() == getScoreboard().getRedTeamSize() && unassigned == 1) {
                     pt.setTeam(MTTeam.SPECTATOR);
                     pt.setTeam(null);
                 }
-                else if (getScoreboard().getGreenTeamSize() <= getScoreboard().getRedTeamSize())
-                {
+                else if (getScoreboard().getGreenTeamSize() <= getScoreboard().getRedTeamSize()) {
                     getScoreboard().addGreenPlayer(player);
                     pt.setTeam(MTTeam.ASSIGNED);
-                    pt.getTank().applySpeedEffect(uuid);
+                    pt.getTank().applySpeedEffect(player);
                 }
-                else if (getScoreboard().getGreenTeamSize() >= getScoreboard().getRedTeamSize())
-                {
+                else if (getScoreboard().getGreenTeamSize() >= getScoreboard().getRedTeamSize()) {
                     pt.setTeam(MTTeam.ASSIGNED);
                     getScoreboard().addRedPlayer(player);
-                    pt.getTank().applySpeedEffect(uuid);
+                    pt.getTank().applySpeedEffect(player);
                 }
 
                 unassigned--;
@@ -170,30 +158,25 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void blockExplosion(Player damager, double damage, Player damaged)
-    {
-        playerHit(damaged, damager, damage);
-        Sponge.getScheduler().getTaskById(arrows.get(damager.getUniqueId())).ifPresent(Task::cancel);
-        arrows.remove(damager.getUniqueId());
+    protected void blockExplosion(UUID damager, double damage, Player damaged) {
+        playerHit(damaged, (Player) ((Arrow) damaged.getWorld().getEntity(damager).get()).getShooter(), damage);
+        Sponge.getScheduler().getTaskById(arrows.get(damager)).ifPresent(Task::cancel);
+        arrows.remove(damager);
     }
 
     @Override
-    public void endMatch()
-    {
+    public void endMatch() {
         endMatch(false);
     }
 
     @Override
-    public void endMatch(boolean forced)
-    {
+    public void endMatch(boolean forced) {
         if (!inProgress())
             return;
 
-        if (forced || getScoreboard().getGreenTeamSize() == 0 || getScoreboard().getRedTeamSize() == 0)
-        {
+        if (forced || getScoreboard().getGreenTeamSize() == 0 || getScoreboard().getRedTeamSize() == 0) {
             setInProgress(false);
-            for (UUID uuid : players.keySet())
-            {
+            for (UUID uuid : players.keySet()) {
                 Sponge.getGame().getServer().getPlayer(uuid).ifPresent(player ->
                 {
                     player.setLocation(getSpectators());
@@ -220,8 +203,7 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void gravityHit(Player player, double damage)
-    {
+    protected void gravityHit(Player player, double damage) {
         double dmg = damage * 5;
         SpongeMTScoreboard sb = getScoreboard();
         sb.setPlayerHealth(player, (int) (sb.getPlayerHealth(player) - dmg));
@@ -233,17 +215,14 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected boolean handleWatch(Player player)
-    {
+    protected boolean handleWatch(Player player) {
         SpongePlayerTank pt = players.get(player.getUniqueId());
-        if (pt.getTank() == null)
-        {
+        if (pt.getTank() == null) {
             //TODO need to make this a CommonMessage
             player.sendMessage(TextUtils.redText(CommonMessages.PREFIX + "You cannot ready until you have selected a tank."));
             return false;
         }
-        else if (pt.isReady())
-        {
+        else if (pt.isReady()) {
             pt.setReady(false);
             ((OrderedInventory) player.getInventory()).set(new SlotIndex(1), MTUtils.createCustomItem(ItemTypes.CLOCK, CommonItemText.READY_UP, CommonItemText.NOT_READY));
             return true;
@@ -256,15 +235,13 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected boolean isMenuItem(ItemType itemType)
-    {
+    protected boolean isMenuItem(ItemType itemType) {
         //Stick is the default item if a player hasn't chosen a tank.
         return Arrays.asList(ItemTypes.STICK, ItemTypes.WOODEN_SWORD, ItemTypes.STONE_SWORD, ItemTypes.IRON_SWORD, ItemTypes.GOLDEN_SWORD, ItemTypes.DIAMOND_SWORD, ItemTypes.CLOCK).contains(itemType);
     }
 
     @Override
-    protected void meleeHit(Player rammed, Player rammer, double damage)
-    {
+    protected void meleeHit(Player rammed, Player rammer, double damage) {
         double rammerDmg = damage * players.get(rammer.getUniqueId()).getTank().getType().getRamModifier();
         double rammedDmg = damage * players.get(rammed.getUniqueId()).getTank().getType().getRamModifier();
         if (rammerDmg > 0)
@@ -275,23 +252,20 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void onBlockBreak(Break event)
-    {
+    public void onBlockBreak(Break event) {
         event.getCause().first(Player.class)
                 .filter(player -> getRegion().isInRegion(player.getLocation()) && player.hasPermission(CommonPermissions.EDIT_PERM) && isEnabled())
                 .ifPresent(player -> event.setCancelled(true));
     }
 
     @Override
-    public void onBlockExplode(Detonate event)
-    {
+    public void onBlockExplode(Detonate event) {
         if (!event.isCancelled() && getRegion().isInRegion(event.getExplosion().getLocation()))
             event.getAffectedLocations().clear();
     }
 
     @Override
-    public void onBlockInteract(Secondary event)//NOSONAR
-    {
+    public void onBlockInteract(Secondary event) {
         event.getCause().first(Player.class)
                 .filter(player -> players.containsKey(player.getUniqueId()))
                 .ifPresent(player ->
@@ -301,31 +275,24 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void onBlockPlace(Place event)
-    {
+    public void onBlockPlace(Place event) {
         event.getCause().first(Player.class)
                 .filter(player -> getRegion().isInRegion(player.getLocation()) && player.hasPermission(CommonPermissions.EDIT_PERM) && isEnabled())
                 .ifPresent(player -> event.setCancelled(true));
     }
 
     @Override
-    public void onBowShoot(LaunchProjectileEvent event)
-    {
+    public void onBowShoot(LaunchProjectileEvent event) {
         Projectile projectile = event.getTargetEntity();
-        if (projectile.getShooter() instanceof Player)
-        {
+        if (projectile.getShooter() instanceof Player) {
             Player player = (Player) projectile.getShooter();
-            if (players.containsKey(player.getUniqueId()))
-            {
+            if (players.containsKey(player.getUniqueId())) {
                 SpongePlayerTank pt = players.get(player.getUniqueId());
-                if (pt.getTeam() == MTTeam.SPECTATOR)
-                {
+                if (pt.getTeam() == MTTeam.SPECTATOR) {
                     SpongeTank tank = pt.getTank();
                     event.setCancelled(pt.isReloading());
-                    if (event.isCancelled())//NOSONAR
-                    {
-                        if (tank.getCannon() instanceof SpongeAutoLoader)
-                        {
+                    if (event.isCancelled()) {
+                        if (tank.getCannon() instanceof SpongeAutoLoader) {
                             Optional<ItemStack> itemStackOptional = player.getItemInHand(HandTypes.MAIN_HAND);
                             if (!itemStackOptional.isPresent())
                                 return;
@@ -355,40 +322,31 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void onEntityDamage(DamageEntityEvent event)//NOSONAR
-    {
-        if (inProgress() && event.getTargetEntity() instanceof Player)
-        {
+    public void onEntityDamage(DamageEntityEvent event) {
+        if (inProgress() && event.getTargetEntity() instanceof Player) {
             Player damaged = (Player) event.getTargetEntity();
-            if (players.containsKey(damaged.getUniqueId()))
-            {
+            if (players.containsKey(damaged.getUniqueId())) {
                 SpongePlayerTank damagedPT = players.get(damaged.getUniqueId());
-                if (damagedPT.getTeam() == MTTeam.ASSIGNED)
-                {
-                    event.getCause().get(NamedCause.SOURCE, EntityDamageSource.class).ifPresent(entityDamageSource ->//NOSONAR
+                if (damagedPT.getTeam() == MTTeam.ASSIGNED) {
+                    event.getCause().get(NamedCause.SOURCE, EntityDamageSource.class).ifPresent(entityDamageSource ->
                     {
                         DamageType damageType = entityDamageSource.getType();
-                        if (Arrays.asList(DamageTypes.ATTACK, DamageTypes.EXPLOSIVE, DamageTypes.FALL).contains(damageType))//NOSONAR
-                        {
+                        if (Arrays.asList(DamageTypes.ATTACK, DamageTypes.EXPLOSIVE, DamageTypes.FALL).contains(damageType)) {
                             double damage = event.getBaseDamage();
-                            if (entityDamageSource.getSource() instanceof Arrow)
-                            {
+                            if (entityDamageSource.getSource() instanceof Arrow) {
                                 arrowIsDamager(entityDamageSource.getSource().getUniqueId(), damage, damaged);
                                 event.setCancelled(true);
                             }
-                            else if (entityDamageSource.getSource() instanceof Player)
-                            {
+                            else if (entityDamageSource.getSource() instanceof Player) {
                                 playerIsDamager((Player) entityDamageSource.getSource(), damage, damaged);
                                 event.setCancelled(true);
                             }
-                            else if (damageType == DamageTypes.FALL)
-                            {
+                            else if (damageType == DamageTypes.FALL) {
                                 gravityHit(damaged, damage);
                                 event.setCancelled(true);
                             }
-                            else if (damageType == DamageTypes.EXPLOSIVE)
-                            {
-                                blockExplosion((Player) entityDamageSource.getSource(), damage, damaged);
+                            else if (damageType == DamageTypes.EXPLOSIVE) {
+                                blockExplosion(entityDamageSource.getSource().getUniqueId(), damage, damaged);
                                 event.setCancelled(true);
                             }
                         }
@@ -399,15 +357,13 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void onItemDrop(Dispense event)
-    {
+    public void onItemDrop(Dispense event) {
         event.getCause().first(Player.class).ifPresent(player ->
                 event.setCancelled(players.containsKey(player.getUniqueId())));
     }
 
     @Override
-    public void onPlayerJoin(Join event)
-    {
+    public void onPlayerJoin(Join event) {
         Player player = event.getTargetEntity();
         SpongeInventoryStorage inventoryStorage = SpongeMineTanks.instance().getInventoryStorage();
         File file = inventoryStorage.getPlayerFile(player.getUniqueId());
@@ -419,8 +375,7 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void onPlayerMove(MoveEntityEvent event)
-    {
+    public void onPlayerMove(MoveEntityEvent event) {
         if (event.getTargetEntity().getType() != EntityTypes.PLAYER)
             return;
 
@@ -452,24 +407,21 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void onPlayerQuit(Disconnect event)
-    {
+    public void onPlayerQuit(Disconnect event) {
         Player player = event.getTargetEntity();
         if (getPlayers().containsKey(player.getUniqueId()))
             removePlayer(player);
     }
 
     @Override
-    public void onPlayerTeleport(MoveEntityEvent.Teleport event)
-    {
+    public void onPlayerTeleport(MoveEntityEvent.Teleport event) {
         //TODO test this to see if this works
         event.getCause().first(Player.class).ifPresent(player ->
                 event.setCancelled(players.containsKey(event.getTargetEntity().getUniqueId())));
     }
 
     @Override
-    public void onProjectileHit(CollideBlockEvent.Impact event)
-    {
+    public void onProjectileHit(CollideBlockEvent.Impact event) {
         event.getCause().first(Arrow.class)
                 .filter(arrow -> arrow.getShooter() instanceof Player && arrows.containsKey(arrow.getUniqueId()))
                 .ifPresent(arrow ->
@@ -487,8 +439,7 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void playerHit(Player damager, Player damaged, double damage)
-    {
+    protected void playerHit(Player damager, Player damaged, double damage) {
         SpongeMTScoreboard sb = getScoreboard();
         sb.setPlayerHealth(damaged, (int) (sb.getPlayerHealth(damaged) - (damage * 2) * 20));
         if (sb.getPlayerHealth(damaged) <= 0)
@@ -496,15 +447,13 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void playerIsDamager(Player damager, double damage, Player damaged)
-    {
+    protected void playerIsDamager(Player damager, double damage, Player damaged) {
         if (players.containsKey(damager.getUniqueId()))
             meleeHit(damaged, damager, damage);
     }
 
     @Override
-    public void playerKilled(Player player)
-    {
+    public void playerKilled(Player player) {
         getPlayerTank(player.getUniqueId()).killed();
         getScoreboard().playerDeath(player);
         player.setLocation(getSpectators());
@@ -516,15 +465,13 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected boolean processBlockInteract(Player player)
-    {
+    protected boolean processBlockInteract(Player player) {
         return player.getItemInHand(HandTypes.MAIN_HAND).map(itemStack ->
         {
             SpongePlayerTank pt = players.get(player.getUniqueId());
             if (itemStack.getItem() == ItemTypes.CLOCK)
                 return handleWatch(player);
-            else if (pt.isReady())
-            {
+            else if (pt.isReady()) {
                 player.sendMessage(TextUtils.redText(CommonMessages.MUST_UNREADY));
                 return false;
             }
@@ -535,11 +482,9 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public boolean removePlayer(Player player)
-    {
+    public boolean removePlayer(Player player) {
         SpongePlayerTank pt = getPlayerTank(player.getUniqueId());
-        if (pt != null)
-        {
+        if (pt != null) {
             player.offer(Keys.POTION_EFFECTS, Collections.emptyList());
             player.getInventory().clear();
             player.setHelmet(null);
@@ -562,20 +507,16 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    public void saveToFile(File storageDir)
-    {
+    public void saveToFile(File storageDir) {
         File file = new File(storageDir, CommonConfig.battlefieldFile(this));
         ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
         ConfigurationNode field;
         Logger logger = SpongeMineTanks.instance().getLogger();
-        try
-        {
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();//NOSONAR
+        try {
+            file.createNewFile();
             field = cl.load();
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             logger.warn(CommonMessages.fileLoadFailed(file));
             return;
         }
@@ -593,19 +534,16 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
             field.getNode(CommonConfig.SPECTATORS).setValue(getSpectators().toContainer().toString());
 
         field.getNode(CommonConfig.ENABLED).setValue(isEnabled());
-        try
-        {
+        try {
             cl.save(field);
         }
-        catch (IOException e)//NOSONAR
-        {
+        catch (IOException e) {
             logger.warn(CommonMessages.fileSaveFailed(file));
         }
     }
 
     @Override
-    protected void setPlayerScoreboards()
-    {
+    protected void setPlayerScoreboards() {
         players.keySet().stream()
                 .map(Sponge.getServer()::getPlayer)
                 .filter(Optional::isPresent)
@@ -613,16 +551,13 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void setUpPlayers(List<UUID> playersList)
-    {
-        for (UUID uuid : playersList)
-        {
+    protected void setUpPlayers(List<UUID> playersList) {
+        for (UUID uuid : playersList) {
             SpongePlayerTank pt = players.get(uuid);
             SpongeTank tank = pt.getTank();
-            Sponge.getServer().getPlayer(uuid).ifPresent(player ->//NOSONAR
+            Sponge.getServer().getPlayer(uuid).ifPresent(player ->
             {
-                if (pt.getTeam() != MTTeam.SPECTATOR)
-                {
+                if (pt.getTeam() != MTTeam.SPECTATOR) {
                     if (getScoreboard().isOnGreen(player))
                         player.setLocation(getGreenSpawn());
                     else if (getScoreboard().isOnRed(player))
@@ -637,8 +572,7 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
                     player.setBoots(tank.getBoots());
                     pt.isReloading();
                 }
-                else
-                {
+                else {
                     pt.setTank(null);
                     player.getInventory().clear();
                 }
@@ -648,8 +582,7 @@ public class SpongeBattleField extends AbstractBattleField<Player, SpongePlayerT
     }
 
     @Override
-    protected void triggerPlayerDeath(Player killer, Player killed)
-    {
+    protected void triggerPlayerDeath(Player killer, Player killed) {
         SpongeMTScoreboard sb = getScoreboard();
         Text killedMsg = sb.isOnGreen(killed) ? TextUtils.greenText(killed.getName()) : TextUtils.redText(killed.getName());
         Text killerMsg = sb.isOnGreen(killer) ? TextUtils.greenText(killer.getName()) : TextUtils.redText(killer.getName());

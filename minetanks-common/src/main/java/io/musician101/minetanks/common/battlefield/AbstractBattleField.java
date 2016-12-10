@@ -34,21 +34,20 @@ import java.util.UUID;
  * @param <X> The type of Block Explode Event (org.bukkit.event.block.BlockExplodeEvent or org.spongepowered.api.event.world.ExplosionEvent.Detonate)
  */
 
-public abstract class AbstractBattleField<A, T extends AbstractPlayerTank, R extends AbstractRegion, S extends AbstractScoreboard, I, L, B, P, N, D, J, Q, M, E, H, Y, O, X>
-{
-    private boolean enabled = false;
-    private boolean inProgress = false;
+public abstract class AbstractBattleField<A, T extends AbstractPlayerTank, R extends AbstractRegion, S extends AbstractScoreboard, I, L, B, P, N, D, J, Q, M, E, H, Y, O, X> {
+
     protected final Map<UUID, T> players = new HashMap<>();
+    private final String name;
     private final S scoreboard;
     protected int unassigned = 0;
+    private boolean enabled = false;
     private L greenSpawn;
+    private boolean inProgress = false;
     private L redSpawn;
-    private L spectators;
     private R region;
-    private final String name;
+    private L spectators;
 
-    protected AbstractBattleField(String name, boolean enabled, R region, L greenSpawn, L redSpawn, L spectators, S scoreboard)
-    {
+    protected AbstractBattleField(String name, boolean enabled, R region, L greenSpawn, L redSpawn, L spectators, S scoreboard) {
         this.name = name;
         this.enabled = enabled;
         this.region = region;
@@ -58,123 +57,39 @@ public abstract class AbstractBattleField<A, T extends AbstractPlayerTank, R ext
         this.scoreboard = scoreboard;
     }
 
-
-    protected abstract boolean isMenuItem(I itemType);
-
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-    }
-
-    public boolean inProgress()
-    {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress)
-    {
-        this.inProgress = inProgress;
-    }
-
-
     public abstract boolean addPlayer(A player, MTTeam team);
 
+    protected abstract void arrowIsDamager(UUID damager, double damage, A damaged);
 
-    public abstract boolean removePlayer(A player);
+    protected abstract boolean assignTeams(List<UUID> playersList);
 
-    public boolean isReady()
-    {
-        return region != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();//NOSONAR
-    }
+    protected abstract void blockExplosion(UUID damager, double damage, A damaged);
 
-    public boolean canPlayerExit(UUID uuid)
-    {
+    public boolean canPlayerExit(UUID uuid) {
         return getPlayerTank(uuid).getTeam().canExit();
     }
 
-    public L getGreenSpawn()
-    {
-        return greenSpawn;
-    }
-
-    public void setGreenSpawn(L greenSpawn)
-    {
-        this.greenSpawn = greenSpawn;
-    }
-
-    public L getRedSpawn()
-    {
-        return redSpawn;
-    }
-
-    public void setRedSpawn(L redSpawn)
-    {
-        this.redSpawn = redSpawn;
-    }
-
-    public L getSpectators()
-    {
-        return spectators;
-    }
-
-    public void setSpectators(L spectators)
-    {
-        this.spectators = spectators;
-    }
-    
-    public Map<UUID, T> getPlayers()
-    {
-        return players;
-    }
-
-    public T getPlayerTank(UUID uuid)
-    {
-        return players.get(uuid);
-    }
-
-    public R getRegion()
-    {
-        return region;
-    }
-
-    public void setRegion(R region)
-    {
-        this.region = region;
-    }
-
-
-    public S getScoreboard()
-    {
-        return scoreboard;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-
     public abstract void endMatch();
-
 
     public abstract void endMatch(boolean forced);
 
+    public L getGreenSpawn() {
+        return greenSpawn;
+    }
 
-    public abstract void saveToFile(File battlefields);
+    public void setGreenSpawn(L greenSpawn) {
+        this.greenSpawn = greenSpawn;
+    }
 
-    private List<UUID> getNonSpectatorPlayers()
-    {
+    public String getName() {
+        return name;
+    }
+
+    private List<UUID> getNonSpectatorPlayers() {
         List<UUID> list = new ArrayList<>();
-        for (Entry<UUID, T> entry : players.entrySet())
-        {
+        for (Entry<UUID, T> entry : players.entrySet()) {
             T pt = entry.getValue();
-            if (pt.getTeam() != MTTeam.SPECTATOR)
-            {
+            if (pt.getTeam() != MTTeam.SPECTATOR) {
                 if (!pt.isReady())
                     return Collections.emptyList();
 
@@ -185,15 +100,111 @@ public abstract class AbstractBattleField<A, T extends AbstractPlayerTank, R ext
         return list;
     }
 
-    protected abstract boolean assignTeams(List<UUID> playersList);
+    public T getPlayerTank(UUID uuid) {
+        return players.get(uuid);
+    }
 
-    protected abstract void setUpPlayers(List<UUID> playersList);
+    public Map<UUID, T> getPlayers() {
+        return players;
+    }
+
+    public L getRedSpawn() {
+        return redSpawn;
+    }
+
+    public void setRedSpawn(L redSpawn) {
+        this.redSpawn = redSpawn;
+    }
+
+    public R getRegion() {
+        return region;
+    }
+
+    public void setRegion(R region) {
+        this.region = region;
+    }
+
+    public S getScoreboard() {
+        return scoreboard;
+    }
+
+    public L getSpectators() {
+        return spectators;
+    }
+
+    public void setSpectators(L spectators) {
+        this.spectators = spectators;
+    }
+
+    protected abstract void gravityHit(A player, double damage);
+
+    protected abstract boolean handleWatch(A player);
+
+    public boolean inProgress() {
+        return inProgress;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    protected abstract boolean isMenuItem(I itemType);
+
+    public boolean isReady() {
+        return region != null && greenSpawn != null && redSpawn != null && spectators != null && isEnabled();
+    }
+
+    protected abstract void meleeHit(A rammed, A rammer, double damage);
+
+    public abstract void onBlockBreak(B event);
+
+    public abstract void onBlockExplode(X event);
+
+    public abstract void onBlockInteract(N event);
+
+    public abstract void onBlockPlace(P event);
+
+    public abstract void onBowShoot(H event);
+
+    public abstract void onEntityDamage(Y event);
+
+    public abstract void onItemDrop(D event);
+
+    public abstract void onPlayerJoin(J event);
+
+    public abstract void onPlayerMove(M event);
+
+    public abstract void onPlayerQuit(Q event);
+
+    public abstract void onPlayerTeleport(E event);
+
+    public abstract void onProjectileHit(O event);
+
+    protected abstract void playerHit(A rammed, A rammer, double damage);
+
+    protected abstract void playerIsDamager(A damager, double damage, A damaged);
+
+    public abstract void playerKilled(A player);
+
+    protected abstract boolean processBlockInteract(A player);
+
+    public abstract boolean removePlayer(A player);
+
+    public abstract void saveToFile(File battlefields);
+
+    public void setInProgress(boolean inProgress) {
+        this.inProgress = inProgress;
+    }
 
     protected abstract void setPlayerScoreboards();
 
+    protected abstract void setUpPlayers(List<UUID> playersList);
 
-    public void startMatch()
-    {
+    public void startMatch() {
         List<UUID> playersList = getNonSpectatorPlayers();
         if (playersList.isEmpty())
             return;
@@ -205,70 +216,6 @@ public abstract class AbstractBattleField<A, T extends AbstractPlayerTank, R ext
         setInProgress(true);
         setPlayerScoreboards();
     }
-
-
-    public abstract void playerKilled(A player);
-
-
-    public abstract void onBlockBreak(B event);
-
-
-    public abstract void onBlockPlace(P event);
-
-
-    protected abstract boolean handleWatch(A player);
-
-
-    protected abstract boolean processBlockInteract(A player);
-
-
-    public abstract void onBlockInteract(N event);
-
-
-    public abstract void onItemDrop(D event);
-
-
-    public abstract void onPlayerJoin(J event);
-
-
-    public abstract void onPlayerQuit(Q event);
-
-
-    public abstract void onPlayerMove(M event);
-
-
-    public abstract void onPlayerTeleport(E event);
-
-
-    protected abstract void arrowIsDamager(UUID damager, double damage, A damaged);
-
-
-    protected abstract void playerIsDamager(A damager, double damage, A damaged);
-
-
-    protected abstract void blockExplosion(UUID damager, double damage, A damaged);
-
-
-    public abstract void onBowShoot(H event);
-
-
-    public abstract void onEntityDamage(Y event);
-
-
-    public abstract void onProjectileHit(O event);
-
-
-    public abstract void onBlockExplode(X event);
-
-
-    protected abstract void gravityHit(A player, double damage);
-
-
-    protected abstract void meleeHit(A rammed, A rammer, double damage);
-
-
-    protected abstract void playerHit(A rammed, A rammer, double damage);
-
 
     protected abstract void triggerPlayerDeath(A killer, A killed);
 }

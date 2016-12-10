@@ -1,6 +1,9 @@
 package io.musician101.minetanks.sponge.tank;
 
 import io.musician101.minetanks.common.tank.AbstractInfoStorage;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.meta.PatternLayer;
 import org.spongepowered.api.data.type.BannerPatternShapes;
@@ -9,15 +12,10 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
+public class SpongeCountries extends AbstractInfoStorage<SpongeCountry> {
 
-public class SpongeCountries extends AbstractInfoStorage<SpongeCountry>
-{
-    private SpongeCountries()
-    {
+    private SpongeCountries() {
         super(new SpongeCountry("China",
                         ItemStack.builder().itemType(ItemTypes.BANNER).add(Keys.DISPLAY_NAME, Text.of("China"))
                                 .add(Keys.BANNER_BASE_COLOR, DyeColors.RED)
@@ -86,13 +84,11 @@ public class SpongeCountries extends AbstractInfoStorage<SpongeCountry>
     }
 
 
-    public static SpongeCountry getCountry(String name)
-    {
+    public static SpongeCountry getCountry(String name) {
         return new SpongeCountries().get(name);
     }
 
-    public static List<SpongeCountry> getValues()
-    {
+    public static List<SpongeCountry> getValues() {
         return new SpongeCountries().values();
     }
 }

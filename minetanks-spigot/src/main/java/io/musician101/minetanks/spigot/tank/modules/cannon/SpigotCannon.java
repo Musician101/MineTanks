@@ -9,17 +9,15 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotCannon extends AbstractCannon<ItemStack>
-{
-    public SpigotCannon(String name, int ammoCount, double reloadTime)
-    {
+public class SpigotCannon extends AbstractCannon<ItemStack> {
+
+    public SpigotCannon(String name, int ammoCount, double reloadTime) {
         super(name, ammoCount, reloadTime);
         parseCannon();
     }
 
     @Override
-    protected void parseCannon()
-    {
+    protected void parseCannon() {
         ItemStack item = new ItemStack(Material.BOW);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + getName());

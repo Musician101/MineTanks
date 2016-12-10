@@ -5,7 +5,11 @@ import io.musician101.minetanks.common.CommonReference.CommonMessages;
 import io.musician101.minetanks.common.CommonReference.CommonStorage;
 import io.musician101.minetanks.common.battlefield.AbstractBattleFieldStorage;
 import io.musician101.minetanks.sponge.SpongeMineTanks;
-import io.musician101.minetanks.sponge.util.SpongeRegion;
+import io.musician101.musicianlibrary.java.minecraft.sponge.SpongeRegion;
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -20,22 +24,15 @@ import org.spongepowered.api.data.persistence.DataTranslators;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
 
+public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeBattleField> {
 
-public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeBattleField>
-{
-    public SpongeBattleFieldStorage(File configDir)
-    {
+    public SpongeBattleFieldStorage(File configDir) {
         super(new File(configDir, CommonStorage.BATTLEFIELDS));
         loadFromFiles();
     }
 
-    private static Location<World> deserializeLocation(ConfigurationNode node)
-    {
+    private static Location<World> deserializeLocation(ConfigurationNode node) {
         DataTranslator<ConfigurationNode> dt = DataTranslators.CONFIGURATION_NODE;
         DataView dv = dt.translate(node);
         Optional<DataBuilder<LocatableSnapshot>> dataBuilderOptional = Sponge.getDataManager().getBuilder(LocatableSnapshot.class);
@@ -47,17 +44,14 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
             return null;
 
         /* It complains about raw types despite the method currently returning Optional<Location<World>>. */
-        @SuppressWarnings("unchecked")
         Optional<Location<World>> olw = locatableSnapshotOptional.get().getLocation();
         return olw.orElse(null);
 
     }
 
     @Override
-    public boolean canPlayerExit(UUID player)
-    {
-        for (String name : fields.keySet())
-        {
+    public boolean canPlayerExit(UUID player) {
+        for (String name : fields.keySet()) {
             SpongeBattleField field = getField(name);
             if (field.getPlayers().containsKey(player))
                 return field.getPlayerTank(player).getTeam().canExit();
@@ -66,8 +60,7 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
         return false;
     }
 
-    private boolean createField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators)
-    {
+    private boolean createField(String name, boolean enabled, SpongeRegion region, Location<World> greenSpawn, Location<World> redSpawn, Location<World> spectators) {
         for (String field : getFields().keySet())
             if (field.equalsIgnoreCase(name))
                 return false;
@@ -78,24 +71,17 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
     }
 
     @Override
-    public boolean createField(String name)
-    {
+    public boolean createField(String name) {
         return createField(name, false, null, null, null, null);
     }
 
     @Override
-    public void loadFromFiles()
-    {
-        //noinspection ResultOfMethodCallIgnored
-        getStorageDir().mkdirs();//NOSONAR
-        //noinspection ConstantConditions
-        for (File file : getStorageDir().listFiles())//NOSONAR
-        {
-            if (file.getName().endsWith(".cfg"))
-            {
+    public void loadFromFiles() {
+        getStorageDir().mkdirs();
+        for (File file : getStorageDir().listFiles()) {
+            if (file.getName().endsWith(".cfg")) {
                 Logger logger = SpongeMineTanks.instance().getLogger();
-                try
-                {
+                try {
                     ConfigurationLoader<CommentedConfigurationNode> cl = HoconConfigurationLoader.builder().setFile(file).build();
                     ConfigurationNode field = cl.load();
                     String name = file.getName().replace(".cfg", "");
@@ -105,23 +91,22 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
                     Location<World> redSpawn = null;
                     Location<World> spectators = null;
 
-                    if (!field.getNode(CommonConfig.REGION).isVirtual())//NOSONAR
+                    if (!field.getNode(CommonConfig.REGION).isVirtual())
                         region = new SpongeRegion(field.getNode(CommonConfig.REGION));
 
-                    if (!field.getNode(CommonConfig.GREEN_SPAWN).isVirtual())//NOSONAR
+                    if (!field.getNode(CommonConfig.GREEN_SPAWN).isVirtual())
                         greenSpawn = deserializeLocation(field.getNode(CommonConfig.GREEN_SPAWN));
 
-                    if (!field.getNode(CommonConfig.RED_SPAWN).isVirtual())//NOSONAR
+                    if (!field.getNode(CommonConfig.RED_SPAWN).isVirtual())
                         redSpawn = deserializeLocation(field.getNode(CommonConfig.RED_SPAWN));
 
-                    if (!field.getNode(CommonConfig.SPECTATORS).isVirtual())//NOSONAR
+                    if (!field.getNode(CommonConfig.SPECTATORS).isVirtual())
                         spectators = deserializeLocation(field.getNode(CommonConfig.SPECTATORS));
 
-                    if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))//NOSONAR
+                    if (!createField(name, enabled, region, greenSpawn, redSpawn, spectators))
                         logger.warn(CommonMessages.fileLoadFailed(file));
                 }
-                catch (IOException e)//NOSONAR
-                {
+                catch (IOException e) {
                     logger.warn(CommonMessages.fileLoadFailed(file));
                 }
             }
@@ -129,12 +114,9 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
     }
 
     @Override
-    public boolean removeField(String field)
-    {
-        for (String name : fields.keySet())//NOSONAR
-        {
-            if (name.equalsIgnoreCase(field))
-            {
+    public boolean removeField(String field) {
+        for (String name : fields.keySet()) {
+            if (name.equalsIgnoreCase(field)) {
                 fields.remove(name);
                 return new File(getStorageDir(), CommonConfig.battlefieldFile(fields.get(name))).delete();
             }
@@ -144,9 +126,8 @@ public class SpongeBattleFieldStorage extends AbstractBattleFieldStorage<SpongeB
     }
 
     @Override
-    public void saveToFiles()
-    {
-        for (String name : fields.keySet())//NOSONAR
+    public void saveToFiles() {
+        for (String name : fields.keySet())
             fields.get(name).saveToFile(getStorageDir());
     }
 }

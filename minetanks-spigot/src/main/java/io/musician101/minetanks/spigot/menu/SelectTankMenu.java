@@ -11,22 +11,20 @@ import io.musician101.minetanks.spigot.tank.SpigotTankType;
 import io.musician101.minetanks.spigot.tank.SpigotTanks;
 import io.musician101.minetanks.spigot.util.MTUtils;
 import io.musician101.musicianlibrary.java.minecraft.spigot.menu.AbstractSpigotChestMenu;
+import java.util.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Collections;
+class SelectTankMenu extends AbstractSpigotChestMenu<SpigotMineTanks> {
 
-class SelectTankMenu extends AbstractSpigotChestMenu<SpigotMineTanks>
-{
     private final SpigotCountry country;
     private final SpigotBattleField field;
     private final SpigotTankType tankType;
 
-    public SelectTankMenu(SpigotBattleField field, SpigotCountry country, SpigotTankType tankType, Player player)
-    {
+    public SelectTankMenu(SpigotBattleField field, SpigotCountry country, SpigotTankType tankType, Player player) {
         super(player, 18, "Select Tank", SpigotMineTanks.instance());
         this.field = field;
         this.country = country;
@@ -34,8 +32,7 @@ class SelectTankMenu extends AbstractSpigotChestMenu<SpigotMineTanks>
     }
 
     @Override
-    protected void build()
-    {
+    protected void build() {
         int slot = 0;
         for (SpigotTank tank : SpigotTanks.getValues())
             if ((country == null || country.getName().equals(tank.getCountry().getName())) && (tankType == null || tankType.getName().equals(tank.getType().getName())))

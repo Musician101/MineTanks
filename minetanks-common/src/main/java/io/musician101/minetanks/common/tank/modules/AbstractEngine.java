@@ -4,10 +4,9 @@ import io.musician101.minetanks.common.tank.AbstractTankType;
 import io.musician101.minetanks.common.tank.Info;
 
 
-public abstract class AbstractEngine<I, T extends AbstractTankType<I>> extends Info<I>
-{
-    protected AbstractEngine(String name)
-    {
+public abstract class AbstractEngine<I, T extends AbstractTankType<I>> extends Info<I> {
+
+    protected AbstractEngine(String name) {
         super(name);
     }
 

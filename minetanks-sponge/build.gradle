@@ -13,10 +13,8 @@ processResources {
     }
 }
 
-//noinspection GroovyMissingReturnStatement
 shadowJar {
     dependencies {
-        //noinspection GroovyAssignabilityCheck
         include(dependency(':minetanks-common'))
     }
 }

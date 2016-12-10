@@ -21,26 +21,22 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class SpigotTank extends AbstractTank<Player, SpigotCountry, SpigotTankType, SpigotModules, SpigotCannon, SpigotEngine, SpigotRadio, SpigotTrackz, SpigotTurret, ItemStack>
-{
-    SpigotTank(String name, SpigotCountry country, SpigotTankType type, int health, Armor armor, int speed, SpigotModules modules)
-    {
+public class SpigotTank extends AbstractTank<SpigotCannon, SpigotEngine, ItemStack, SpigotModules, SpigotCountry, Player, SpigotRadio, SpigotTrackz, SpigotTurret, SpigotTankType> {
+
+    SpigotTank(String name, SpigotCountry country, SpigotTankType type, int health, Armor armor, int speed, SpigotModules modules) {
         super(name, country, type, health, armor, speed, modules);
         setItem(MTUtils.createCustomItem(Material.MINECART, name, CommonItemText.tankType(type)));
     }
 
     @Override
-    public void applySpeedEffect(Player player)
-    {
+    public void applySpeedEffect(Player player) {
         int amplifier;
         PotionEffectType effect;
-        if (getSpeed() < 6)
-        {
+        if (getSpeed() < 6) {
             effect = PotionEffectType.SLOW;
             amplifier = -getSpeed() + 6;
         }
-        else
-        {
+        else {
             effect = PotionEffectType.SPEED;
             amplifier = getSpeed() - 5;
         }
@@ -49,32 +45,27 @@ public class SpigotTank extends AbstractTank<Player, SpigotCountry, SpigotTankTy
     }
 
     @Override
-    public ItemStack getBoots()
-    {
+    public ItemStack getBoots() {
         return parseArmorValue(tracks.getItem());
     }
 
     @Override
-    public ItemStack getChestplate()
-    {
+    public ItemStack getChestplate() {
         return parseArmorValue(radio.getItem());
     }
 
     @Override
-    public ItemStack getHelmet()
-    {
+    public ItemStack getHelmet() {
         return parseArmorValue(turret.getItem(), armor);
     }
 
     @Override
-    public ItemStack getLeggings()
-    {
+    public ItemStack getLeggings() {
         return parseArmorValue(parseSpeedValue(engine.getItem()));
     }
 
     @Override
-    public List<ItemStack> getWeapons()
-    {
+    public List<ItemStack> getWeapons() {
         List<ItemStack> items = new ArrayList<>();
         items.add(cannon.getItem());
         ItemStack ammo = MTUtils.createCustomItem(Material.ARROW, CommonItemText.AMMO, "");
@@ -84,14 +75,12 @@ public class SpigotTank extends AbstractTank<Player, SpigotCountry, SpigotTankTy
     }
 
     @Override
-    protected ItemStack parseArmorValue(ItemStack item)
-    {
+    protected ItemStack parseArmorValue(ItemStack item) {
         return parseArmorValue(item, armor);
     }
 
     @Override
-    protected ItemStack parseArmorValue(ItemStack item, Armor armor)
-    {
+    protected ItemStack parseArmorValue(ItemStack item, Armor armor) {
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, (int) Math.round(armor.getArmorValue()), true);
         item.setItemMeta(meta);
@@ -99,8 +88,7 @@ public class SpigotTank extends AbstractTank<Player, SpigotCountry, SpigotTankTy
     }
 
     @Override
-    protected ItemStack parseSpeedValue(ItemStack item)
-    {
+    protected ItemStack parseSpeedValue(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         meta.setLore(Arrays.asList(meta.getLore().get(0), CommonItemText.speedValue(getSpeed())));
         item.setItemMeta(meta);

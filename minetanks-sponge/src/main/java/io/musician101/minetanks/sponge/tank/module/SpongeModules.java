@@ -6,11 +6,9 @@ import io.musician101.minetanks.sponge.tank.module.tracks.SpongeTrackz;
 import io.musician101.minetanks.sponge.tank.module.turret.SpongeTurret;
 
 
-public class SpongeModules extends AbstractModules<SpongeCannon, SpongeEngine, SpongeRadio, SpongeTrackz, SpongeTurret>
-{
+public class SpongeModules extends AbstractModules<SpongeCannon, SpongeEngine, SpongeRadio, SpongeTrackz, SpongeTurret> {
 
-    public SpongeModules(SpongeCannon cannon, SpongeEngine engine, SpongeRadio radio, SpongeTrackz tracks, SpongeTurret turret)
-    {
+    public SpongeModules(SpongeCannon cannon, SpongeEngine engine, SpongeRadio radio, SpongeTrackz tracks, SpongeTurret turret) {
         super(cannon, engine, radio, tracks, turret);
     }
 }

@@ -3,6 +3,7 @@ package io.musician101.minetanks.sponge.scoreboard;
 import io.musician101.minetanks.common.CommonReference.CommonScoreboard;
 import io.musician101.minetanks.common.util.AbstractScoreboard;
 import io.musician101.musicianlibrary.java.minecraft.sponge.TextUtils;
+import java.util.Optional;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scoreboard.Score;
@@ -15,13 +16,10 @@ import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayMo
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.Optional;
 
+public class SpongeMTScoreboard extends AbstractScoreboard<Player, Scoreboard> {
 
-public class SpongeMTScoreboard extends AbstractScoreboard<Player, Scoreboard>
-{
-    public SpongeMTScoreboard()
-    {
+    public SpongeMTScoreboard() {
         scoreboard = Scoreboard.builder().build();
 
         Objective.Builder ob = Objective.builder();
@@ -62,45 +60,38 @@ public class SpongeMTScoreboard extends AbstractScoreboard<Player, Scoreboard>
 
 
     @Override
-    public void addGreenPlayer(Player player)
-    {
+    public void addGreenPlayer(Player player) {
         addPlayer(player, CommonScoreboard.GREEN_ID);
     }
 
-    private void addPlayer(Player player, String teamName)
-    {
+    private void addPlayer(Player player, String teamName) {
         scoreboard.getTeam(teamName).ifPresent(team -> team.addMember(Text.of(player.getName())));
         updateTeamSize(teamName);
     }
 
     @Override
-    public void addRedPlayer(Player player)
-    {
+    public void addRedPlayer(Player player) {
         addPlayer(player, CommonScoreboard.RED_ID);
     }
 
     @Override
-    public int getGreenTeamSize()
-    {
+    public int getGreenTeamSize() {
         return scoreboard.getTeam(CommonScoreboard.GREEN_ID).map(team -> team.getMembers().size()).orElse(0);
     }
 
     @Override
-    public int getPlayerHealth(Player player)
-    {
+    public int getPlayerHealth(Player player) {
         return scoreboard.getObjective(CommonScoreboard.HEALTH_ID).map(objective ->
                 objective.getScore(Text.of(player.getName())).map(Score::getScore).orElse(0)).orElse(0);
     }
 
     @Override
-    public int getRedTeamSize()
-    {
+    public int getRedTeamSize() {
         return scoreboard.getTeam(CommonScoreboard.RED_ID).map(team -> team.getMembers().size()).orElse(0);
     }
 
     @Override
-    public boolean isOnGreen(Player player)
-    {
+    public boolean isOnGreen(Player player) {
         return !scoreboard.getTeam(CommonScoreboard.GREEN_ID).flatMap(team ->
         {
             if (team.getMembers().contains(Text.of(player.getName())))
@@ -111,8 +102,7 @@ public class SpongeMTScoreboard extends AbstractScoreboard<Player, Scoreboard>
     }
 
     @Override
-    public boolean isOnRed(Player player)
-    {
+    public boolean isOnRed(Player player) {
         return !scoreboard.getTeam(CommonScoreboard.RED_ID).flatMap(team ->
         {
             if (team.getMembers().contains(Text.of(player.getName())))
@@ -123,8 +113,7 @@ public class SpongeMTScoreboard extends AbstractScoreboard<Player, Scoreboard>
     }
 
     @Override
-    public void playerDeath(Player player)
-    {
+    public void playerDeath(Player player) {
         Text member = Text.of(player.getName());
         scoreboard.getMemberTeam(member).ifPresent(team ->
         {
@@ -135,27 +124,23 @@ public class SpongeMTScoreboard extends AbstractScoreboard<Player, Scoreboard>
     }
 
     @Override
-    public void resetPlayerScoreboard(Player player)
-    {
+    public void resetPlayerScoreboard(Player player) {
         Sponge.getServer().getServerScoreboard().ifPresent(player::setScoreboard);
     }
 
     @Override
-    public void setPlayerHealth(Player player, double hp)
-    {
+    public void setPlayerHealth(Player player, double hp) {
         scoreboard.getObjective(CommonScoreboard.HEALTH_ID).ifPresent(objective ->
                 objective.getScore(Text.of(player.getName())).ifPresent(score ->
                         score.setScore((int) hp)));
     }
 
     @Override
-    public void setPlayerScoreboard(Player player)
-    {
+    public void setPlayerScoreboard(Player player) {
         player.setScoreboard(getScoreboard());
     }
 
-    private void updateTeamSize(String teamName)
-    {
+    private void updateTeamSize(String teamName) {
         scoreboard.getObjective(CommonScoreboard.TEAM_COUNT_ID).ifPresent(objective ->
                 objective.getScore(Text.of(teamName)).ifPresent(score ->
                         score.setScore(scoreboard.getTeam(teamName.equalsIgnoreCase(CommonScoreboard.GREEN_ID) ? CommonScoreboard.GREEN_NAME : CommonScoreboard.RED_NAME)

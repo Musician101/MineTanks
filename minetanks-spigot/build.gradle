@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    //compile project(':minetanks-common')
     compile project(':minetanks-common')
+    compile 'io.musician101:musicianlibrary-java:3.0-SNAPSHOT'
     compile 'io.musician101:musicianlibrary-spigot:3.0-SNAPSHOT'
 }
 
@@ -23,10 +23,8 @@ processResources {
     }
 }
 
-//noinspection GroovyMissingReturnStatement
 shadowJar {
     dependencies {
-        //noinspection GroovyAssignabilityCheck
         include(dependency(':minetanks-common'))
     }
 }

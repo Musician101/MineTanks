@@ -4,14 +4,12 @@ import io.musician101.minetanks.common.CommonReference.CommonTankTypes;
 import io.musician101.minetanks.common.CommonReference.CommonTracks;
 import io.musician101.minetanks.common.tank.AbstractInfoStorage;
 import io.musician101.minetanks.spigot.tank.SpigotTankTypes;
-
 import java.util.List;
 
 
-public class SpigotTracks extends AbstractInfoStorage<SpigotTrackz>
-{
-    private SpigotTracks()
-    {
+public class SpigotTracks extends AbstractInfoStorage<SpigotTrackz> {
+
+    private SpigotTracks() {
         super(
                 new SpigotTrackz(CommonTracks.ONE_21, SpigotTankTypes.getTankType(CommonTankTypes.MEDIUM)),
                 new SpigotTrackz(CommonTracks.ONE_13, SpigotTankTypes.getTankType(CommonTankTypes.HEAVY)),
@@ -60,14 +58,12 @@ public class SpigotTracks extends AbstractInfoStorage<SpigotTrackz>
                 new SpigotTrackz(CommonTracks.XM551_TEST_BED, SpigotTankTypes.getTankType(CommonTankTypes.LIGHT)));
     }
 
-    public static SpigotTrackz getTracks(String name)
-    {
+    public static SpigotTrackz getTracks(String name) {
         return new SpigotTracks().get(name);
     }
 
 
-    public List<SpigotTrackz> getValues()
-    {
+    public List<SpigotTrackz> getValues() {
         return new SpigotTracks().values();
     }
 }

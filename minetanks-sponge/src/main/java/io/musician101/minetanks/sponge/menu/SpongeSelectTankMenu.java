@@ -17,15 +17,14 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 
-class SpongeSelectTankMenu extends AbstractSpongeChestMenu<SpongeMineTanks>
-{
+class SpongeSelectTankMenu extends AbstractSpongeChestMenu<SpongeMineTanks> {
+
     private final SpongeCountry country;
     private final SpongeBattleField field;
     private final SpongeTankType tankType;
 
 
-    public SpongeSelectTankMenu(SpongeBattleField field, SpongeCountry country, SpongeTankType tankType, Player player)
-    {
+    public SpongeSelectTankMenu(SpongeBattleField field, SpongeCountry country, SpongeTankType tankType, Player player) {
         super(player, InventoryArchetypes.DOUBLE_CHEST, "Tank Select", SpongeMineTanks.instance());
         this.field = field;
         this.country = country;
@@ -33,8 +32,7 @@ class SpongeSelectTankMenu extends AbstractSpongeChestMenu<SpongeMineTanks>
     }
 
     @Override
-    protected void build()
-    {
+    protected void build() {
         int slot = 0;
         for (SpongeTank tank : SpongeTanks.getValues())
             if ((country == null || country.getName().equals(tank.getCountry().getName())) && (tankType == null || tankType.getName().equals(tank.getType().getName())))

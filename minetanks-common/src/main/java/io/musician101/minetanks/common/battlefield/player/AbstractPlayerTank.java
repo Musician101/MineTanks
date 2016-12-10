@@ -1,105 +1,85 @@
 package io.musician101.minetanks.common.battlefield.player;
 
 import io.musician101.minetanks.common.tank.AbstractTank;
-
 import java.util.UUID;
 
 
-public abstract class AbstractPlayerTank<T extends AbstractTank, I>
-{
-    private boolean isReady = false;
-    protected int clipSize = 1;
-    private MTTeam team;
-    private T tank;
-    protected I reloadTaskID;
-    private final UUID uuid;
+public abstract class AbstractPlayerTank<T extends AbstractTank, I> {
 
-    protected AbstractPlayerTank(UUID uuid, MTTeam team)
-    {
+    private final UUID uuid;
+    protected int clipSize = 1;
+    protected I reloadTaskID;
+    private boolean isReady = false;
+    private T tank;
+    private MTTeam team;
+
+    protected AbstractPlayerTank(UUID uuid, MTTeam team) {
         this.uuid = uuid;
         this.team = team;
     }
 
-    public boolean isReady()
-    {
-        return isReady;
-    }
+    public abstract void cancelReload();
 
-
-    public abstract boolean isReloading();
-
-    public MTTeam getTeam()
-    {
-        return team;
-    }
-
-    public int getClipSize()
-    {
+    public int getClipSize() {
         return clipSize;
     }
 
-    public T getTank()
-    {
-        return tank;
-    }
-
-
-    public UUID getPlayerId()
-    {
-        return uuid;
-    }
-
-
-    public void setTank(T tank)
-    {
-        this.tank = tank;
-    }
-
-    public void setClipSize(int clipSize)
-    {
+    public void setClipSize(int clipSize) {
         this.clipSize = clipSize;
     }
 
-    public void setTeam(MTTeam team)
-    {
+    public UUID getPlayerId() {
+        return uuid;
+    }
+
+    public T getTank() {
+        return tank;
+    }
+
+    public void setTank(T tank) {
+        this.tank = tank;
+    }
+
+    public MTTeam getTeam() {
+        return team;
+    }
+
+    public void setTeam(MTTeam team) {
         this.team = team;
     }
 
-    public void setReady(boolean isReady)
-    {
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(boolean isReady) {
         this.isReady = isReady;
     }
 
+    public abstract boolean isReloading();
 
-    public abstract void cancelReload();
-
-    public void killed()
-    {
+    public void killed() {
         this.team = MTTeam.SPECTATOR;
         tank = null;
         cancelReload();
     }
 
-    public enum MTTeam
-    {
+    public enum MTTeam {
         ASSIGNED(false),
         SPECTATOR(),
         UNASSIGNED();
 
         final boolean canExit;
 
-        MTTeam()
-        {
+        MTTeam() {
             this(true);
         }
 
-        MTTeam(boolean canExit)
-        {
+        MTTeam(boolean canExit) {
             this.canExit = canExit;
         }
 
-        public boolean canExit()
-        {
+        public boolean canExit() {
             return canExit;
         }
     }

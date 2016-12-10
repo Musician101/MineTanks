@@ -11,20 +11,18 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 
 
-class SpongeSelectCountryMenu extends AbstractSpongeChestMenu<SpongeMineTanks>
-{
+class SpongeSelectCountryMenu extends AbstractSpongeChestMenu<SpongeMineTanks> {
+
     private final SpongeBattleField field;
 
 
-    public SpongeSelectCountryMenu(SpongeBattleField field, Player player)
-    {
+    public SpongeSelectCountryMenu(SpongeBattleField field, Player player) {
         super(player, InventoryArchetypes.MENU_ROW, "Select Country", SpongeMineTanks.instance());
         this.field = field;
     }
 
     @Override
-    protected void build()
-    {
+    protected void build() {
         int slot = 0;
         for (SpongeCountry country : SpongeCountries.getValues())
             set(slot++, country.getItem(), player -> new SpongeSelectTankMenu(field, country, null, player));

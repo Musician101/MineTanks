@@ -17,14 +17,12 @@ import io.musician101.minetanks.sponge.tank.module.cannon.SpongeAutoLoader;
 import io.musician101.minetanks.sponge.tank.module.cannon.SpongeCannon;
 import io.musician101.minetanks.sponge.tank.module.tracks.SpongeTracks;
 import io.musician101.minetanks.sponge.tank.module.turret.SpongeTurrets;
-
 import java.util.List;
 
 
-public class SpongeTanks extends AbstractInfoStorage<SpongeTank>
-{
-    private SpongeTanks()
-    {
+public class SpongeTanks extends AbstractInfoStorage<SpongeTank> {
+
+    private SpongeTanks() {
         super(
                 //China Lights
                 new SpongeTank(CommonTanks.WZ_132, SpongeCountries.getCountry(CommonCountries.CHINA), SpongeTankTypes.getTankType(CommonTankTypes.LIGHT), 1150, new Armor(50, 25, 20), 64, new SpongeModules(new SpongeCannon(CommonCannons._100_MM_60_100T, 43, 7.57), new SpongeEngine(CommonEngines.EIGHT_V135, SpongeTankTypes.getTankType(CommonTankTypes.LIGHT)), new SpongeRadio(CommonRadios.A_220A, SpongeTankTypes.getTankType(CommonTankTypes.LIGHT)), SpongeTracks.getTracks(CommonTracks.WZ_132), SpongeTurrets.getTurret(CommonTurrets.WZ_132))),
@@ -104,13 +102,11 @@ public class SpongeTanks extends AbstractInfoStorage<SpongeTank>
     }
 
 
-    public static SpongeTank getTank(String name)
-    {
+    public static SpongeTank getTank(String name) {
         return new SpongeTanks().get(name);
     }
 
-    public static List<SpongeTank> getValues()
-    {
+    public static List<SpongeTank> getValues() {
         return new SpongeTanks().values();
     }
 }

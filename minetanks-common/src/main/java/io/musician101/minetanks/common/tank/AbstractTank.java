@@ -9,21 +9,20 @@ import io.musician101.minetanks.common.tank.modules.AbstractTurret;
 import java.util.List;
 
 
-public abstract class AbstractTank<P, O extends AbstractCountry<I>, Y extends AbstractTankType<I>, M extends AbstractModules<C, E, R, T, U>, C extends AbstractCannon<I>, E extends AbstractEngine<I, Y>, R extends AbstractRadio<I, Y>, T extends AbstractTrackz<I, Y>, U extends AbstractTurret<I, Y>, I> extends Info<I>
-{
+public abstract class AbstractTank<C extends AbstractCannon<I>, E extends AbstractEngine<I, Y>, I, M extends AbstractModules<C, E, R, T, U>, O extends AbstractCountry<I>, P, R extends AbstractRadio<I, Y>, T extends AbstractTrackz<I, Y>, U extends AbstractTurret<I, Y>, Y extends AbstractTankType<I>> extends Info<I> {
+
     protected final Armor armor;
     protected final C cannon;
-    private final O country;
     protected final E engine;
-    private final int health;
-    private final int speed;
     protected final R radio;
     protected final T tracks;
     protected final U turret;
+    private final O country;
+    private final int health;
+    private final int speed;
     private final Y type;
 
-    protected AbstractTank(String name, O country, Y type, int health, Armor armor, int speed, M modules)
-    {
+    protected AbstractTank(String name, O country, Y type, int health, Armor armor, int speed, M modules) {
         super(name);
         this.country = country;
         this.type = type;
@@ -37,54 +36,49 @@ public abstract class AbstractTank<P, O extends AbstractCountry<I>, Y extends Ab
         this.turret = modules.getTurret();
     }
 
+    public abstract void applySpeedEffect(P player);
 
-    protected abstract I parseArmorValue(I item);
+    public I getBoots() {
+        return parseArmorValue(tracks.getItem());
+    }
 
-
-    protected abstract I parseArmorValue(I item, Armor armor);
-
-
-    protected abstract I parseSpeedValue(I item);
-
-    public C getCannon()
-    {
+    public C getCannon() {
         return cannon;
     }
 
-    public O getCountry()
-    {
+    public I getChestplate() {
+        return parseArmorValue(radio.getItem());
+    }
+
+    public O getCountry() {
         return country;
     }
 
-    public int getHealth()
-    {
+    public int getHealth() {
         return health;
     }
 
-    protected int getSpeed()
-    {
+    public I getHelmet() {
+        return parseArmorValue(turret.getItem());
+    }
+
+    public I getLeggings() {
+        return parseArmorValue(parseArmorValue(parseSpeedValue(engine.getItem())));
+    }
+
+    protected int getSpeed() {
         return speed;
     }
 
-
-    public abstract I getHelmet();
-
-
-    public abstract I getChestplate();
-
-
-    public abstract I getLeggings();
-
-
-    public abstract I getBoots();
-
-
-    public abstract List<I> getWeapons();
-
-    public Y getType()
-    {
+    public Y getType() {
         return type;
     }
 
-    public abstract void applySpeedEffect(P player);
+    public abstract List<I> getWeapons();
+
+    protected abstract I parseArmorValue(I item);
+
+    protected abstract I parseArmorValue(I item, Armor armor);
+
+    protected abstract I parseSpeedValue(I item);
 }

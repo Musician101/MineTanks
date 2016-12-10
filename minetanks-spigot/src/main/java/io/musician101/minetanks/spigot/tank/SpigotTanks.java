@@ -17,14 +17,12 @@ import io.musician101.minetanks.spigot.tank.modules.cannon.SpigotAutoLoader;
 import io.musician101.minetanks.spigot.tank.modules.cannon.SpigotCannon;
 import io.musician101.minetanks.spigot.tank.modules.tracks.SpigotTracks;
 import io.musician101.minetanks.spigot.tank.modules.turret.SpigotTurrets;
-
 import java.util.List;
 
 
-public class SpigotTanks extends AbstractInfoStorage<SpigotTank>
-{
-    private SpigotTanks()
-    {
+public class SpigotTanks extends AbstractInfoStorage<SpigotTank> {
+
+    private SpigotTanks() {
         super(
                 // China Lights
                 new SpigotTank(CommonTanks.WZ_132, SpigotCountries.getCountry(CommonCountries.CHINA), SpigotTankTypes.getTankType(CommonTankTypes.LIGHT), 1150, new Armor(50, 25, 20), 64, new SpigotModules(new SpigotCannon(CommonCannons._100_MM_60_100T, 43, 7.57), new SpigotEngine(CommonEngines.EIGHT_V135, SpigotTankTypes.getTankType(CommonTankTypes.LIGHT)), new SpigotRadio(CommonRadios.A_220A, SpigotTankTypes.getTankType(CommonTankTypes.LIGHT)), SpigotTracks.getTracks(CommonTracks.WZ_132), SpigotTurrets.getTurret(CommonTurrets.WZ_132))),
@@ -104,13 +102,11 @@ public class SpigotTanks extends AbstractInfoStorage<SpigotTank>
     }
 
 
-    public static SpigotTank getTank(String name)
-    {
+    public static SpigotTank getTank(String name) {
         return new SpigotTanks().get(name);
     }
 
-    public static List<SpigotTank> getValues()
-    {
+    public static List<SpigotTank> getValues() {
         return new SpigotTanks().values();
     }
 }
